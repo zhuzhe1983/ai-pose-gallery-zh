@@ -6,10 +6,12 @@ import { Male } from "./vendor/mannequin/bodies/Male.js";
 import { NEUTRAL, applyValues, constrainFingers } from "./presets.js";
 
 import { createSuit } from "./suit.js";
+import { attachHuman, setHumanMaterial, humanBounds } from "./human.js";
 
 export function setOutfit(model, outfit = "ivory") {
   if (!["white", "ivory"].includes(outfit)) throw Error("Invalid outfit");
   model.userData.outfit = outfit;
+  if (setHumanMaterial(model, outfit)) return;
   let garment = model.children.find((o) => o.userData.suit);
   if (outfit === "ivory" && !garment) garment = createSuit(model);
   if (garment) garment.visible = outfit === "ivory";
@@ -57,9 +59,18 @@ export function createFigure(sex, height) {
   model.head.scale.setScalar(0.9);
   // Remove stock surfaces entirely. Skeleton and anatomical angle setters remain upstream.
   for (const joint of Object.values(all)) {
+    joint.image.traverse((o) => {
+      o.geometry?.dispose();
+      for (const material of [].concat(o.material || [])) material.dispose();
+    });
     joint.image.removeFromParent();
     joint.image = new THREE.Group();
     joint.imageWrapper.add(joint.image);
+  }
+  model.userData = { sex, height, mesh: "procedural-v1" };
+  if (attachHuman(model, all)) {
+    groundFigure(model);
+    return model;
   }
   const white = new THREE.MeshStandardMaterial({
     color: 0xf2f0ec,
@@ -231,7 +242,6 @@ export function createFigure(sex, height) {
   }
   white.dispose();
   jointMat.dispose();
-  model.userData = { sex, height };
   applyValues(model, NEUTRAL);
   model.l_fingers.bend = 10;
   model.r_fingers.bend = 10;
@@ -255,6 +265,7 @@ export function groundFigure(model) {
   model.updateMatrixWorld(true);
 }
 export function figureBounds(model) {
+  if (model.userData.human) return humanBounds(model);
   // The fitted layer follows the body. Use its rigid segments for framing and
   // grounding instead of CPU-skinning every garment vertex on each slider tick.
   model.updateMatrixWorld(true);
@@ -277,7 +288,7 @@ export function disposeFigure(model) {
     if (o.material) for (const m of [].concat(o.material)) materials.add(m);
   });
   geometries.forEach((g) => {
-    if (!g.userData.sharedPoseSuit) g.dispose();
+    if (!g.userData.sharedPoseSuit && !g.userData.sharedHuman) g.dispose();
   });
   model.traverse((o) => {
     if (o.skeleton) o.skeleton.dispose();

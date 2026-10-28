@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 import * as THREE from "three";
+import { preloadHumans } from "./human.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
 import { scene } from "./vendor/mannequin/scene.js";
@@ -452,6 +453,7 @@ function figureState(f) {
     height: f.height,
     scale: f.scale,
     outfit: f.outfit,
+    mesh: f.model.userData.mesh,
     position: f.model.position.toArray(),
     rotation: f.model.quaternion.toArray(),
     joints: Object.fromEntries(
@@ -562,6 +564,8 @@ function restoreState(raw) {
         state.outfit,
       );
       restoreFigure(f, state);
+      if (s.floorLock && state.mesh !== f.model.userData.mesh)
+        groundFigure(f.model);
     }
     old.forEach((f) => disposeFigure(f.model));
     active = s.selected;
@@ -1392,7 +1396,14 @@ function bindUI() {
           hit.object.userData.jointKeys[
             [...weights].sort((a, b) => b[1] - a[1])[0][0]
           ];
-        joint = key === "pelvis" ? "body" : key === "neck" ? "head" : key;
+        joint =
+          key === "pelvis"
+            ? "body"
+            : key === "neck"
+              ? "head"
+              : key.includes("finger")
+                ? key.slice(0, 2) + "wrist"
+                : key;
       }
       refresh();
     }
@@ -1422,6 +1433,14 @@ function bindUI() {
 }
 async function init() {
   translatePage();
+  try {
+    await preloadHumans();
+    document.body.dataset.figureMesh = "makehuman-v1";
+  } catch (error) {
+    console.warn("Human assets unavailable; using procedural figures", error);
+    document.body.dataset.figureMesh = "procedural";
+    $("humanModelStatus").dataset.t = "humanFallback";
+  }
   renderer = new THREE.WebGPURenderer({
     canvas,
     antialias: true,

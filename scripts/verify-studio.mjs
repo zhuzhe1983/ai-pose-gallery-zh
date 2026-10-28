@@ -49,6 +49,7 @@ for (const file of [
   "pose-photo-ui.js",
   "suit.js",
   "figure.js",
+  "human.js",
 ])
   execFileSync(process.execPath, ["--check", "studio/" + file]);
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);

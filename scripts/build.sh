@@ -7,9 +7,11 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 rm -rf dist
-mkdir -p dist
+mkdir -p dist/docs
 
 cp -R index.html app.js _headers robots.txt sitemap.xml og-cover.jpg .nojekyll llms.txt TODO.md skills studio data thumbs img dist/
+
+cp docs/line-art-pose-research.md dist/docs/
 
 echo "dist ready:"
 du -sh dist

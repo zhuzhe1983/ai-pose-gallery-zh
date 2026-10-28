@@ -1,9 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Each row: Simplified Chinese, English, Japanese.
 const rows = {
-  outfit: ["表面 / 服装", "Surface / outfit", "表面・衣装"],
+  outfit: ["人偶材质", "Mannequin finish", "マネキンの素材"],
   outfitWhite: ["白色素体", "White mannequin", "白い素体"],
-  outfitIvory: ["浅色紧身衣", "Ivory stretch suit", "淡色のストレッチスーツ"],
+  outfitIvory: ["象牙白人偶", "Ivory mannequin", "アイボリーのマネキン"],
+  humanModel: [
+    "真人比例 · 连续蒙皮",
+    "Human proportions · continuous skin",
+    "人体比率・連続スキン",
+  ],
+  humanFallback: [
+    "人体模型未加载，暂用简化人偶；刷新可重试。",
+    "Human assets unavailable; using simple figures. Reload to retry.",
+    "人体モデルを読み込めないため簡易人形を使用中。再読み込みで再試行できます。",
+  ],
   poseMode: ["操作方式", "Manipulation mode", "操作モード"],
   rotateMode: ["旋转关节 · E", "Rotate joint · E", "関節を回転 · E"],
   moveModeLabel: ["移动人物 · W", "Move figure · W", "人物を移動 · W"],

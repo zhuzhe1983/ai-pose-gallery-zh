@@ -38,3 +38,5 @@ treated as validated reconstructions.
 No stock editor interface or SHF-branded model is included. Generated captures
 are output images; this source-code license does not automatically license the
 gallery collection or apply to independent artwork made using the references.
+
+- [MakeHuman/MPFB](https://github.com/makehumancommunity/mpfb2), core mesh, morph targets, rig and weights: **CC0-1.0**, pinned commit `6ff1eb358f6c1959ced77e79e6dd2406d9a71f49`. Generated adult female/male GLBs, changes, build instructions and checksums: [`assets/humans/README.md`](assets/humans/README.md), [`assets/humans/manifest.json`](assets/humans/manifest.json). The MPFB Python program is a build dependency, not shipped in the page. Its source is GPL-3.0-or-later; the exported graphical assets retain the separately documented CC0 terms. `human.js` maps the mesh weights to the existing editor controls; the original procedural geometry is used only if model loading fails. The default appearance is now a continuous display mannequin; no cloth simulation, real-person scan, or Dummy 13 model is included.

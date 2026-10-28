@@ -20,6 +20,8 @@ for (const file of [
   "geometries/ParametricGeometry.js",
   "geometries/TextGeometry.js",
   "loaders/FontLoader.js",
+  "loaders/GLTFLoader.js",
+  "utils/SkeletonUtils.js",
   "utils/BufferGeometryUtils.js",
 ]) {
   const destination = path.join(vendor, "three/addons", file);

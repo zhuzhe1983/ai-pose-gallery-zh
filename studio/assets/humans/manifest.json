@@ -1,0 +1,17 @@
+{
+  "source": "https://github.com/makehumancommunity/mpfb2",
+  "commit": "6ff1eb358f6c1959ced77e79e6dd2406d9a71f49",
+  "license": "CC0-1.0",
+  "generator": "scripts/build-human-models.py",
+  "blender": "5.2.1",
+  "assets": {
+    "female.glb": {
+      "bytes": 3181604,
+      "sha256": "921e0fb528bae303f252b29eff3cc6f8fda8b177200d57309b2e68e6f6ff9371"
+    },
+    "male.glb": {
+      "bytes": 3181420,
+      "sha256": "b338187c2147759ff716b0c2dc1c0cc5077c55fd47f94131d707c1ade9fd9f4e"
+    }
+  }
+}

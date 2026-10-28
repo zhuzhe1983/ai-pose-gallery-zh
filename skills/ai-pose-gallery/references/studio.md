@@ -2,13 +2,13 @@
 
 Studio: `https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/`. Add `?lang=zh`, `en` or `ja`. To open a gallery pose, append e.g. `?pose=sexy_sit_w-sit-hands-fw_hi&lang=en`.
 
-The studio uses Mannequin.js's skeleton with custom articulated figure surfaces and a continuous ivory stretch suit and a new UI. It supports one to six adult male/female figures. It renders with Three.js WebGPU, with WebGL 2 fallback displayed accurately in the toolbar. No authentication, server, API key or AIGC service is needed to render white-model PNGs. Source and GPL-3.0 license: `studio/THIRD_PARTY.md`, `studio/LICENSE`.
+The studio uses adult MakeHuman/MPFB meshes and authored skin weights (CC0), mapped to Mannequin.js's angle controls. These are realistic-proportion display mannequins, not scans of people. Male and female GLBs total about 6 MiB, loaded once per page and shared by figure instances. The original procedural figures remain a clearly labeled fallback if loading fails. It supports one to six adult male/female figures. It renders with Three.js WebGPU, with WebGL 2 fallback displayed accurately in the toolbar. No authentication, server, API key or AIGC service is needed to render white-model PNGs. Source and GPL-3.0 license: `studio/THIRD_PARTY.md`, `studio/LICENSE`.
 
 ## Interactive operation
 
 1. Select figure A–F; add male or female figures (maximum six). Each figure card has a visible Delete button. Keep at least one figure.
 2. Choose a body part from the inspector or click it on the figure. Use labeled sliders, numeric angles, or the rotation rings. Sliders, rings, presets and scene imports all obey the same limits. Knees and elbows have one bend axis. Hands have a finger-curl slider.
-3. The canvas toolbar switches **Rotate joint (E)** and **Move figure (W)**. Drag the translation arrows or plane handles directly; a vertical drag releases floor locking. The suit smooths the shoulder, elbow, waist, hip and knee transitions, follows the rig, and does not simulate cloth. Select **White mannequin** for exposed articulation or **Ivory stretch suit** (default). Use body type, overall scale (80–120%), position and facing controls for composition. Turn off automatic grounding to raise a figure off the floor. Drag the empty canvas to orbit; use the wheel to zoom. Camera buttons select front, three-quarter, side, above or below.
+3. The canvas toolbar switches **Rotate joint (E)** and **Move figure (W)**. Drag the translation arrows or plane handles directly; a vertical drag releases floor locking. The continuous skin follows the rig without cloth simulation. Select **White mannequin** or **Ivory mannequin** (default) for the material. Extreme bends can still compress the skin; there is no collision solver or corrective blendshape system. Use body type, overall scale (80–120%), position and facing controls for composition. Turn off automatic grounding to raise a figure off the floor. Drag the empty canvas to orbit; use the wheel to zoom. Camera buttons select front, three-quarter, side, above or below.
 4. Gallery tiles marked **3D** load editable hand-authored approximations. Other tiles only display a reference and leave the figure's pose unchanged. Image references are not reconstructed 3D data, and contact points/collisions are not automatically solved.
 5. **Capture PNG** exports a 1600 × 1600 image without rings, grid, selection tint, labels or reference card. **Share scene link** copies the full scene into a compressed URL fragment. Edits also update the address bar; the shared scene takes priority over browser autosave. **Save scene** / **Load scene** preserve editable joints, figures and camera. The browser also autosaves locally. Check the PNG visually before using it for AIGC.
 
@@ -38,6 +38,8 @@ const url = await p.getShareURL(); // self-contained share link; no upload
 
 Save the returned base64 bytes to a `.png` file using the automation environment's file-writing API. Do not print the full data URL into the conversation. Alternatively, `capture({download:true, filename:'pose.png'})` triggers a browser download. Capture serially, and await each call. Sizes: integer 256–4096 per axis. Captures use the current camera position with the requested aspect ratio; inspect the framing when changing aspect ratio. The UI export uses 1600 × 1600; the API allows portrait or landscape captures.
 
+Figure state includes `mesh: "makehuman-v1"` (or `"procedural-v1"` fallback). Await `ready` before all operations. Legacy shared scenes still load; floor-locked scenes without a matching mesh revision are grounded to the new surface. Saved joint angles are preserved, but old model silhouettes/contact points are not identical.
+
 API version: **3**. Methods (all synchronous except `ready`, `loadPreset`, `showReference`, `capture`, `getShareURL`, `loadShareURL` and the photo methods below):
 
 | Method | Behavior |
@@ -46,7 +48,7 @@ API version: **3**. Methods (all synchronous except `ready`, `loadPreset`, `show
 | `addFigure({sex,height,scale,outfit})` | Add a free ID from A–F without moving existing figures; returns ID. Maximum six; scale 0.8–1.2 (default 1). |
 | `removeFigure(id)` | Remove a figure, retaining at least one. IDs of remaining figures stay stable. |
 | `selectFigure(id)` | Select A–F in the UI. |
-| `setFigure(id,{sex,height,scale,outfit,position,yaw,ground})` | Optional properties: `outfit` is `ivory` (continuous light suit) or `white` (articulated mannequin); sex `female`/`male`; base height 1.2–2.2 metres (legacy API; defaults 1.65 female / 1.8 male); uniform `scale` 0.8–1.2; rendered height = base height × scale; absolute XYZ position in metres (each −10…10); yaw −180…180 degrees. `ground:true` overrides Y to touch the floor. |
+| `setFigure(id,{sex,height,scale,outfit,position,yaw,ground})` | Optional properties: `outfit` is `ivory` (ivory human mannequin) or `white` (white finish); sex `female`/`male`; base height 1.2–2.2 metres (legacy API; defaults 1.65 female / 1.8 male); uniform `scale` 0.8–1.2; rendered height = base height × scale; absolute XYZ position in metres (each −10…10); yaw −180…180 degrees. `ground:true` overrides Y to touch the floor. |
 | `setJoint(id,part,angles)` | Set the named angles below, in degrees. Other angles are preserved. |
 | `getJoint(id,part)` | Read named angles. |
 | `setHand(id,'l'\|'r',curl)` | Curl all fingers on one hand, 0–100 degrees. |
@@ -142,3 +144,7 @@ Inspect the output PNG, adjust if needed, then attach its actual image bytes/pat
 ## Reconstruction status
 
 All 288 gallery groups are tracked in `data/pose-3d-status.json`; 24 have unverified drafts and none have passed accurate reconstruction review. Read `TODO.md` at the site root for the plan: image landmark detection, manual correction, skeleton/camera fitting, constrained IK, multi-view optimization and visual acceptance. Browser photo detection, keypoint correction and constrained initial pose fitting are implemented. Accurate conversion of all gallery drawings, calibrated cameras, multi-view optimization and contact/collision solving remain unfinished. Five sampled gallery line drawings returned no usable detection in the initial smoke check; do not claim this model reconstructs the gallery reliably.
+
+## Line-art recognition status
+
+The display mesh and image detector are independent. Changing the mannequin does not improve image detection. MediaPipe still powers photo detection; the five sampled gallery line drawings produced no usable people. Sketch2Pose and bizarre-pose-estimator are research candidates, not installed backends. As checked on 2026-10-29, Sketch2PoseNet's public repository still says “Coming Soon” and provides no runnable implementation or weights. Do not promise automatic line-art reconstruction. See the repository’s [research note](https://github.com/zhuzhe1983/ai-pose-gallery-zh/blob/main/docs/line-art-pose-research.md).
