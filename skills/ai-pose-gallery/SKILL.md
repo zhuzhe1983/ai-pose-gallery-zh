@@ -1,11 +1,17 @@
 ---
 name: ai-pose-gallery
-description: Find and download multi-angle pose references from zhuzhe1983.github.io/ai-pose-gallery-zh, then use them as image inputs for AIGC artwork. Use for pose-guided image generation, camera-angle selection, or accessing this gallery through compact semantic filenames.
+description: Find pose references or pose one/two male/female white figures in the gallery’s Mannequin.js WebGPU studio, export PNG references, then use them for AIGC artwork. Use for compact image URLs, character/joint control, camera angles, and pose-guided generation.
 ---
 
 # AI Pose Gallery
 
 Base URL: `https://zhuzhe1983.github.io/ai-pose-gallery-zh/` (keep the repository path and trailing slash). Public static files; no login or API key. Website languages: `?lang=zh`, `?lang=en`, `?lang=ja`. Image names never change with language.
+
+## Choose a reference workflow
+
+- **Existing gallery pose:** use the compact URLs below; no browser rendering is needed.
+- **Custom or two-person pose:** open `studio/` and read [references/studio.md](references/studio.md). It covers adding male/female figures, joint controls, presets, cameras, scene save/load and clean PNG captures through `window.poseStudio`. A reusable headless helper is [scripts/render_studio.mjs](scripts/render_studio.mjs). Both files are available under `skills/ai-pose-gallery/` on the same site. This avoids loading the full image index or rediscovering the UI.
+- **AIGC artwork:** first obtain and visually inspect a gallery PNG or studio capture, then attach it to the image tool as described below.
 
 ## Direct image access
 
@@ -44,4 +50,4 @@ python3 scripts/pose_ref.py download --system solo --category sit --pose lean-bk
 4. Example prompt: “Use the attached image for body pose and camera angle. Keep the seated backward lean, raised knee and supporting arm. Create an adult traveler wearing a jacket and trousers in a sunlit station, soft painted illustration. Preserve the intended pose and natural anatomy; replace the mannequin appearance.” Adapt the subject and style to the user.
 5. Inspect the generated image for limb placement, hands, contact points and view consistency; revise if needed. Deliver the result with the reference filename and source link. If image generation is unavailable, provide the downloaded reference and prompt, and say that generation was not performed.
 
-The gallery is a source of references, not a generation service. Images and original data belong to ギア; the repository's MIT license covers code, not the image collection. Follow the source creator's terms and the chosen tool's content rules.
+The gallery and 3D studio provide pose references, not an AIGC generation service. The studio uses Mannequin.js under GPL-3.0 with a redesigned UI and original articulated white-model surfaces; its license and source notices are retained in `studio/`. Images and original data belong to ギア; the repository's MIT license covers code, not the image collection. Follow the source creator's terms and the chosen tool's content rules.

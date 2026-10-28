@@ -1,0 +1,125 @@
+#!/usr/bin/env node
+// Render a pose reference with the public studio. No image-generation API or key is used.
+import fs from "node:fs/promises";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const args = process.argv.slice(2),
+  options = { url: "https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/" };
+for (let i = 0; i < args.length; i += 2) {
+  const key = args[i];
+  if (
+    !["--job", "--output", "--scene-out", "--preview", "--url"].includes(key) ||
+    !args[i + 1]
+  )
+    throw Error(
+      "Usage: render_studio.mjs --job job.json --output pose.png [--scene-out scene.json] [--preview studio.png] [--url URL]",
+    );
+  options[key.slice(2)] = args[i + 1];
+}
+if (!options.job || !options.output)
+  throw Error("--job and --output are required");
+const job = JSON.parse(await fs.readFile(options.job, "utf8"));
+if (
+  !Array.isArray(job.figures) ||
+  job.figures.length < 1 ||
+  job.figures.length > 2
+)
+  throw Error("job.figures must contain one or two figures");
+let chromium;
+try {
+  ({ chromium } = await import(
+    process.env.POSE_PLAYWRIGHT_MODULE
+      ? pathToFileURL(path.resolve(process.env.POSE_PLAYWRIGHT_MODULE)).href
+      : "playwright"
+  ));
+} catch {
+  throw Error(
+    "Install Playwright in this environment, or set POSE_PLAYWRIGHT_MODULE to its absolute index.mjs path. See references/studio.md.",
+  );
+}
+const browser = await chromium.launch({ headless: true });
+const errors = [];
+try {
+  const page = await browser.newPage({
+    viewport: { width: 1440, height: 1000 },
+    deviceScaleFactor: 1,
+  });
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto(options.url, {
+    waitUntil: "domcontentloaded",
+    timeout: 60000,
+  });
+  await page.waitForFunction(() => window.poseStudio, { timeout: 60000 });
+  await page.evaluate(() => poseStudio.ready);
+  const result = await page.evaluate(async (job) => {
+    const api = window.poseStudio;
+    api.reset({ sex: job.figures[0].sex || "female" });
+    if (job.figures.length === 2)
+      api.addFigure({ sex: job.figures[1].sex || "male" });
+    if (job.preset) await api.loadPreset(job.preset);
+    for (let i = 0; i < job.figures.length; i++) {
+      const f = job.figures[i],
+        id = i === 0 ? "A" : "B";
+      if (f.preset) await api.loadPreset(f.preset, { actorId: id });
+      for (const [part, angles] of Object.entries(f.joints || {}))
+        api.setJoint(id, part, angles);
+      for (const [side, curl] of Object.entries(f.hands || {}))
+        api.setHand(id, side, curl);
+      const changes = {};
+      for (const key of ["sex", "height", "position", "yaw", "ground"])
+        if (f[key] !== undefined) changes[key] = f[key];
+      api.setFigure(id, changes);
+    }
+    api.setCamera(job.camera || "d");
+    if (job.cameraPosition) {
+      const state = api.exportScene();
+      state.camera = job.cameraPosition;
+      api.importScene(state);
+    }
+    const image = await api.capture({
+      width: job.width || 1600,
+      height: job.height || 1600,
+    });
+    return {
+      image,
+      scene: api.exportScene(),
+      backend: document.getElementById("backend").dataset.backend,
+    };
+  }, job);
+  for (const destination of [
+    options.output,
+    options["scene-out"],
+    options.preview,
+  ].filter(Boolean))
+    await fs.mkdir(path.dirname(path.resolve(destination)), {
+      recursive: true,
+    });
+  await fs.writeFile(
+    options.output,
+    Buffer.from(result.image.dataUrl.split(",")[1], "base64"),
+  );
+  if (options["scene-out"])
+    await fs.writeFile(
+      options["scene-out"],
+      JSON.stringify(result.scene, null, 2) + "\n",
+    );
+  if (options.preview)
+    await page.screenshot({ path: options.preview, fullPage: true });
+  if (errors.length) throw Error(errors.join("\n"));
+  console.log(
+    JSON.stringify(
+      {
+        output: path.resolve(options.output),
+        width: result.image.width,
+        height: result.image.height,
+        backend: result.backend,
+        figures: result.scene.figures.length,
+        scene: options["scene-out"] ? path.resolve(options["scene-out"]) : null,
+      },
+      null,
+      2,
+    ),
+  );
+} finally {
+  await browser.close();
+}

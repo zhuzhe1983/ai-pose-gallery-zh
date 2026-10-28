@@ -1,4 +1,4 @@
 interface:
-  display_name: "AI 姿势图库"
-  short_description: "按语义文件名查找姿势参考图，并用于 AIGC 图像创作"
-  default_prompt: "使用 $ai-pose-gallery 查找单人坐姿的斜侧参考图，并用于生成穿着完整服装的角色插画。"
+  display_name: "AI 姿势图库与 3D 摆姿"
+  short_description: "查找姿势参考，控制男女 3D 白模并截图，用于 AIGC 图像创作"
+  default_prompt: "使用 $ai-pose-gallery 在 3D 工作台中添加女素体、载入坐姿并调整镜头，导出 PNG 后用于角色插画。"

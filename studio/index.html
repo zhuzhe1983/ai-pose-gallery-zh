@@ -1,0 +1,331 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-only -->
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f5f7fb" />
+    <meta
+      name="description"
+      content="浏览器里的 3D 白模摆姿工作台：男女素体、一到两人、关节调整、图库参考、场景保存和 PNG 导出。"
+    />
+    <title>3D 摆姿工作台 · POSE Atlas</title>
+    <link
+      rel="canonical"
+      href="https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235b5bd6'/%3E%3Cpath d='m16 6 9 5v10l-9 5-9-5V11zM7 11l9 5 9-5M16 16v10' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="studio.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three/three.webgpu.js",
+          "three/addons/": "./vendor/three/addons/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <svg class="symbols" aria-hidden="true">
+      <defs>
+        <symbol id="cube" viewBox="0 0 24 24">
+          <path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8" />
+        </symbol>
+        <symbol id="arrow" viewBox="0 0 24 24">
+          <path d="m10 5-7 7 7 7M3 12h18" />
+        </symbol>
+        <symbol id="download" viewBox="0 0 24 24">
+          <path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4" />
+        </symbol>
+        <symbol id="icon-undo" viewBox="0 0 24 24">
+          <path d="M4 5v6h6M4 11a8 8 0 1 1 2 8" />
+        </symbol>
+        <symbol id="icon-redo" viewBox="0 0 24 24">
+          <path d="M20 5v6h-6m6 0a8 8 0 1 0-2 8" />
+        </symbol>
+      </defs>
+    </svg>
+    <header class="studio-header">
+      <a class="brand" href="../" id="galleryLink"
+        ><span class="brand-icon"
+          ><svg><use href="#cube" /></svg></span
+        ><span
+          ><strong>POSE Atlas</strong
+          ><small data-t="studio">3D 摆姿工作台</small></span
+        ></a
+      >
+      <nav aria-label="导航" data-aria="navigation">
+        <a id="galleryNav" href="../" data-t="gallery">图库</a
+        ><span class="current" data-t="studioShort">3D 摆姿</span>
+        <a
+          href="../skills/ai-pose-gallery/SKILL.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Skill ↗</a
+        >
+        <a
+          href="https://github.com/zhuzhe1983/ai-pose-gallery-zh"
+          target="_blank"
+          rel="noopener noreferrer"
+          >zhuzhe1983 ↗</a
+        >
+        <a
+          href="https://github.com/anhao/ai-pose-gallery-zh"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Anhao ↗</a
+        >
+        <select id="language" aria-label="语言">
+          <option value="zh">中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+        </select>
+      </nav>
+    </header>
+    <main class="workspace">
+      <aside
+        class="panel library-panel"
+        aria-label="人物与姿势库"
+        data-aria="library"
+      >
+        <section class="panel-section actors-section">
+          <div class="section-heading">
+            <h1 data-t="scene">场景人物</h1>
+            <span class="muted" id="actorCount">1 / 2</span>
+          </div>
+          <div id="actors" class="actor-list"></div>
+          <div class="button-pair">
+            <button id="addFemale" data-t="addFemale">＋ 女素体</button
+            ><button id="addMale" data-t="addMale">＋ 男素体</button>
+          </div>
+          <p class="micro" data-t="twoPeopleHint">最多两人，各自独立摆姿。</p>
+        </section>
+        <section class="panel-section pose-library">
+          <div class="section-heading">
+            <h2 data-t="poseLibrary">图库姿势</h2>
+            <span id="poseCount" class="muted"></span>
+          </div>
+          <label class="field"
+            ><span data-t="collection">体系</span
+            ><select id="collection"></select
+          ></label>
+          <label class="field"
+            ><span data-t="category">分类</span
+            ><select id="category"></select
+          ></label>
+          <label class="search-field"
+            ><span class="sr-only" data-t="search">搜索姿势</span
+            ><input
+              type="search"
+              id="poseSearch"
+              data-placeholder="search"
+              placeholder="搜索姿势"
+          /></label>
+          <label class="check"
+            ><input type="checkbox" id="onlyPresets" /><span
+              data-t="onlyPresets"
+              >只看可载入的 3D 预设</span
+            ></label
+          >
+          <p class="micro" data-t="presetHint">
+            带 3D 标签的姿势可直接载入；其他图片可作参考。
+          </p>
+          <div id="poseList" class="pose-list" aria-live="polite"></div>
+        </section>
+        <footer class="credits">
+          <a
+            href="https://github.com/boytchev/mannequin.js"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Mannequin.js</a
+          >
+          ·
+          <a
+            href="THIRD_PARTY.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-t="licenses"
+            >开源许可</a
+          >
+        </footer>
+      </aside>
+      <section class="stage" aria-label="3D 画布" data-aria="canvas">
+        <div class="canvas-toolbar">
+          <div
+            class="camera-buttons"
+            role="group"
+            aria-label="相机视角"
+            data-aria="cameraViews"
+          >
+            <button data-camera="f" data-t="front">正面</button
+            ><button data-camera="d" data-t="diagonal">斜侧</button
+            ><button data-camera="s" data-t="side">侧面</button
+            ><button data-camera="hi" data-t="high">俯视</button
+            ><button data-camera="lo" data-t="low">仰视</button
+            ><button id="fitCamera" data-t="frame">居中</button>
+          </div>
+          <span class="backend" id="backend" role="status">WebGPU…</span>
+        </div>
+        <canvas
+          id="sceneCanvas"
+          tabindex="0"
+          aria-label="3D 人体摆姿画布"
+          data-aria="canvas"
+        ></canvas>
+        <div id="loading" class="loading">
+          <span class="spinner"></span
+          ><strong data-t="loading">正在准备工作台…</strong>
+        </div>
+        <div id="fatal" class="fatal" role="alert" hidden>
+          <strong data-t="failed">无法启动 3D 工作台</strong>
+          <p id="fatalMessage"></p>
+          <button onclick="location.reload()" data-t="retry">重新加载</button>
+        </div>
+        <div class="reference" id="reference" hidden>
+          <div class="reference-head">
+            <strong data-t="reference">姿势参考</strong
+            ><button
+              id="hideReference"
+              aria-label="收起参考图"
+              data-aria="hideReference"
+            >
+              ×
+            </button>
+          </div>
+          <a id="referenceLink" target="_blank" rel="noopener noreferrer"
+            ><img id="referenceImage" alt=""
+          /></a>
+          <div class="reference-caption">
+            <span id="referenceName"></span
+            ><select
+              id="referenceView"
+              aria-label="参考图视角"
+              data-aria="referenceView"
+            ></select
+            ><small id="referenceState"></small>
+          </div>
+        </div>
+        <button
+          class="show-reference"
+          id="showReference"
+          hidden
+          data-t="showReference"
+        >
+          显示参考图
+        </button>
+        <div class="stage-bottom">
+          <span data-t="canvasHint"
+            >拖动空白旋转 · 滚轮缩放 · 点击部位选中</span
+          >
+          <div class="history-buttons">
+            <button id="undo" aria-label="撤销" data-aria="undo">
+              <svg><use href="#icon-undo" /></svg></button
+            ><button id="redo" aria-label="重做" data-aria="redo">
+              <svg><use href="#icon-redo" /></svg>
+            </button>
+          </div>
+        </div>
+        <div
+          id="toast"
+          class="toast"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+      </section>
+      <aside
+        class="panel inspector"
+        aria-label="关节与人物设置"
+        data-aria="inspector"
+      >
+        <section class="panel-section">
+          <div class="section-heading">
+            <h2 data-t="adjust">调整姿势</h2>
+            <span class="selection-dot"></span>
+          </div>
+          <label class="field"
+            ><span data-t="joint">当前关节</span
+            ><select id="joint"></select
+          ></label>
+          <p class="micro" data-t="jointHint">
+            拖动彩色旋转环，或使用下方滑块。
+          </p>
+          <div id="jointControls" class="sliders"></div>
+          <label class="slider-row" id="fingerRow" hidden
+            ><span data-t="fingerCurl">手指弯曲</span
+            ><output id="fingerValue">10°</output
+            ><input
+              id="fingerCurl"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value="10"
+          /></label>
+          <div class="button-pair">
+            <button id="resetJoint" data-t="resetJoint">重置关节</button
+            ><button id="neutral" data-t="neutral">站立初始姿势</button>
+          </div>
+        </section>
+        <section class="panel-section">
+          <div class="section-heading">
+            <h2 data-t="figure">人物设置</h2>
+            <button id="removeActor" class="text-button" data-t="remove">
+              移除
+            </button>
+          </div>
+          <label class="field"
+            ><span data-t="bodyType">体型</span
+            ><select id="sex">
+              <option value="female" data-t="female">女素体</option>
+              <option value="male" data-t="male">男素体</option>
+            </select></label
+          >
+          <div class="sliders" id="figureControls"></div>
+          <div class="button-pair">
+            <button id="moveMode" aria-pressed="false" data-t="moveFigure">
+              移动人物</button
+            ><button id="ground" data-t="ground">贴合地面</button>
+          </div>
+          <label class="check"
+            ><input type="checkbox" id="floorLock" checked /><span
+              data-t="floorLock"
+              >调整时自动贴地</span
+            ></label
+          >
+          <label class="check"
+            ><input type="checkbox" id="showGrid" checked /><span data-t="grid"
+              >显示地面网格</span
+            ></label
+          >
+        </section>
+        <section class="panel-section output-section">
+          <button class="primary" id="exportPng">
+            <svg><use href="#download" /></svg
+            ><span data-t="exportPng">导出干净 PNG</span>
+          </button>
+          <div class="button-pair">
+            <button id="saveScene" data-t="saveScene">保存场景</button
+            ><button id="importScene" data-t="importScene">导入场景</button>
+          </div>
+          <input
+            type="file"
+            id="sceneFile"
+            accept="application/json,.json"
+            hidden
+          />
+          <p class="micro" data-t="saveHint">
+            编辑自动保存在此浏览器。PNG 不含旋转环和参考图。
+          </p>
+        </section>
+      </aside>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

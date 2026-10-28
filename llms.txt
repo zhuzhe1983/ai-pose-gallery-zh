@@ -16,3 +16,7 @@ Known exact name: fetch directly. Unknown pose: read one category at data/catalo
 Originals are 900x1200 PNG drawings, not precomputed OpenPose skeletons. Attach the actual image to the generation tool as a reference; merely placing a URL in the prompt is not a reference-image input.
 
 UI language links: ?lang=zh, ?lang=en, ?lang=ja. Image rights belong to the original creator ギア; the code's MIT license does not cover images or original data.
+
+## Editable 3D pose references
+- Studio: https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/
+- Character control, scene and PNG API: https://zhuzhe1983.github.io/ai-pose-gallery-zh/skills/ai-pose-gallery/references/studio.md

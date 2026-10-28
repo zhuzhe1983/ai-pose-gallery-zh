@@ -237,6 +237,20 @@ npx wrangler pages deploy dist --project-name ai-pose-gallery-zh
 
 `_headers` 已为 `img/`、`thumbs/` 配置一年期强缓存，图片不会重复回源。
 
+## 3D 白模摆姿工作台
+
+访问 [3D 工作台](https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/)。支持中、英、日三语，WebGPU 优先；不支持时自动使用 WebGL 2，并在界面标明。
+
+- 一到两个男女素体，重新制作的白色分段外观；点击部位、角度滑块、数值输入、旋转环和位置控制。
+- 24 个可编辑的人工近似姿势，支持从图库打开；其他图库图片可作旁边的视觉参考。图库没有 3D 骨骼数据，预设不代表精确重建；接触点和穿插需要手动调整。
+- 镜头快捷键、撤销/重做、本机自动保存、场景 JSON 导入导出。
+- 1600 × 1600 PNG 截图，自动隐藏操作环、网格、选中高亮及参考卡片；agent 接口可指定其他尺寸。
+- [Agent 操作说明](skills/ai-pose-gallery/references/studio.md)包含页面 API 和可执行的截图脚本，用于生成后续 AIGC 的姿势参考。
+
+工作台使用 [Mannequin.js](https://github.com/boytchev/mannequin.js) 的骨骼系统，不沿用原来的操控界面；人物外观由本项目重新制作，并非 SHF 官方模型。`studio/` 独立采用 **GPL-3.0-only**，保留上游许可和完整可编辑源码；Three.js 采用 MIT。详见 [第三方来源与修改说明](studio/THIRD_PARTY.md)。原图库代码和图片的许可范围保持原状。
+
+浏览器依赖已固定版本并随站点托管，无外部 CDN 依赖。重新生成依赖：`npm ci --ignore-scripts && npm run vendor:studio`。检查站点：`npm run verify`；构建发布目录：`npm run build`。
+
 ## 内容提示
 
 图库包含成人向姿势参考（部分分类名称涉及性行为术语），仅供艺术创作、动作参考与前端技术学习使用。请勿用于违法用途。未成年人请勿访问。

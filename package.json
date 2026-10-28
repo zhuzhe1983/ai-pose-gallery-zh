@@ -1,0 +1,16 @@
+{
+  "name": "ai-pose-gallery-zh",
+  "private": true,
+  "version": "1.1.0",
+  "description": "Static multilingual pose gallery and WebGPU posing studio",
+  "scripts": {
+    "vendor:studio": "node scripts/vendor-studio.mjs",
+    "verify": "python3 scripts/verify.py && node --check app.js && node --check studio/app.js && node scripts/verify-studio.mjs",
+    "build": "bash scripts/build.sh"
+  },
+  "devDependencies": {
+    "three": "0.186.1",
+    "mannequin-js": "5.2.3"
+  },
+  "type": "module"
+}

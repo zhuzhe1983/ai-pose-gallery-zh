@@ -346,6 +346,7 @@ function showViewer() {
   download.href = item.原图;
   download.setAttribute('download', `${item.id}.png`);
   $('#openImage').href = item.原图;
+  $('#studioPose').href = `studio/?lang=${LANG}&pose=${encodeURIComponent(item.id)}`;
 }
 
 function stepAngle(direction) {
@@ -428,6 +429,7 @@ $('#infoDialog').addEventListener('click', event => { if (event.target === $('#i
 function applyLanguage() {
   document.documentElement.lang = languages[LANG];
   document.title = t('pageTitle');
+  $('#studioNav').href = `studio/?lang=${LANG}`;
   document.querySelectorAll('[data-i18n]').forEach(node => { node.textContent = t(node.dataset.i18n); });
   document.querySelectorAll('[data-i18n-html]').forEach(node => { node.innerHTML = t(node.dataset.i18nHtml); });
   for (const attribute of ['aria-label', 'placeholder', 'title']) {
