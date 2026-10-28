@@ -1036,3 +1036,25 @@ h2 {
     max-height: 40vh;
   }
 }
+
+/* The gallery owns one lazy, read-only renderer; it never writes studio state. */
+body[data-embed="preview"] {
+  overflow: hidden;
+}
+body[data-embed="preview"] .studio-header,
+body[data-embed="preview"] .panel,
+body[data-embed="preview"] .stage > :not(canvas):not(.fatal) {
+  display: none !important;
+}
+body[data-embed="preview"] .workspace {
+  display: block;
+  height: 100dvh;
+  padding: 0;
+}
+body[data-embed="preview"] .stage {
+  width: 100%;
+  height: 100dvh;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}

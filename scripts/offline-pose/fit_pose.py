@@ -2,7 +2,7 @@
 """Original constrained 2D-to-editor fitting; NOT the full Sketch2Pose algorithm.
 
 Consumes reviewed 18-point pixel observations and the actual editor FK rig.
-Writes draft pose-atlas/studio@2 JSON plus diagnostics. Does not use SMPL-X,
+Writes draft editor scene JSON (schema inherited from the rig) plus diagnostics. Does not use SMPL-X,
 SPIN, upstream implementation code, downloaded weights, or an inference server.
 """
 import argparse
@@ -15,6 +15,7 @@ import time
 import numpy as np
 from scipy.optimize import least_squares
 from scipy.spatial.transform import Rotation
+from orientation_hints import load_orientation_hints, orientation_assessment
 
 
 class Rig:
@@ -117,19 +118,27 @@ def observations(record, rig, excluded=()):
     return values[:,:2], weights, width, height
 
 
-def fit(record, rig, excluded=(), starts=4, max_evaluations=200):
+def fit(record, rig, excluded=(), starts=4, max_evaluations=200, orientations=None):
     observed, weights, width, height = observations(record, rig, excluded)
     stem = Path(record['image']).stem
     pose_id = stem.rsplit('_',1)[0]
+    manual_angles, orientation_report = load_orientation_hints(orientations, rig, pose_id)
+    toe_observed = {'l': bool(weights[16] > 0), 'r': bool(weights[17] > 0)}
+    orientation_report = orientation_assessment(manual_angles, orientation_report['evidence'], toe_observed)
     prior = rig.defaults.copy()
     preset = rig.data.get('presets',{}).get(pose_id,{})
     for i, control in enumerate(rig.controls):
-        prior[i] = preset.get(f"{control['key']}.{control['property']}", prior[i])
-    # Body facing is represented by the fitted camera, avoiding a redundant DOF.
+        key = f"{control['key']}.{control['property']}"
+        prior[i] = manual_angles.get(key, preset.get(key, prior[i]))
+    # Root body and pelvis share a pivot. Optimizing both creates duplicate
+    # rotations and makes the torso, head and legs lean together needlessly.
+    # Head/hand orientation is not determined by head center or wrist position.
+    # The only automatic ankle control uses an approximate ankle-to-toe marker.
     active = [i for i,c in enumerate(rig.controls) if not (
-        (c['key']=='body' and c['property']=='turn') or
-        (c['key']=='head' and c['property']=='turn') or
-        (c['key'].endswith('_ankle') and c['property']!='bend'))]
+        c['key'] in ('body', 'head', 'l_wrist', 'r_wrist') or
+        (c['key'].endswith('_ankle') and c['property']!='bend') or
+        (c['key'].endswith('_ankle') and not toe_observed[c['key'][0]]) or
+        f"{c['key']}.{c['property']}" in manual_angles)]
     low = np.array([rig.controls[i]['min'] for i in active] + [-180,-80,.6,-3,-3])
     high = np.array([rig.controls[i]['max'] for i in active] + [180,80,15,3,3])
     extent = max(100, float(np.ptp(observed[weights>0,1])))
@@ -193,12 +202,14 @@ def fit(record, rig, excluded=(), starts=4, max_evaluations=200):
       'initial_reprojection_rms_px':float(np.sqrt(np.mean(np.sum((initial_xy[used]-observed[used])**2,axis=1)))),
       'reprojection_rms_px':float(np.sqrt(np.mean(errors[used]**2))),
       'reprojection_warning':'Error against inferred 2D points, not manual ground truth or a measure of 3D correctness.',
+      'orientation_assessment':orientation_report,
+      'root_orientation':'fixed to preset or neutral prior; pelvis is separately fitted',
       'angles':rig.angles(angles),'camera_parameters':camera.tolist(),
       'points':[{'name':point['name'],'observed':observed[i].tolist(),'projected':xy[i].tolist(),
                  'error_px':float(errors[i]),'weight':float(weights[i]),'world':world[i].tolist()}
                  for i,point in enumerate(rig.data['points'])],
       'optimizer':{'converged':bool(best.success),'message':best.message,'starts':len(candidates),'evaluations':int(best.nfev)},
-      'limitations':['Single view cannot resolve depth or hidden limbs uniquely.','Approximate head/spine/toe markers; fixed bone lengths.','No self-contact, surface collision, learned pose prior, or SMPL-X.','Rendering and manual review required before publication.']}
+      'limitations':['Single view cannot resolve depth or hidden limbs uniquely.','Approximate head/spine/toe markers; fixed bone lengths.','Head and hand axes and ankle tilt/turn remain unresolved without explicit manual hints.','Manual hints are input assumptions, not evidence of correct 3D reconstruction.','No self-contact, surface collision, learned pose prior, or SMPL-X.','Rendering and manual review required before publication.']}
     return scene,report
 
 
@@ -208,10 +219,12 @@ def main():
     parser.add_argument('--output-dir',required=True);parser.add_argument('--starts',type=int,default=4)
     parser.add_argument('--max-evaluations',type=int,default=200)
     parser.add_argument('--exclude',nargs='*',default=[])
+    parser.add_argument('--orientations',help='Optional reviewed manual endpoint angles with reference evidence')
     args=parser.parse_args()
     if not 1<=args.starts<=7 or not 1<=args.max_evaluations<=2000:parser.error('Invalid solver budget')
     rig=Rig(json.loads(Path(args.rig).read_text()));record=json.loads(Path(args.input).read_text())
-    scene,report=fit(record,rig,args.exclude,args.starts,args.max_evaluations)
+    orientations=json.loads(Path(args.orientations).read_text()) if args.orientations else None
+    scene,report=fit(record,rig,args.exclude,args.starts,args.max_evaluations,orientations)
     out=Path(args.output_dir);out.mkdir(parents=True,exist_ok=True);stem=Path(record['image']).stem
     (out/(stem+'.scene.json')).write_text(json.dumps(scene,indent=2)+'\n')
     (out/(stem+'.fit.json')).write_text(json.dumps(report,indent=2)+'\n')

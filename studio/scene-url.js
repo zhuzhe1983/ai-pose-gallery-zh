@@ -64,6 +64,7 @@ export function sceneFragment(url = location.href) {
 export async function shareURL(scene, href = location.href) {
   const url = new URL(href);
   url.searchParams.delete("pose");
+  url.searchParams.delete("previewScene");
   url.hash = new URLSearchParams({ s: await encodeScene(scene) }).toString();
   return url.href;
 }

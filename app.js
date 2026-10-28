@@ -26,7 +26,8 @@ let LINES = [];
 let currentList = [];
 let renderedCount = 0;
 const groupMap = new Map();
-const viewerState = { index: 0, item: null, token: 0, returnFocus: null };
+const viewerState = { index: 0, item: null, token: 0, returnFocus: null, mode: "image" };
+let preview3D, hasPose3D = () => false;
 
 function groupKey(item) { return `${item.体系}|${item.姿势编号 || item.id}`; }
 
@@ -128,6 +129,7 @@ function renderActiveFilters() {
 }
 
 function render(append = false) {
+  if (!append) preview3D?.hide();
   if (!append) {
     currentList = computeList();
     renderedCount = 0;
@@ -179,6 +181,7 @@ function updateCardPreview(card, entry) {
   image.src = item.缩略图;
   image.alt = `${entry.group.name} · ${item.角度}`;
   card.querySelector('.angle-tag').textContent = item.角度;
+  if (card.matches(':hover') && $('#viewer').hidden) preview3D?.show(card.querySelector('.card-image'), item);
   card.setAttribute('aria-label', t('viewLabel', {name: entry.group.name, angle: item.角度}));
   card.querySelectorAll('.angle-thumb').forEach(button => button.classList.toggle('on', button.dataset.angle === item.角度));
 }
@@ -285,6 +288,8 @@ $('#loadMore').addEventListener('click', () => {
 });
 
 function openViewer(index, item) {
+  preview3D?.hide();
+  viewerState.mode = "image";
   viewerState.index = index;
   viewerState.item = item;
   viewerState.returnFocus = document.activeElement;
@@ -297,6 +302,7 @@ function openViewer(index, item) {
 function closeViewer() {
   if ($('#viewer').hidden) return;
   viewerState.token++;
+  preview3D?.hide();
   $('#viewer').hidden = true;
   document.body.classList.remove('viewer-open');
   if (viewerState.returnFocus && document.contains(viewerState.returnFocus)) viewerState.returnFocus.focus({ preventScroll: true });
@@ -346,9 +352,37 @@ function showViewer() {
   download.href = item.原图;
   download.setAttribute('download', `${item.id}.png`);
   $('#openImage').href = item.原图;
-  $('#studioPose').href = `studio/?lang=${LANG}&pose=${encodeURIComponent(item.id)}`;
+  const available = hasPose3D(item.id);
+  $('#studioPose').href = `studio/?lang=${LANG}&appendPose=${encodeURIComponent(item.id)}`;
+  $('#studioPose').setAttribute('aria-disabled', String(!available));
+  $('#studioPose').textContent = t(available ? 'openStudio' : 'pending3d');
+  updateViewerMode();
 }
 
+function updateViewerMode() {
+  const on = viewerState.mode === '3d';
+  $('#viewerStage').classList.toggle('mode-3d', on);
+  $('#viewerImageMode').setAttribute('aria-pressed', String(!on));
+  $('#viewer3dMode').setAttribute('aria-pressed', String(on));
+  if (on) preview3D?.show($('#viewerStage'), viewerState.item, {interactive: true, delay: 0});
+  else preview3D?.hide();
+}
+$('#viewerImageMode').onclick = () => { viewerState.mode = 'image'; updateViewerMode(); };
+$('#viewer3dMode').onclick = () => { viewerState.mode = '3d'; updateViewerMode(); };
+$('#studioPose').addEventListener('click', event => {
+  if (!hasPose3D(viewerState.item.id)) event.preventDefault();
+});
+grid.addEventListener('pointerover', event => {
+  if (event.pointerType === 'touch' || !$('#viewer').hidden) return;
+  const card = event.target.closest('.pose-card[data-index]');
+  if (!card || card.contains(event.relatedTarget)) return;
+  const item = currentList[Number(card.dataset.index)]?.item;
+  if (item) preview3D?.show(card.querySelector('.card-image'), item);
+});
+grid.addEventListener('pointerout', event => {
+  const card = event.target.closest('.pose-card[data-index]');
+  if (card && !card.contains(event.relatedTarget) && $('#viewer').hidden) preview3D?.hide();
+});
 function stepAngle(direction) {
   const group = currentList[viewerState.index]?.group;
   if (!group || group.order.length < 2) return;
@@ -388,10 +422,12 @@ $('#copyId').addEventListener('click', async () => {
 
 let touchStart = null;
 $('#viewerStage').addEventListener('touchstart', event => {
+  if (viewerState.mode === '3d') return;
   const touch = event.touches[0];
   touchStart = { x: touch.clientX, y: touch.clientY };
 }, { passive: true });
 $('#viewerStage').addEventListener('touchend', event => {
+  if (viewerState.mode === '3d') return;
   if (!touchStart) return;
   const touch = event.changedTouches[0];
   const dx = touch.clientX - touchStart.x;
@@ -470,6 +506,9 @@ async function readJSON(path) {
     const translations = await readJSON('data/ui.json');
     UI = translations[LANG];
     applyLanguage();
+    const preview = await import('./gallery-preview.js');
+    hasPose3D = preview.hasPose3D;
+    preview3D = preview.createGalleryPreview({lang: LANG, t});
     prepareData(await readJSON(`data/pose-${LANG}.json`));
   } catch (error) {
     console.error(error);

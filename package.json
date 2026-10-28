@@ -1,7 +1,7 @@
 {
   "name": "ai-pose-gallery-zh",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Static multilingual pose gallery and WebGPU posing studio",
   "scripts": {
     "vendor:studio": "node scripts/vendor-studio.mjs",

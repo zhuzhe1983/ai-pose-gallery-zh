@@ -1,6 +1,83 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Each row: Simplified Chinese, English, Japanese.
 const rows = {
+  pullMode: ["牵引节点 · T", "Drag joint · T", "関節を引く · T"],
+  pullHint: [
+    "选中任意关节并拖动箭头；相邻关节会联动，拖动躯干可能带动整个人物。",
+    "Select a joint and drag an arrow. Neighboring joints follow; dragging the trunk may move the figure.",
+    "関節を選んで矢印をドラッグすると隣の関節が連動します。胴体では人物全体が動く場合があります。",
+  ],
+  pullChoose: [
+    "请选择关节，再拖动移动轴。",
+    "Select a joint, then drag the movement handles.",
+    "関節を選んで移動ハンドルをドラッグしてください。",
+  ],
+  pullUnreachable: [
+    "受关节长度或角度限制，无法完全到达目标。",
+    "The target is out of reach within joint limits.",
+    "関節の長さまたは可動範囲を超え、目標に届きません。",
+  ],
+  pullAnchorUnreachable: [
+    "已移动到目标，但关节限制使固定的双脚或胸部朝向无法完全保持。",
+    "Target reached, but joint limits prevent holding the pinned feet or chest orientation.",
+    "目標には届きましたが、関節の制限により足や胸の固定を完全には維持できません。",
+  ],
+  lockChest: [
+    "调整骨盆时保持胸部朝向",
+    "Keep chest orientation during pelvis edits",
+    "骨盤を動かすとき胸の向きを保つ",
+  ],
+  chestLockHint: [
+    "骨盆旋转时，腰和胸会反向补偿；调整腰胸或整体转向会更新目标方向。",
+    "The waist and chest compensate when the pelvis rotates. Editing the trunk or turning the figure updates the target.",
+    "骨盤の回転に合わせて腰と胸が補正します。腰・胸や人物全体の向きを変えると目標方向を更新します。",
+  ],
+  chestUnreachable: [
+    "腰或胸已达活动范围，无法完全保持原朝向。",
+    "The chest cannot keep its orientation within the joint limits.",
+    "可動範囲内では胸の向きを維持できません。",
+  ],
+  mirrorSync: ["左右同步", "Mirror left / right", "左右を連動"],
+  mirrorSyncHint: [
+    "调整手臂、手、腿或脚时，另一侧按镜像同步；直接调整腿部会重新设置脚部锚点。",
+    "Arm, hand, leg and foot edits are mirrored to the other side. Editing legs resets pinned-foot anchors.",
+    "腕・手・脚・足の編集を反対側に鏡映します。脚を直接編集すると足の固定位置を更新します。",
+  ],
+  appendFull: [
+    "场景最多六人，请先移除人物，再新增这个姿势。",
+    "The scene holds six figures. Remove figures before adding this pose.",
+    "最大6体です。人物を削除してからこのポーズを追加してください。",
+  ],
+  appendSpace: [
+    "场景位置已超出可新增范围，请先整理人物位置。",
+    "Reposition existing figures to make room for this pose.",
+    "人物の位置を整理してから追加してください。",
+  ],
+  pelvis: ["骨盆倾斜 / 转向", "Pelvis rotation", "骨盤の回転"],
+  waist: ["腰", "Waist", "腰"],
+  chest: ["胸", "Chest", "胸"],
+  lockFeet: ["固定双脚", "Pin feet", "足を固定"],
+  pelvisHint: [
+    "骨盆旋转会带动躯干和双腿。只转动大腿请选择左髋或右髋；固定双脚可在骨盆调整时保持脚的位置。",
+    "Pelvis rotation carries the torso and legs. Select left/right hip to move a thigh; pin the feet to keep their positions during pelvis edits.",
+    "骨盤の回転は胴体と両脚を動かします。太ももだけを動かすには左右の股関節を選び、足を固定すると位置を保てます。",
+  ],
+  footLockHint: [
+    "固定双脚后，旋转骨盆或躯干时腿会自动补偿。移动人物或调整腿部会重新设置锚点。",
+    "Pin feet to compensate with the legs when rotating the pelvis or trunk. Moving the figure or editing legs resets the anchors.",
+    "足を固定すると、骨盤・胴体の回転に合わせて脚を調整します。人物の移動や脚の編集で固定位置を更新します。",
+  ],
+  footUnreachable: [
+    "关节已达活动范围，无法完全保持脚的位置或朝向。请减小动作，或解除固定后调整双脚。",
+    "Joint limits prevent holding the foot position or orientation. Reduce the motion, or unpin and reposition the feet.",
+    "関節の可動範囲内では足の位置・向きを維持できません。動きを小さくするか、固定を解除して足を調整してください。",
+  ],
+  previewFailed: [
+    "无法载入本地草稿，请检查预览服务。",
+    "Could not load local draft. Check the preview server.",
+    "ローカル下書きを読み込めません。プレビューサーバーを確認してください。",
+  ],
+
   outfit: ["人偶材质", "Mannequin finish", "マネキンの素材"],
   outfitWhite: ["白色素体", "White mannequin", "白い素体"],
   outfitIvory: ["象牙白人偶", "Ivory mannequin", "アイボリーのマネキン"],
@@ -232,11 +309,6 @@ const rows = {
   collection: ["体系", "Collection", "種類"],
   category: ["分类", "Category", "カテゴリ"],
   search: ["搜索姿势", "Search poses", "ポーズを検索"],
-  onlyPresets: [
-    "只看可载入的 3D 预设",
-    "Loadable 3D presets only",
-    "3D プリセットのみ",
-  ],
   presetHint: [
     "3D 标签：可载入的人工近似姿势。其余图片仅作参考。",
     "3D badges: editable, hand-authored approximations. Other images are references only.",
@@ -324,7 +396,7 @@ const rows = {
   turn: ["扭转", "Twist", "ひねり"],
   raise: ["抬起", "Raise", "上げる"],
   straddle: ["展开", "Spread", "開く"],
-  body: ["全身 / 重心", "Whole body", "全身・重心"],
+  body: ["全身旋转（骨盆附近）", "Whole-body rotation", "全身回転"],
   torso: ["腰 / 胸", "Waist / chest", "腰・胸"],
   head: ["头部", "Head", "頭"],
   l_arm: ["左肩 / 上臂", "Left shoulder", "左肩"],
@@ -333,10 +405,10 @@ const rows = {
   r_arm: ["右肩 / 上臂", "Right shoulder", "右肩"],
   r_elbow: ["右肘", "Right elbow", "右ひじ"],
   r_wrist: ["右手 / 手腕", "Right hand / wrist", "右手・手首"],
-  l_leg: ["左髋 / 大腿", "Left hip", "左股関節"],
+  l_leg: ["左髋关节（大腿）", "Left hip (thigh)", "左股関節（太もも）"],
   l_knee: ["左膝", "Left knee", "左ひざ"],
   l_ankle: ["左脚 / 脚踝", "Left foot / ankle", "左足・足首"],
-  r_leg: ["右髋 / 大腿", "Right hip", "右股関節"],
+  r_leg: ["右髋关节（大腿）", "Right hip (thigh)", "右股関節（太もも）"],
   r_knee: ["右膝", "Right knee", "右ひざ"],
   r_ankle: ["右脚 / 脚踝", "Right foot / ankle", "右足・足首"],
   approximation: [

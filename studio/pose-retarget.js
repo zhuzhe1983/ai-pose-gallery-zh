@@ -179,6 +179,7 @@ export async function retargetPerson(
 ) {
   const points = targetPoints(person, width, height);
   const confident = (i) => pointConfidence(person.landmarks[i]) >= 0.35;
+  model.userData.footLocks = null;
   applyValues(model, NEUTRAL);
   model.quaternion.identity();
   model.pelvis.quaternion.identity();

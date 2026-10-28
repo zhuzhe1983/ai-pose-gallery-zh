@@ -208,7 +208,7 @@ main{padding:22px 0 54px}
 .viewer{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:28px;background:rgba(15,18,28,.76);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .viewer-panel{position:relative;width:min(1180px,100%);height:min(850px,92dvh);display:grid;grid-template-columns:minmax(0,1fr) 330px;background:var(--surface);border-radius:20px;overflow:hidden;box-shadow:0 28px 90px rgba(0,0,0,.35)}
 .viewer-stage{position:relative;min-width:0;min-height:0;display:grid;place-items:center;background:#eef0f4;overflow:hidden;touch-action:pan-y}
-.viewer-image{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}
+.viewer-image{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:100%;max-height:100%;min-height:0;object-fit:contain;user-select:none;-webkit-user-drag:none}
 .viewer-image.is-loading{opacity:.72}
 .image-status{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);padding:5px 11px;border-radius:99px;background:rgba(23,26,33,.72);color:#fff;font-size:11px;pointer-events:none}
 .viewer-close{position:absolute;right:14px;top:14px;z-index:4;width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.94);color:var(--text);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 16px rgba(20,25,40,.08)}
@@ -332,7 +332,7 @@ main{padding:22px 0 54px}
   .footer-inner{display:block}
   .footer-links{justify-content:flex-start;margin-top:16px}
   .viewer{padding:0;place-items:stretch}
-  .viewer-panel{width:100%;height:100dvh;max-height:none;border-radius:0;grid-template-columns:1fr;grid-template-rows:minmax(280px,52dvh) minmax(0,1fr)}
+  .viewer-panel{width:100%;height:100dvh;max-height:none;border-radius:0;grid-template-columns:1fr;grid-template-rows:minmax(0,52dvh) minmax(0,1fr)}
   .viewer-stage{min-height:0}
   .viewer-side{gap:15px;padding:18px 16px calc(20px + env(safe-area-inset-bottom));border-left:0;border-top:1px solid var(--line)}
   .viewer-heading{padding-right:0}
@@ -358,6 +358,19 @@ main{padding:22px 0 54px}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
 }
+
+.viewer-mode{position:absolute;top:10px;left:10px;z-index:3;display:flex;gap:2px;padding:3px;background:#fff;border-radius:10px;box-shadow:0 2px 12px #18234015}
+.viewer-mode button{border:0;padding:6px 10px;border-radius:7px;background:transparent;color:#586274;font:inherit;font-size:12px;cursor:pointer}
+.viewer-mode button[aria-pressed="true"]{background:#eeeeff;color:#5149bb}
+.mode-3d .viewer-nav{display:none}
+.mode-3d .viewer-image{visibility:hidden}
+.pose-3d-overlay{position:fixed;z-index:40;overflow:hidden;border-radius:5px;background:#eef0f4;pointer-events:none}
+.pose-3d-overlay.interactive{z-index:101;pointer-events:auto}
+.pose-3d-frame{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none}
+.pose-3d-overlay.interactive .pose-3d-frame{pointer-events:auto}
+.pose-3d-status{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;font-size:12px;color:#5c6475;background:#eef0f4e8;pointer-events:none}
+.pose-3d-overlay.loaded .pose-3d-status{inset:auto 8px 8px 8px;padding:5px 8px;border-radius:8px;background:#ffffffd9;display:block;font-size:11px}
+.studio-link[aria-disabled="true"]{opacity:.65;cursor:default}
 </style>
 </head>
 <body>
@@ -459,6 +472,7 @@ main{padding:22px 0 54px}
   <section class="viewer-panel">
     <button class="viewer-close" id="viewerClose" type="button" aria-label="关闭大图" data-i18n-aria-label="closeViewer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     <div class="viewer-stage" id="viewerStage">
+      <div class="viewer-mode"><button id="viewerImageMode" type="button" aria-pressed="true" data-i18n="referenceImage">参考图</button><button id="viewer3dMode" type="button" aria-pressed="false" data-i18n="preview3d">3D 预览</button></div>
       <img class="viewer-image" id="viewerImage" alt="" draggable="false">
       <span class="image-status" id="imageStatus" hidden data-i18n="loadingImage">正在加载原图…</span>
       <button class="viewer-nav prev" id="anglePrev" type="button" aria-label="上一个角度" data-i18n-aria-label="prevAngle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m15 5-7 7 7 7"/></svg></button>
@@ -478,7 +492,7 @@ main{padding:22px 0 54px}
         <a class="download-btn" id="downloadImage" href="#" download><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12m-5-5 5 5 5-5M4 20h16"/></svg><span data-i18n="download">下载原尺寸 PNG</span></a>
         <a class="open-btn" id="openImage" href="#" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 4h6v6m0-6-9 9M19 14v6H4V5h6"/></svg><span data-i18n="openImage">新窗口打开</span></a>
       </div>
-      <a class="open-btn studio-link" id="studioPose" href="studio/" data-i18n="openStudio">在 3D 工作台中打开</a>
+      <a class="open-btn studio-link" id="studioPose" href="studio/" target="_blank" rel="noopener noreferrer" data-i18n="openStudio">新增到 3D 工作台</a>
       <dl class="metadata" id="viewerMeta"></dl>
       <div class="keyboard-help" data-i18n-html="keyboard"><kbd>←</kbd> <kbd>→</kbd> 切换角度　<kbd>↑</kbd> <kbd>↓</kbd> 切换姿势<br><kbd>Esc</kbd> 关闭 · 手机可左右滑动切换角度</div>
     </aside>

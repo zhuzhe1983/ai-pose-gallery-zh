@@ -85,8 +85,14 @@
     "guideHtml": "<ul><li>把原图作为<strong>姿势或构图参考图</strong>传入支持图片输入的 AI 工具。</li><li>选择与目标构图匹配的视角；多视角可用于检查身体结构。</li><li>点击卡片可下载 <strong>900 × 1200 PNG</strong>。图片为灰色素体，请用提示词补充服装、角色、背景和风格。</li><li>用方向键切换角度和姿势；手机支持左右滑动。</li><li>Agent 可阅读 <a href=\"skills/ai-pose-gallery/SKILL.md\">skill</a>，通过固定缩写直接访问图片。</li></ul>",
     "noticeHtml": "<ul><li>原站说明允许免费用于作品制作、加工与姿势参考，包括商业作品。</li><li><strong>图片数据本身（原尺寸或加工后）的再分发、转载与转售受到限制。</strong></li><li>署名可自愿标注，素材按无保证方式提供。图中为素体线稿，并非真实人物。</li><li>请遵守原站关于真实人物、未成年人及用途的限制。</li></ul><div class=\"info-note\">完整条款以<a href=\"https://ai-pose-gallery.pages.dev/\" target=\"_blank\" rel=\"noopener noreferrer\">原作者发布内容</a>为准。代码的 MIT 许可不覆盖图片与原始数据。</div>",
     "studio": "3D 摆姿",
-    "openStudio": "在 3D 工作台中打开",
-    "upstreamRepo": "访问上游 GitHub 仓库"
+    "openStudio": "新增到 3D 工作台",
+    "upstreamRepo": "访问上游 GitHub 仓库",
+    "referenceImage": "参考图",
+    "preview3d": "3D 预览",
+    "loading3d": "正在准备 3D 预览…",
+    "pending3d": "3D 姿势待转换",
+    "draft3d": "3D 草稿 · 尚未完成还原核验",
+    "preview3dError": "3D 预览暂不可用，请稍后重试"
   },
   "en": {
     "pageTitle": "AI Pose Gallery · 288 multi-angle poses",
@@ -174,8 +180,14 @@
     "guideHtml": "<ul><li>Pass the original image to an AI tool that supports <strong>pose or composition reference images</strong>.</li><li>Choose a view matching your composition. Additional views help check body structure.</li><li>Click a card to download a <strong>900 × 1200 PNG</strong>. These are gray mannequins; describe clothing, character, setting and style in your prompt.</li><li>Use arrow keys to change views and poses, or swipe on mobile.</li><li>Agents can read the <a href=\"skills/ai-pose-gallery/SKILL.md\">skill</a> to access images by their compact names.</li></ul>",
     "noticeHtml": "<ul><li>The source site describes free use for creating works, editing and pose reference, including commercial works.</li><li><strong>Redistributing, reposting or reselling the image data itself, including edited versions, is restricted.</strong></li><li>Attribution is optional; assets are supplied without warranty. The images depict mannequins, not real people.</li><li>Follow the source site’s restrictions concerning real people, minors and permitted uses.</li></ul><div class=\"info-note\">The <a href=\"https://ai-pose-gallery.pages.dev/\" target=\"_blank\" rel=\"noopener noreferrer\">original creator’s terms</a> govern. The code’s MIT license does not cover images or original data.</div>",
     "studio": "3D Studio",
-    "openStudio": "Open in 3D Studio",
-    "upstreamRepo": "Open upstream GitHub repository"
+    "openStudio": "Add to 3D Studio",
+    "upstreamRepo": "Open upstream GitHub repository",
+    "referenceImage": "Reference image",
+    "preview3d": "3D preview",
+    "loading3d": "Preparing 3D preview…",
+    "pending3d": "3D pose awaiting conversion",
+    "draft3d": "3D draft · reconstruction unverified",
+    "preview3dError": "3D preview unavailable. Try again later."
   },
   "ja": {
     "pageTitle": "AI ポーズ資料集｜288 種の多角度ポーズ",
@@ -263,7 +275,13 @@
     "guideHtml": "<ul><li>原寸画像を、画像入力に対応した AI ツールへ<strong>ポーズ・構図の参照画像</strong>として渡します。</li><li>目的の構図に合う視点を選びます。別の視点は身体の構造確認にも役立ちます。</li><li>カードをクリックすると <strong>900 × 1200 PNG</strong> を保存できます。灰色の素体なので、服装・人物・背景・画風はプロンプトで指定してください。</li><li>矢印キーで視点とポーズを変更できます。スマホは左右スワイプに対応しています。</li><li>エージェントは <a href=\"skills/ai-pose-gallery/SKILL.md\">スキル</a> を参照し、略称のファイル名から画像にアクセスできます。</li></ul>",
     "noticeHtml": "<ul><li>原サイトでは、商用作品を含む作品制作・加工・ポーズ参考への無料利用が案内されています。</li><li><strong>画像データそのもの（加工後を含む）の再配布・転載・転売には制限があります。</strong></li><li>クレジット表記は任意です。素材は無保証で提供されます。画像は素体線画で、実在の人物ではありません。</li><li>実在人物・未成年者・利用目的に関する原サイトの制限を守ってください。</li></ul><div class=\"info-note\">詳細は<a href=\"https://ai-pose-gallery.pages.dev/\" target=\"_blank\" rel=\"noopener noreferrer\">原作者の規約</a>に従ってください。コードの MIT ライセンスは画像・原データには適用されません。</div>",
     "studio": "3D ポーズ",
-    "openStudio": "3D スタジオで開く",
-    "upstreamRepo": "上流の GitHub リポジトリを開く"
+    "openStudio": "3D スタジオに追加",
+    "upstreamRepo": "上流の GitHub リポジトリを開く",
+    "referenceImage": "参考画像",
+    "preview3d": "3D プレビュー",
+    "loading3d": "3D プレビューを準備中…",
+    "pending3d": "3D ポーズは変換待ちです",
+    "draft3d": "3D 下書き・再現精度は未検証",
+    "preview3dError": "3D プレビューを表示できません。再度お試しください。"
   }
 }

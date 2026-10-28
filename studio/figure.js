@@ -5,6 +5,7 @@ import { Female } from "./vendor/mannequin/bodies/Female.js";
 import { Male } from "./vendor/mannequin/bodies/Male.js";
 import { NEUTRAL, applyValues, constrainFingers } from "./presets.js";
 
+import { addSpine } from "./spine.js";
 import { createSuit } from "./suit.js";
 import { attachHuman, setHumanMaterial, humanBounds } from "./human.js";
 
@@ -26,7 +27,9 @@ export function bones(model) {
   for (const key of [
     "body",
     "pelvis",
-    "torso",
+    "waist",
+    "waist_mid",
+    "chest",
     "neck",
     "head",
     ...["l", "r"].flatMap((s) =>
@@ -47,6 +50,7 @@ export function createFigure(sex, height) {
   // Keep rig proportions fixed: base height and user scale are uniform sizing,
   // so exporting/importing a resized figure cannot change its head or neck.
   const model = sex === "male" ? new Male(1.8) : new Female(1.65);
+  addSpine(model);
   const all = bones(model),
     female = sex === "female";
   // Align chest, pelvis and legs on one neutral sagittal axis. The stock -2
@@ -72,6 +76,7 @@ export function createFigure(sex, height) {
     groundFigure(model);
     return model;
   }
+  all.torso = model.waist; // procedural fallback surface alias
   const white = new THREE.MeshStandardMaterial({
     color: 0xf2f0ec,
     roughness: 0.48,
@@ -96,13 +101,16 @@ export function createFigure(sex, height) {
       !key.includes("finger") &&
       !key.endsWith("_wrist") &&
       !key.endsWith("_ankle");
-    m.userData.joint = key.includes("finger")
-      ? key.slice(0, 2) + "wrist"
-      : key === "neck"
-        ? "head"
-        : key === "pelvis"
-          ? "body"
-          : key;
+    m.userData.joint =
+      key === "torso"
+        ? "waist"
+        : key.includes("finger")
+          ? key.slice(0, 2) + "wrist"
+          : key === "neck"
+            ? "head"
+            : key === "pelvis"
+              ? "pelvis"
+              : key;
     all[key].image.add(m);
     return m;
   }

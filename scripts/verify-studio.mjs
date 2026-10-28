@@ -14,7 +14,7 @@ import {
 } from "../studio/presets.js";
 import { locales, translate } from "../studio/i18n.js";
 const model = Object.fromEntries(
-  [...JOINTS, "neck"].map((k) => [k, new THREE.Object3D()]),
+  [...JOINTS, "neck", "waist_mid"].map((k) => [k, new THREE.Object3D()]),
 );
 for (const [id, preset] of Object.entries(PRESETS)) {
   assert.ok(fs.existsSync(`img/${id}_${preset.view}.png`), id);
@@ -51,6 +51,11 @@ for (const file of [
   "figure.js",
   "human.js",
   "dual-quaternion.js",
+  "spine.js",
+  "foot-ik.js",
+  "mirror.js",
+  "drag-ik.js",
+  "pelvis-stabilize.js",
 ])
   execFileSync(process.execPath, ["--check", "studio/" + file]);
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);

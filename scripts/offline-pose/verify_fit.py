@@ -18,7 +18,7 @@ record={'schema':'pose-keypoints/1','image':'synthetic_f.png','width':900,'heigh
 scene,report=fit(record,rig,starts=2,max_evaluations=150)
 assert report['reprojection_rms_px']<report['initial_reprojection_rms_px']*.2
 for c in rig.controls:assert c['min']-1e-8<=report['angles'][f"{c['key']}.{c['property']}"]<=c['max']+1e-8
-assert scene['schema']=='pose-atlas/studio@2' and not scene['floorLock']
+assert scene['schema']==rig.data['template']['schema'] and not scene['floorLock']
 def rejects(r):
  try:observations(r,rig)
  except ValueError:return

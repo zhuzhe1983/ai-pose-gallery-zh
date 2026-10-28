@@ -33,8 +33,15 @@ try {
     const THREE = await import("three"),
       { scene } = await import("./vendor/mannequin/scene.js");
     const { bones } = await import("./figure.js");
-    const { JOINTS, NEUTRAL, PRESETS, readAngles, writeAngles, jointAxes } =
-      await import("./presets.js");
+    const {
+      JOINTS,
+      NEUTRAL,
+      PRESETS,
+      applyValues,
+      readAngles,
+      writeAngles,
+      jointAxes,
+    } = await import("./presets.js");
     poseStudio.reset({ sex });
     poseStudio.setFigure("A", { position: [0, 0, 0] });
     const model = scene.children.find((o) => o.body && o.pelvis),
@@ -45,7 +52,9 @@ try {
     for (const key of [
       "body",
       "pelvis",
-      "torso",
+      "waist",
+      "waist_mid",
+      "chest",
       "neck",
       "head",
       ...["l", "r"].flatMap((s) =>
@@ -74,7 +83,6 @@ try {
     }));
     const controls = [];
     for (const key of JOINTS) {
-      if (key.endsWith("wrist")) continue;
       const values = readAngles(model, key),
         joint = all[key];
       for (const axis of jointAxes(key)) {
@@ -94,9 +102,11 @@ try {
             order: joint.rotation.order,
           },
         ];
-        if (key === "head")
+        if (key === "head" || key === "waist")
           drivers.push({
-            node: objects.indexOf(model.neck),
+            node: objects.indexOf(
+              key === "head" ? model.neck : model.waist_mid,
+            ),
             component,
             factor,
             order: joint.rotation.order,
@@ -113,6 +123,7 @@ try {
     }
     for (const key of JOINTS) readAngles(model, key);
     model.neck.rotation.reorder(model.head.rotation.order);
+    model.waist_mid.rotation.reorder(model.waist.rotation.order);
     // Euler baselines are taken after assigning the same fixed orders as the controls.
     objects.forEach((o, i) => {
       nodes[i].euler = o.rotation.toArray().slice(0, 3);
@@ -211,7 +222,20 @@ try {
       presets: Object.fromEntries(
         Object.entries(PRESETS)
           .filter(([, p]) => p.actors.length === 1)
-          .map(([name, p]) => [name, p.actors[0].values]),
+          .map(([name, p]) => {
+            applyValues(model, NEUTRAL);
+            applyValues(model, p.actors[0].values);
+            return [
+              name,
+              Object.fromEntries(
+                JOINTS.flatMap((key) =>
+                  Object.entries(readAngles(model, key)).map(
+                    ([prop, value]) => [`${key}.${prop}`, value],
+                  ),
+                ),
+              ),
+            ];
+          }),
       ),
       notes: [
         "Head uses skinned head bounds center; spine is a torso interpolation; toes use approximate markers.",

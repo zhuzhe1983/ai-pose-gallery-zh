@@ -153,12 +153,6 @@
               data-placeholder="search"
               placeholder="搜索姿势"
           /></label>
-          <label class="check"
-            ><input type="checkbox" id="onlyPresets" /><span
-              data-t="onlyPresets"
-              >只看可载入的 3D 预设</span
-            ></label
-          >
           <p class="micro" data-t="presetHint">
             带 3D 标签的姿势可直接载入；其他图片可作参考。
           </p>
@@ -207,6 +201,9 @@
                 data-t="moveModeLabel"
               >
                 移动人物 · W
+              </button>
+              <button id="canvasPull" aria-pressed="false" data-t="pullMode">
+                牵引节点 · T
               </button>
             </div>
             <div
@@ -310,7 +307,31 @@
           <p class="micro" data-t="jointHint">
             拖动彩色旋转环，或使用下方滑块。
           </p>
+          <p id="jointDetail" class="micro" hidden></p>
+          <p id="pullStatus" class="micro" role="status" hidden></p>
           <div id="jointControls" class="sliders"></div>
+          <label class="check"
+            ><input
+              type="checkbox"
+              id="mirrorSync"
+              aria-describedby="mirrorSyncHint"
+            /><span data-t="mirrorSync">左右同步</span></label
+          >
+          <p id="mirrorSyncHint" class="micro" data-t="mirrorSyncHint">
+            调整手臂、手、腿或脚时，另一侧按镜像同步；直接调整腿部会重新设置脚部锚点。
+          </p>
+          <label class="check"
+            ><input type="checkbox" id="lockFeet" /><span data-t="lockFeet"
+              >固定双脚</span
+            ></label
+          >
+          <p id="footLockStatus" class="micro" role="status"></p>
+          <label class="check"
+            ><input type="checkbox" id="lockChest" /><span data-t="lockChest"
+              >调整骨盆时保持胸部朝向</span
+            ></label
+          >
+          <p id="chestLockStatus" class="micro" role="status"></p>
           <label class="slider-row" id="fingerRow" hidden
             ><span data-t="fingerCurl">手指弯曲</span
             ><output id="fingerValue">10°</output

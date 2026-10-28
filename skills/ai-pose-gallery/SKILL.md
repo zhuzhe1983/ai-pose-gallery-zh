@@ -31,6 +31,8 @@ Known direct reference: `img/solo_sit_lean-bk-kn-up_f.png` — leaning back with
 
 If the exact canonical pose token is already known, fetch the image directly. Otherwise read only `data/catalog/{type}/{category}.json`, e.g. `data/catalog/solo/sit.json`. Each row contains `pose`, `name` in zh/en/ja, and available `views`; combine these with the filename template. If the category is unknown, first read `data/catalog.json`. A pose may lack some views. On 404, consult its category once; do not keep guessing names. Do not load the full 1439-image index for routine selection.
 
+Gallery 3D previews share one renderer. **Add to 3D Studio** appends available poses without replacing saved figures. Use separate `pelvis`, `waist`, `chest` controls and optional `setFootLock`, `setChestLock`, `setMirrorSync`, and `moveJointTarget` through the [studio API](references/studio.md); old scenes migrate automatically. Missing 3D conversions remain pending. For local conversion progress, run the checkout's `scripts/offline-pose/preview_server.py` and open `http://127.0.0.1:8767/preview/`.
+
 ## Optional helper (Python 3, standard library)
 
 Resolve `scripts/pose_ref.py` relative to this skill directory. If you fetched only this SKILL.md, either use the URLs directly or also download `skills/ai-pose-gallery/scripts/pose_ref.py` from the base URL. No full-repository clone is needed.

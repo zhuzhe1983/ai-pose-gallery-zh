@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-only
 import * as THREE from "three";
+import { migrateSpineScene } from "./spine.js";
+import { captureFeet, solveFeet } from "./foot-ik.js";
+import { solveDragIK } from "./drag-ik.js";
+import { captureChest, stabilizeChest } from "./pelvis-stabilize.js";
+import { mirrorJoint } from "./mirror.js";
 import { preloadHumans } from "./human.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
@@ -39,6 +44,9 @@ const $ = (id) => document.getElementById(id),
   STORE = "pose-atlas-studio-v1",
   FLOOR = -0.7;
 const params = new URLSearchParams(location.search);
+const previewMode = params.get("embed") === "preview";
+let previewActive = false;
+if (previewMode) document.body.dataset.embed = "preview";
 let lang = params.get("lang");
 try {
   lang ||= localStorage.getItem("pose-language");
@@ -55,8 +63,11 @@ let renderer,
   catalog,
   figures = [],
   active = "A",
-  joint = "torso",
+  joint = "chest",
   moveMode = false,
+  pullMode = false,
+  pullTarget,
+  pullError = 0,
   capturing = false;
 let reference = null,
   referenceRequest = 0,
@@ -259,12 +270,18 @@ function setFigure(id, changes = {}) {
   if (changes.position) f.model.position.fromArray(changes.position);
   if (changes.ground === true || (!changes.position && $("floorLock").checked))
     groundFigure(f.model);
+  if (f.model.userData.footLocks) captureFeet(f.model);
+  if (f.model.userData.chestLock) recaptureChest(f.model);
   refresh();
   commit();
   return figureState(f);
 }
 function setJoint(id, key, values, { record = true } = {}) {
-  if (!JOINTS.includes(key) || !values || typeof values !== "object")
+  if (
+    (!JOINTS.includes(key) && key !== "torso") ||
+    !values ||
+    typeof values !== "object"
+  )
     throw Error("Unknown joint");
   const axes = jointAxes(key),
     f = figure(id);
@@ -274,25 +291,190 @@ function setJoint(id, key, values, { record = true } = {}) {
     finite(v, a.min, a.max, property);
   }
   writeAngles(f.model, key, values);
-  if ($("floorLock").checked) groundFigure(f.model);
+  syncOtherJoint(f.model, key, values);
+  finishJointEdit(f, key);
   if (id === active) refreshValues();
   if (record) commit();
   return getJoint(id, key);
 }
+function syncOtherJoint(model, key, values) {
+  if (!$("mirrorSync").checked) return;
+  const other = mirrorJoint(key, values);
+  if (other) writeAngles(model, other.key, other.values);
+}
+function setMirrorSync(enabled) {
+  if (typeof enabled !== "boolean") throw Error("Invalid mirror setting");
+  $("mirrorSync").checked = enabled;
+  commit();
+  return enabled;
+}
+function recaptureChest(model) {
+  model.userData.chestLock = captureChest(model).toArray();
+  model.userData.chestError = 0;
+}
+function setChestLock(id, enabled) {
+  if (typeof enabled !== "boolean") throw Error("Invalid chest lock");
+  const model = figure(id).model;
+  if (enabled) recaptureChest(model);
+  else model.userData.chestLock = null;
+  if (id === active) updateFootStatus();
+  commit();
+  return model.userData.chestLock;
+}
+const supportsPull = (key) => JOINTS.includes(key);
+const centralPull = (key) =>
+  [
+    "body",
+    "pelvis",
+    "waist",
+    "chest",
+    "head",
+    "l_arm",
+    "r_arm",
+    "l_leg",
+    "r_leg",
+  ].includes(key);
+function moveJointTarget(id, key, position, { record = true } = {}) {
+  const f = figure(id);
+  vector(position, 3, -10, 10);
+  const model = f.model;
+  const result = solveDragIK(model, key, position, {
+    lockPelvis: centralPull(key) && Boolean(model.userData.footLocks),
+  });
+  for (const affected of result.affected)
+    syncOtherJoint(model, affected, readAngles(model, affected));
+  if (centralPull(key)) {
+    // Trunk dragging may rotate the pelvis/spine or translate the whole rig.
+    // Respect explicit orientation and foot anchors, then report any residual.
+    if (model.userData.chestLock) {
+      const q = new THREE.Quaternion().fromArray(model.userData.chestLock);
+      model.userData.chestError = stabilizeChest(model, q).errorDegrees;
+      model.updateMatrixWorld(true);
+      const actual = model[key].getWorldPosition(new THREE.Vector3());
+      const correction = new THREE.Vector3(...position).sub(actual);
+      if (correction.length() > 0.0007) {
+        model.position.add(correction).clampScalar(-10, 10);
+        result.rootMoved = true;
+      }
+    }
+    if (model.userData.footLocks) solveFeet(model);
+    else if (result.rootMoved || result.affected.includes("pelvis"))
+      $("floorLock").checked = false;
+    model.updateMatrixWorld(true);
+    result.actual = model[key].getWorldPosition(new THREE.Vector3()).toArray();
+    result.error = new THREE.Vector3(...result.actual).distanceTo(
+      new THREE.Vector3(...position),
+    );
+    result.reachable = result.error <= 0.002;
+  } else if (/_(ankle|knee)$/.test(key)) {
+    $("floorLock").checked = false;
+    if (model.userData.footLocks) captureFeet(model);
+  }
+  result.footError = model.userData.footLocks
+    ? model.userData.footError || 0
+    : null;
+  result.footAngleError = model.userData.footLocks
+    ? model.userData.footAngleError || 0
+    : null;
+  result.chestErrorDegrees = model.userData.chestLock
+    ? model.userData.chestError || 0
+    : null;
+  result.anchorsReachable =
+    (result.footError == null ||
+      (result.footError <= 0.01 && result.footAngleError <= 0.09)) &&
+    (result.chestErrorDegrees == null || result.chestErrorDegrees <= 1);
+  pullError = result.error;
+  if (id === active) {
+    refreshValues();
+    if (pullMode) updatePullHint();
+  }
+  if (record) {
+    refresh();
+    commit();
+  }
+  return result;
+}
+function updatePullHint() {
+  $("pullStatus").textContent = t(
+    !supportsPull(joint)
+      ? "pullChoose"
+      : pullError > 0.002
+        ? "pullUnreachable"
+        : (current().model.userData.footLocks &&
+              ((current().model.userData.footError || 0) > 0.01 ||
+                (current().model.userData.footAngleError || 0) > 0.09)) ||
+            (current().model.userData.chestLock &&
+              (current().model.userData.chestError || 0) > 1)
+          ? "pullAnchorUnreachable"
+          : "pullHint",
+  );
+  $("pullStatus").hidden = !pullMode;
+}
+function updateFootStatus() {
+  const m = current().model;
+  $("lockFeet").checked = Boolean(m.userData.footLocks);
+  $("lockChest").checked = Boolean(m.userData.chestLock);
+  $("chestLockStatus").textContent = t(
+    m.userData.chestLock && (m.userData.chestError || 0) > 1
+      ? "chestUnreachable"
+      : "chestLockHint",
+  );
+  $("footLockStatus").textContent = t(
+    m.userData.footLocks &&
+      ((m.userData.footError || 0) > 0.01 ||
+        (m.userData.footAngleError || 0) > 0.09)
+      ? "footUnreachable"
+      : "footLockHint",
+  );
+}
+function setFootLock(id, enabled) {
+  if (typeof enabled !== "boolean") throw Error("Invalid foot lock");
+  const m = figure(id).model;
+  if (enabled) captureFeet(m);
+  else m.userData.footLocks = null;
+  if (id === active) updateFootStatus();
+  commit();
+  return figureState(figure(id)).footLocks;
+}
+function finishJointEdit(f, key) {
+  if (f.model.userData.chestLock) {
+    if (key === "pelvis") {
+      const target = new THREE.Quaternion().fromArray(
+        f.model.userData.chestLock,
+      );
+      f.model.userData.chestError = stabilizeChest(
+        f.model,
+        target,
+      ).errorDegrees;
+    } else if (["body", "waist", "chest", "torso"].includes(key))
+      recaptureChest(f.model);
+  }
+  if (f.model.userData.footLocks) {
+    if (["body", "pelvis", "waist", "chest", "torso"].includes(key))
+      solveFeet(f.model);
+    else if (/_(leg|knee|ankle)$/.test(key)) captureFeet(f.model);
+    if (f.id === active) updateFootStatus();
+  } else if ($("floorLock").checked) groundFigure(f.model);
+  if (f.id === active) updateFootStatus();
+}
 function getJoint(id, key) {
-  if (!JOINTS.includes(key)) throw Error("Unknown joint");
+  if (!JOINTS.includes(key) && key !== "torso") throw Error("Unknown joint");
   return readAngles(figure(id).model, key);
 }
 function setHand(id, side, curl, { record = true } = {}) {
   if (!["l", "r"].includes(side)) throw Error("Invalid hand");
   finite(curl, 0, 100, "curl");
   figure(id).model[`${side}_fingers`].bend = curl;
+  if ($("mirrorSync").checked)
+    figure(id).model[`${side === "l" ? "r" : "l"}_fingers`].bend = curl;
   constrainFingers(figure(id).model);
   refreshValues();
   if (record) commit();
 }
 function neutralFigure(id) {
   const f = figure(id);
+  f.model.userData.footLocks = null;
+  f.model.userData.chestLock = null;
   applyValues(f.model, NEUTRAL);
   f.model.l_fingers.bend = f.model.r_fingers.bend = 10;
   constrainFingers(f.model);
@@ -413,8 +595,9 @@ async function applyDetectedPose(
       f.model.visible = true;
     }
     active = staged[0].id;
-    joint = "torso";
+    joint = "chest";
     moveMode = false;
+    pullMode = false;
     reference = null;
     referenceRequest++;
     renderReference();
@@ -454,6 +637,8 @@ function figureState(f) {
     scale: f.scale,
     outfit: f.outfit,
     mesh: f.model.userData.mesh,
+    footLocks: structuredClone(f.model.userData.footLocks || null),
+    chestLock: structuredClone(f.model.userData.chestLock || null),
     position: f.model.position.toArray(),
     rotation: f.model.quaternion.toArray(),
     joints: Object.fromEntries(
@@ -466,7 +651,7 @@ function figureState(f) {
 }
 function getState() {
   return {
-    schema: "pose-atlas/studio@2",
+    schema: "pose-atlas/studio@3",
     figures: figures.map(figureState),
     selected: active,
     joint,
@@ -475,16 +660,18 @@ function getState() {
       target: orbit.target.toArray(),
     },
     floorLock: $("floorLock").checked,
+    mirrorSync: $("mirrorSync").checked,
     grid: $("showGrid").checked,
     reference: reference
       ? { stem: reference.stem, view: reference.view }
       : null,
   };
 }
-function validateState(s) {
+function validateState(raw) {
+  const s = migrateSpineScene(raw);
   if (
     !s ||
-    !["pose-atlas/studio@1", "pose-atlas/studio@2"].includes(s.schema) ||
+    s.schema !== "pose-atlas/studio@3" ||
     !Array.isArray(s.figures) ||
     s.figures.length < 1 ||
     s.figures.length > MAX_FIGURES
@@ -513,6 +700,18 @@ function validateState(s) {
     if (!f.joints || Object.keys(f.joints).length !== keys.length)
       throw Error("Missing joints");
     for (const k of keys) quaternion(f.joints[k]);
+    if (f.chestLock != null) quaternion(f.chestLock);
+    if (f.footLocks != null) {
+      if (
+        typeof f.footLocks !== "object" ||
+        Object.keys(f.footLocks).sort().join() !== "l,r"
+      )
+        throw Error("Invalid foot anchors");
+      for (const side of ["l", "r"]) {
+        vector(f.footLocks[side]?.position, 3, -20, 20);
+        quaternion(f.footLocks[side]?.rotation);
+      }
+    }
   }
   if (!ids.has(s.selected) || !JOINTS.includes(s.joint))
     throw Error("Invalid selection");
@@ -526,6 +725,8 @@ function validateState(s) {
     throw Error("Invalid camera");
   if (typeof s.floorLock !== "boolean" || typeof s.grid !== "boolean")
     throw Error("Invalid preferences");
+  if (s.mirrorSync !== undefined && typeof s.mirrorSync !== "boolean")
+    throw Error("Invalid mirror setting");
   if (
     s.reference &&
     (!/^[a-z0-9-]+_[a-z0-9-]+_[a-z0-9-]+$/.test(s.reference.stem) ||
@@ -533,7 +734,8 @@ function validateState(s) {
   )
     throw Error("Invalid reference");
   const validated = structuredClone(s);
-  validated.schema = "pose-atlas/studio@2";
+  validated.schema = "pose-atlas/studio@3";
+  validated.mirrorSync ??= false;
   validated.figures.forEach((f) => {
     f.scale ??= 1;
     f.outfit ??= "ivory";
@@ -546,6 +748,16 @@ function restoreFigure(f, s) {
   for (const [k, j] of Object.entries(bones(f.model)))
     j.quaternion.fromArray(s.joints[k]);
   constrainFigure(f.model);
+  f.model.userData.footLocks = structuredClone(s.footLocks || null);
+  f.model.userData.chestLock = structuredClone(s.chestLock || null);
+  f.model.userData.chestError = s.chestLock
+    ? THREE.MathUtils.radToDeg(
+        captureChest(f.model).angleTo(
+          new THREE.Quaternion().fromArray(s.chestLock),
+        ),
+      )
+    : 0;
+  if (s.footLocks) solveFeet(f.model);
   f.model.updateMatrixWorld(true);
 }
 function restoreState(raw) {
@@ -571,6 +783,7 @@ function restoreState(raw) {
     active = s.selected;
     joint = s.joint;
     $("floorLock").checked = s.floorLock;
+    $("mirrorSync").checked = s.mirrorSync;
     $("showGrid").checked = s.grid;
     grid.visible = s.grid;
     camera.position.fromArray(s.camera.position);
@@ -604,6 +817,7 @@ function restoreState(raw) {
   }
 }
 function persist() {
+  if (previewMode) return;
   try {
     localStorage.setItem(STORE, JSON.stringify(getState()));
   } catch {
@@ -646,6 +860,7 @@ function redo() {
   return getState();
 }
 function setHighlight(enabled = true) {
+  if (previewMode) enabled = false;
   for (const f of figures)
     f.model.traverse((o) => {
       if (o.isMesh && o.material.emissive)
@@ -662,18 +877,39 @@ function setHighlight(enabled = true) {
 function attachGizmo() {
   if (!figures.length) return;
   gizmo.detach();
-  gizmo.setMode(moveMode ? "translate" : "rotate");
-  gizmo.setSpace(moveMode ? "world" : "local");
-  gizmo.attach(moveMode ? current().model : current().model[joint]);
+  if (previewMode) return;
+  const translating = moveMode || pullMode;
+  gizmo.setMode(translating ? "translate" : "rotate");
+  gizmo.setSpace(translating ? "world" : "local");
+  const canPull = supportsPull(joint);
+  if (pullMode && canPull) {
+    current().model.updateMatrixWorld(true);
+    current().model[joint].getWorldPosition(pullTarget.position);
+    gizmo.attach(pullTarget);
+  } else if (!pullMode)
+    gizmo.attach(moveMode ? current().model : current().model[joint]);
   gizmo.showX =
-    moveMode || (!joint.endsWith("_knee") && !joint.endsWith("_elbow"));
+    translating || (!joint.endsWith("_knee") && !joint.endsWith("_elbow"));
   gizmo.showY = gizmo.showX;
   gizmo.showZ = true;
-  helper.visible = true;
+  helper.visible = !pullMode || canPull;
   $("moveMode").setAttribute("aria-pressed", String(moveMode));
   $("canvasMove").setAttribute("aria-pressed", String(moveMode));
-  $("canvasRotate").setAttribute("aria-pressed", String(!moveMode));
-  $("modeHint").textContent = t(moveMode ? "moveAxisHint" : "rotateAxisHint");
+  $("canvasRotate").setAttribute(
+    "aria-pressed",
+    String(!moveMode && !pullMode),
+  );
+  $("canvasPull").setAttribute("aria-pressed", String(pullMode));
+  $("modeHint").textContent = t(
+    pullMode
+      ? canPull
+        ? "pullHint"
+        : "pullChoose"
+      : moveMode
+        ? "moveAxisHint"
+        : "rotateAxisHint",
+  );
+  updatePullHint();
   setHighlight();
 }
 function slider(
@@ -730,6 +966,7 @@ function slider(
   update();
 }
 function refreshValues() {
+  updateFootStatus();
   sliders.forEach((fn) => fn());
   if (joint.endsWith("_wrist")) {
     $("fingerCurl").value = current().model[`${joint[0]}_fingers`].bend;
@@ -775,6 +1012,9 @@ function refresh() {
   $("removeActor").disabled = figures.length === 1;
   $("joint").replaceChildren(...JOINTS.map((key) => new Option(t(key), key)));
   $("joint").value = joint;
+  $("jointDetail").hidden = joint !== "pelvis";
+  $("jointDetail").textContent = t("pelvisHint");
+  updateFootStatus();
   $("sex").value = current().sex;
   $("outfit").value = current().outfit;
   sliders.clear();
@@ -806,6 +1046,7 @@ function refresh() {
       f.model.scale.multiplyScalar(v / 100 / f.scale);
       f.scale = v / 100;
       if ($("floorLock").checked) groundFigure(f.model);
+      if (f.model.userData.footLocks) captureFeet(f.model);
       const sub = $("actors").querySelector(
         `[data-actor="${f.id}"] .actor-sub`,
       );
@@ -830,6 +1071,7 @@ function refresh() {
       (v) => {
         f.model.position[axis] = v;
         if (axis === "y") $("floorLock").checked = false;
+        if (f.model.userData.footLocks) captureFeet(f.model);
       },
     );
   slider(
@@ -842,6 +1084,8 @@ function refresh() {
     () => deg(f.model.rotation.y),
     (v) => {
       f.model.rotation.y = rad(v);
+      if (f.model.userData.footLocks) captureFeet(f.model);
+      if (f.model.userData.chestLock) recaptureChest(f.model);
     },
   );
   refreshValues();
@@ -945,7 +1189,6 @@ function renderLibrary() {
   for (const row of rows) {
     const stem = `${system}_${category}_${row.pose}`,
       preset = Boolean(PRESETS[stem]);
-    if ($("onlyPresets").checked && !preset) continue;
     if (
       query &&
       !`${stem} ${Object.values(row.name).join(" ")}`
@@ -1029,6 +1272,39 @@ function renderReference(forceOpen = false) {
     PRESETS[reference.stem] ? "approximation" : "referenceOnly",
   );
 }
+async function appendPreset(stem, { view } = {}) {
+  const preset = PRESETS[stem];
+  if (!preset) throw Error("referenceOnly");
+  if (figures.length + preset.actors.length > MAX_FIGURES)
+    throw Error("appendFull");
+  const shown = await showReference(stem, view || preset.view);
+  if (shown.cancelled) return [];
+  if (figures.length + preset.actors.length > MAX_FIGURES)
+    throw Error("appendFull");
+  // Place the added pose group beyond the current scene bounds; keep duo offsets.
+  const edge = Math.max(...figures.map((f) => figureBounds(f.model).max.x));
+  const offset = edge + 0.8;
+  if (offset > 8) throw Error("appendSpace");
+  const ids = [];
+  for (const actor of preset.actors) {
+    const f = makeFigure(actor.sex);
+    applyValues(f.model, NEUTRAL);
+    applyValues(f.model, actor.values);
+    f.model.l_fingers.bend = actor.hands?.l ?? 10;
+    f.model.r_fingers.bend = actor.hands?.r ?? 10;
+    constrainFingers(f.model);
+    f.model.position.fromArray(actor.position || [0, 0, 0]);
+    f.model.position.x += offset;
+    f.model.rotation.set(0, actor.yaw || 0, 0);
+    groundFigure(f.model);
+    ids.push(f.id);
+  }
+  active = ids[0];
+  refresh();
+  frameAll();
+  commit();
+  return ids;
+}
 async function loadPreset(stem, { actorId = active, view } = {}) {
   const preset = PRESETS[stem];
   if (!preset) throw Error("No 3D preset for this reference");
@@ -1041,6 +1317,8 @@ async function loadPreset(stem, { actorId = active, view } = {}) {
   const targets = preset.actors.length === 2 ? figures : [figure(actorId)];
   preset.actors.forEach((p, i) => {
     const f = targets[i];
+    f.model.userData.footLocks = null;
+    f.model.userData.chestLock = null;
     applyValues(f.model, NEUTRAL);
     f.model.l_fingers.bend = p.hands?.l ?? 10;
     f.model.r_fingers.bend = p.hands?.r ?? 10;
@@ -1052,6 +1330,7 @@ async function loadPreset(stem, { actorId = active, view } = {}) {
   });
   active = actorId;
   moveMode = false;
+  pullMode = false;
   refresh();
   setCamera(view || preset.view);
   commit();
@@ -1066,12 +1345,14 @@ function reset(options = {}) {
   figures = [];
   makeFigure(sex);
   active = "A";
-  joint = "torso";
+  joint = "chest";
   referenceRequest++;
   reference = null;
   renderReference();
   $("floorLock").checked = true;
+  $("mirrorSync").checked = false;
   moveMode = false;
+  pullMode = false;
   refresh();
   setCamera("d");
   commit();
@@ -1140,7 +1421,7 @@ async function getShareURL() {
   return shareURL(getState());
 }
 function scheduleURL() {
-  if (!sharingReady) return;
+  if (!sharingReady || previewMode) return;
   clearTimeout(urlTimer);
   const revision = ++urlRevision;
   urlTimer = setTimeout(async () => {
@@ -1186,7 +1467,7 @@ function bindUI() {
     if (e.target === $("shareDialog")) $("shareDialog").close();
   });
   window.addEventListener("hashchange", async () => {
-    if (!sharingReady) return;
+    if (!sharingReady || previewMode) return;
     try {
       await loadShareURL(location.href);
     } catch {
@@ -1206,6 +1487,7 @@ function bindUI() {
   $("fingerCurl").oninput = () =>
     setHand(active, joint[0], Number($("fingerCurl").value), { record: false });
   $("fingerCurl").onchange = commit;
+  $("mirrorSync").onchange = () => setMirrorSync($("mirrorSync").checked);
   $("resetJoint").onclick = () => {
     const values = Object.fromEntries(
       jointAxes(joint).map((a) => [
@@ -1218,23 +1500,39 @@ function bindUI() {
   $("neutral").onclick = () => neutralFigure(active);
   $("ground").onclick = () => {
     groundFigure(current().model);
+    if (current().model.userData.footLocks) captureFeet(current().model);
     refreshValues();
     commit();
   };
   $("moveMode").onclick = () => {
     moveMode = !moveMode;
+    pullMode = false;
     attachGizmo();
   };
   $("canvasMove").onclick = () => {
+    pullMode = false;
     moveMode = true;
     attachGizmo();
   };
   $("canvasRotate").onclick = () => {
+    pullMode = false;
     moveMode = false;
     attachGizmo();
   };
+  $("canvasPull").onclick = () => {
+    moveMode = false;
+    pullMode = true;
+    pullError = 0;
+    attachGizmo();
+  };
+  $("lockChest").onchange = () => setChestLock(active, $("lockChest").checked);
+  $("lockFeet").onchange = () => setFootLock(active, $("lockFeet").checked);
   $("floorLock").onchange = () => {
-    if ($("floorLock").checked) figures.forEach((f) => groundFigure(f.model));
+    if ($("floorLock").checked)
+      figures.forEach((f) => {
+        groundFigure(f.model);
+        if (f.model.userData.footLocks) captureFeet(f.model);
+      });
     refreshValues();
     commit();
   };
@@ -1253,11 +1551,19 @@ function bindUI() {
       !document.querySelector("dialog[open]")
     ) {
       if (e.key.toLowerCase() === "w") {
+        pullMode = false;
         moveMode = true;
         attachGizmo();
       }
       if (e.key.toLowerCase() === "e") {
+        pullMode = false;
         moveMode = false;
+        attachGizmo();
+      }
+      if (e.key.toLowerCase() === "t") {
+        moveMode = false;
+        pullMode = true;
+        pullError = 0;
         attachGizmo();
       }
     }
@@ -1283,7 +1589,6 @@ function bindUI() {
   };
   $("category").onchange = loadLibrary;
   $("poseSearch").oninput = renderLibrary;
-  $("onlyPresets").onchange = renderLibrary;
   $("hideReference").onclick = () => {
     $("reference").hidden = true;
     $("showReference").hidden = false;
@@ -1340,6 +1645,7 @@ function bindUI() {
     down = { x: e.clientX, y: e.clientY, dragged: false };
   });
   canvas.addEventListener("pointerup", (e) => {
+    if (previewMode) return;
     if (
       !down ||
       down.dragged ||
@@ -1376,7 +1682,10 @@ function bindUI() {
         return false;
       });
       active = f.id;
-      joint = hit.object.userData.joint;
+      joint =
+        hit.object.userData.joint === "torso"
+          ? "waist"
+          : hit.object.userData.joint;
       if (hit.object.userData.suit && hit.face) {
         const weights = new Map(),
           geometry = hit.object.geometry;
@@ -1398,8 +1707,8 @@ function bindUI() {
           ];
         joint = key.startsWith("clavicle_")
           ? `${key.slice(-1)}_arm`
-          : key === "pelvis"
-            ? "body"
+          : key === "waist_mid" || key === "torso"
+            ? "waist"
             : key === "neck"
               ? "head"
               : key.includes("finger")
@@ -1414,7 +1723,11 @@ function bindUI() {
       $("floorLock").checked = false;
     orbit.enabled = !e.value;
     if (down) down.dragged = true;
-    if (!e.value) commit();
+    if (!e.value) {
+      if (pullMode && supportsPull(joint))
+        current().model[joint].getWorldPosition(pullTarget.position);
+      commit();
+    }
   });
   gizmo.addEventListener("objectChange", () => {
     if (!figures.length) return;
@@ -1422,9 +1735,17 @@ function bindUI() {
     if (moveMode) {
       f.model.position.clampScalar(-10, 10);
       if ($("floorLock").checked) groundFigure(f.model);
+      if (f.model.userData.footLocks) captureFeet(f.model);
+      if (f.model.userData.chestLock) recaptureChest(f.model);
+    } else if (pullMode && supportsPull(joint)) {
+      moveJointTarget(active, joint, pullTarget.position.toArray(), {
+        record: false,
+      });
+      updatePullHint();
     } else {
       constrainJoint(f.model, joint);
-      if ($("floorLock").checked) groundFigure(f.model);
+      syncOtherJoint(f.model, joint, readAngles(f.model, joint));
+      finishJointEdit(f, joint);
     }
     refreshValues();
   });
@@ -1436,7 +1757,7 @@ async function init() {
   translatePage();
   try {
     await preloadHumans();
-    document.body.dataset.figureMesh = "makehuman-v2";
+    document.body.dataset.figureMesh = "makehuman-v3";
   } catch (error) {
     console.warn("Human assets unavailable; using procedural figures", error);
     document.body.dataset.figureMesh = "procedural";
@@ -1499,6 +1820,8 @@ async function init() {
   orbit.minDistance = 0.6;
   orbit.maxDistance = 30;
   orbit.maxPolarAngle = Math.PI * 0.85;
+  pullTarget = new THREE.Object3D();
+  scene.add(pullTarget);
   gizmo = new TransformControls(camera, canvas);
   gizmo.setSize(0.72);
   helper = gizmo.getHelper();
@@ -1506,6 +1829,7 @@ async function init() {
   const resize = () => {
     if (capturing) return;
     const { width, height } = canvas.parentElement.getBoundingClientRect();
+    if (width < 1 || height < 1) return; // hidden shared preview must not poison the camera
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -1540,7 +1864,27 @@ async function init() {
       notify("invalidShare", true);
     }
   }
-  const saved = safeRead();
+  const previewScene = params.get("previewScene");
+  if (previewScene && !shared) {
+    try {
+      if (
+        !/^\/output\/offline-pose\/(?:ready|drafts)\/[a-z0-9_-]+\.scene\.json$/.test(
+          previewScene,
+        )
+      )
+        throw Error("Invalid preview path");
+      const response = await fetch(previewScene, { cache: "no-store" });
+      if (!response.ok) throw Error("Preview unavailable");
+      const text = await response.text();
+      if (text.length > 200000) throw Error("Scene too large");
+      restoreState(JSON.parse(text));
+      shared = true;
+    } catch (error) {
+      console.warn(error);
+      notify("previewFailed", true);
+    }
+  }
+  const saved = previewMode ? null : safeRead();
   if (saved && !shared) {
     try {
       restoreState(saved);
@@ -1572,6 +1916,18 @@ async function init() {
   } else if (!saved && !shared) {
     setCamera("d");
   }
+  if (!previewMode && params.has("appendPose")) {
+    const match = params.get("appendPose").match(/^(.*)_(f|d|s|hi|lo)$/);
+    try {
+      if (!match) throw Error("Invalid pose");
+      await appendPreset(match[1], { view: match[2] });
+    } catch (error) {
+      notify(error.message, true);
+    }
+    const consumed = new URL(location.href);
+    consumed.searchParams.delete("appendPose");
+    window.history.replaceState(null, "", consumed);
+  }
   sharingReady = true;
   photoUI = setupPosePhotoUI({
     t,
@@ -1579,7 +1935,7 @@ async function init() {
   });
   commit();
   renderer.setAnimationLoop(() => {
-    if (!capturing && !document.hidden) {
+    if (!capturing && !document.hidden && (!previewMode || previewActive)) {
       orbit.update();
       renderer.render(scene, camera);
     }
@@ -1589,7 +1945,7 @@ async function init() {
   return true;
 }
 const api = {
-  version: 3,
+  version: 4,
   detectImage,
   applyDetectedPose,
   poseFromImage,
@@ -1605,8 +1961,26 @@ const api = {
   setFigure,
   setJoint,
   setHand,
+  setMirrorSync,
+  setFootLock,
+  setChestLock,
+  moveJointTarget,
   neutral: neutralFigure,
   loadPreset,
+  appendPreset,
+  setPreviewActive: (enabled) => {
+    if (!previewMode) throw Error("Preview-only API");
+    previewActive = Boolean(enabled);
+  },
+  previewPose: async (stem, view) => {
+    if (!previewMode) throw Error("Preview-only API");
+    if (!PRESETS[stem]) throw Error("No 3D preset for this reference");
+    reset();
+    await loadPreset(stem, { view });
+    helper.visible = false;
+    grid.visible = false;
+    setHighlight(false);
+  },
   showReference,
   listPresets: () =>
     Object.entries(PRESETS).map(([id, p]) => ({

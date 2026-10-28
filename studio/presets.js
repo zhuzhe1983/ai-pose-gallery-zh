@@ -135,11 +135,19 @@ export const PRESETS = {
     view: "f",
   },
   "solo_kneel_hands-thighs": {
-    actors: one({
-      ...kneel,
-      ...both("arm", { raise: 12 }),
-      ...both("elbow", { bend: 10 }),
-    }),
+    actors: one(
+      {
+        // Keep the thighs nearly upright and let the shins run back/outward.
+        // These are still a draft; verify the hands and feet from both views.
+        ...both("leg", { raise: 5, straddle: 8, turn: -35 }),
+        ...both("knee", { bend: 95 }),
+        ...both("ankle", { bend: -45, tilt: 0, turn: 0 }),
+        ...both("arm", { raise: 5, straddle: 5, turn: -20 }),
+        ...both("elbow", { bend: 20 }),
+        ...both("wrist", { bend: 0, tilt: 0, turn: 0 }),
+      },
+      { l: 0, r: 0 },
+    ),
     view: "d",
   },
   "solo_kneel_arms-up": {
@@ -313,9 +321,11 @@ export const NEUTRAL = {
   "body.bend": 0,
   "body.tilt": 0,
   "body.turn": -90,
-  "torso.bend": 0,
-  "torso.tilt": 0,
-  "torso.turn": 0,
+  ...Object.fromEntries(
+    ["pelvis", "waist", "chest"].flatMap((k) =>
+      ["bend", "tilt", "turn"].map((p) => [`${k}.${p}`, 0]),
+    ),
+  ),
   "head.nod": 0,
   "head.tilt": 0,
   "head.turn": 0,
@@ -329,7 +339,9 @@ export const NEUTRAL = {
 
 export const JOINTS = [
   "body",
-  "torso",
+  "pelvis",
+  "waist",
+  "chest",
   "head",
   "l_arm",
   "l_elbow",
@@ -368,6 +380,27 @@ export function jointAxes(key) {
         [-30, 30],
         [-60, 60],
       ],
+    );
+  if (["pelvis", "waist", "chest"].includes(key))
+    return axes(
+      ["bend", "tilt", "turn"],
+      {
+        pelvis: [
+          [-30, 30],
+          [-20, 20],
+          [-45, 45],
+        ],
+        waist: [
+          [-25, 40],
+          [-20, 20],
+          [-25, 25],
+        ],
+        chest: [
+          [-20, 30],
+          [-20, 20],
+          [-40, 40],
+        ],
+      }[key],
     );
   if (key === "head")
     return axes(
@@ -426,7 +459,12 @@ function convention(key) {
       order: "YXZ",
       axes: { nod: ["z", -2], tilt: ["x", -2], turn: ["y", 2] },
     };
-  if (key === "body" || key === "torso")
+  if (key === "waist")
+    return {
+      order: "YXZ",
+      axes: { bend: ["z", -2], tilt: ["x", -2], turn: ["y", 2] },
+    };
+  if (["body", "torso", "pelvis", "chest"].includes(key))
     return {
       order: "YXZ",
       axes: { bend: ["z", -1], tilt: ["x", -1], turn: ["y", 1] },
@@ -449,6 +487,11 @@ function convention(key) {
   };
 }
 export function readAngles(model, key) {
+  if (key === "torso") {
+    const a = readAngles(model, "waist"),
+      b = readAngles(model, "chest");
+    return Object.fromEntries(Object.keys(a).map((p) => [p, a[p] + b[p]]));
+  }
   const c = convention(key),
     r = model[key].rotation;
   if (r.order !== c.order) r.reorder(c.order);
@@ -460,6 +503,17 @@ export function readAngles(model, key) {
   );
 }
 export function writeAngles(model, key, values) {
+  if (key === "torso") {
+    // Legacy angle API: distribute bending, side bend and twist separately.
+    const weights = { bend: 0.6, tilt: 0.5, turn: 0.35 };
+    for (const [p, value] of Object.entries(values)) {
+      if (!Number.isFinite(value) || !(p in weights))
+        throw Error("Invalid joint angle");
+      writeAngles(model, "waist", { [p]: value * weights[p] });
+      writeAngles(model, "chest", { [p]: value * (1 - weights[p]) });
+    }
+    return;
+  }
   const c = convention(key),
     r = model[key].rotation;
   if (r.order !== c.order) r.reorder(c.order);
@@ -473,12 +527,13 @@ export function writeAngles(model, key, values) {
       factor;
   }
   if (key === "head") model.neck.quaternion.copy(model.head.quaternion);
+  if (key === "waist") model.waist_mid.quaternion.copy(model.waist.quaternion);
 }
 export function applyValues(model, values) {
   const grouped = {};
   for (const [path, value] of Object.entries(values)) {
     const [joint, property] = path.split(".");
-    if (!model[joint] || !Number.isFinite(value))
+    if ((!model[joint] && joint !== "torso") || !Number.isFinite(value))
       throw new Error(`Invalid preset parameter: ${path}`);
     (grouped[joint] ??= {})[property] = value;
   }
@@ -517,7 +572,6 @@ export function constrainFingers(model) {
   }
 }
 export function constrainFigure(model) {
-  model.pelvis.rotation.set(0, 0, 0);
   for (const key of JOINTS) constrainJoint(model, key);
   constrainFingers(model);
 }

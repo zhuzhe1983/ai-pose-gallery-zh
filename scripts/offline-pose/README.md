@@ -13,7 +13,7 @@ SMPL-X 或 SPIN。不要把生成 JSON 或较低的二维重投影误差当成�
 ```sh
 python3 -m venv output/offline-pose/venv
 output/offline-pose/venv/bin/python -m pip install -r scripts/offline-pose/requirements.txt
-python3 -m http.server 8767
+python3 scripts/offline-pose/preview_server.py
 ```
 
 以下 Node 脚本需要环境已安装 Playwright 及 Chromium；可用 `POSE_PLAYWRIGHT_MODULE`
@@ -46,7 +46,7 @@ node skills/ai-pose-gallery/scripts/render_studio.mjs \
 
 ## 方法和限制
 
-- 导出实际骨架的父子关系、固定变换、关节范围和角度约定；31 个可记录控制量。
+- 导出实际骨架的父子关系、固定变换、关节范围和角度约定；43 个可记录控制量（骨盆、腰、胸独立；腰驱动两段脊柱；包含手腕）。
 - 使用透视相机和 SciPy 有界最小二乘，联合拟合关节与镜头。相机视角和现有手工预设
   作为软约束，降低单视图拟合造成的异常转身；没有预设时从中立姿势开始。
 - 输入是未经概率校准的热图峰值。低峰值、出界点和显式排除点不参与；少于 8 个可用点
@@ -72,3 +72,33 @@ output/offline-pose/venv/bin/python scripts/offline-pose/verify_fit.py \
 检查中立骨架与导出坐标一致、受限拟合能降低已知合成投影误差、所有角度在范围内，
 以及空白/非有限/重复点/错误坐标协议被拒绝。合成检查只验证实现，不是识别精度测试。
 另在真实浏览器中核对拟合姿态的关节坐标与 Three.js 投影一致，导入和 PNG 导出可用。
+
+## 实时预览
+
+服务启动后访问 **http://127.0.0.1:8767/preview/**，每三秒读取实际本地结果。可查看原图、2D 叠图、3D 渲染、失败/待审核状态，并把场景送入工作台继续调整。服务保持空闲时会如实显示；不会因为已有输出就声称后台正在转换。详见 [预览协议](../../preview/README.md)。模型变更后必须重新导出 rig；旧 `makehuman-v2` 草稿在预览中标为旧版本。
+
+## 多视角对照与朝向
+
+查看同一场景的其他视角（相机未标定，不能冒充多视角拟合）：
+
+```sh
+node scripts/offline-pose/render-views.mjs --scene output/offline-pose/ready/solo_kneel_hands-thighs_f.scene.json \
+  --output-dir output/model-research/compare --views f,s
+# 侧面原图可能面向相反方向，可加 --side opposite 并记录实际相机。
+```
+
+单帧 18 点不能识别头脸、手掌和脚底法线，默认锁定无证据的头、手腕角度；脚尖可用时脚踝屈伸只作近似。根节点固定以免与骨盆重复旋转。可按 [朝向提示协议](ORIENTATION.md) 标注人工参考，但这不等于自动识别或审核通过。脚掌/膝盖贴地和手掌接触仍须人工对照。
+
+## 同组多视角拟合实验
+
+`fit_multiview.py` 接受同一个姿势的两至五张 `pose-keypoints/1`，共用一套人物关节，并为每个视角求各自的有限范围相机。侧面默认尝试两侧；必须先人工检查关键点遮挡及左右身份，错误点用 `--exclude s:...` 排除。可指定已核对的人工朝向 `--orientations`；缺少脸部、掌面与脚底证据时继续报告未确定。若可用点不足，工具会拒绝该视角；单张图的深度和被遮挡的手脚不能凭空补出。
+
+```sh
+output/offline-pose/venv/bin/python scripts/offline-pose/fit_multiview.py \
+  --rig output/offline-pose/rig-v3.json \
+  --inputs output/sketch-pose-offline/solo_kneel_hands-thighs_f.json \
+           output/sketch-pose-offline/solo_kneel_hands-thighs_s.json \
+  --output-dir output/model-research/multiview-experiment/kneel
+```
+
+每个视角写单独 camera 的场景 JSON，人物姿势相同。报告列明侧面相机候选、重投影误差、观察不到的末端方向和质量门；该门只拒绝明显不可靠的数值结果，**通过也不等于准确还原**。真实跪姿侧视的多数左右重叠点先前已标记需要排除，盲目使用原始点只供算法实验，不能作为审核结果。

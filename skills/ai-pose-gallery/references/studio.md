@@ -2,15 +2,16 @@
 
 Studio: `https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/`. Add `?lang=zh`, `en` or `ja`. To open a gallery pose, append e.g. `?pose=sexy_sit_w-sit-hands-fw_hi&lang=en`.
 
-The studio uses adult MakeHuman/MPFB meshes and authored skin weights (CC0), mapped to Mannequin.js's angle controls. These are realistic-proportion display mannequins, not scans of people. Male and female GLBs total about 6 MiB, loaded once per page and shared by figure instances. The original procedural figures remain a clearly labeled fallback if loading fails. It supports one to six adult male/female figures. It renders with Three.js WebGPU, with WebGL 2 fallback displayed accurately in the toolbar. No authentication, server, API key or AIGC service is needed to render white-model PNGs. Source and GPL-3.0 license: `studio/THIRD_PARTY.md`, `studio/LICENSE`.
+The studio uses adult MakeHuman/MPFB meshes and authored skin weights (CC0), mapped to Mannequin.js's angle controls. These are realistic-proportion display mannequins, not scans of people. Male and female GLBs total about 6 MiB, loaded once per page and shared by figure instances. The original procedural figures remain a clearly labeled fallback if loading fails. It supports one to six adult male/female figures. It renders with Three.js WebGPU, with WebGL 2 fallback (available in hidden diagnostics). No authentication, server, API key or AIGC service is needed to render white-model PNGs. Source and GPL-3.0 license: `studio/THIRD_PARTY.md`, `studio/LICENSE`.
 
 ## Interactive operation
 
 1. Select figure A–F; add male or female figures (maximum six). Each figure card has a visible Delete button. Keep at least one figure.
 2. Choose a body part from the inspector or click it on the figure. Use labeled sliders, numeric angles, or the rotation rings. Sliders, rings, presets and scene imports all obey the same limits. Knees and elbows have one bend axis. Hands have a finger-curl slider.
-3. The canvas toolbar switches **Rotate joint (E)** and **Move figure (W)**. Drag the translation arrows or plane handles directly; a vertical drag releases floor locking. The continuous skin follows the rig without cloth simulation. Select **White mannequin** or **Ivory mannequin** (default) for the material. Extreme bends can still compress the skin; there is no collision solver or corrective blendshape system. Use body type, overall scale (80–120%), position and facing controls for composition. Turn off automatic grounding to raise a figure off the floor. Drag the empty canvas to orbit; use the wheel to zoom. Camera buttons select front, three-quarter, side, above or below.
-4. Gallery tiles marked **3D** load editable hand-authored approximations. Other tiles only display a reference and leave the figure's pose unchanged. Image references are not reconstructed 3D data, and contact points/collisions are not automatically solved.
-5. **Capture PNG** exports a 1600 × 1600 image without rings, grid, selection tint, labels or reference card. **Share scene link** copies the full scene into a compressed URL fragment. Edits also update the address bar; the shared scene takes priority over browser autosave. **Save scene** / **Load scene** preserve editable joints, figures and camera. The browser also autosaves locally. Check the PNG visually before using it for AIGC.
+3. The canvas toolbar switches **Rotate joint (E)**, **Move figure (W)** and **Drag joint (T)**. In drag mode select any joint and drag an arrow; bounded IK moves the upstream joints. Dragging the pelvis, hips or trunk may translate the whole figure; pin feet and/or keep chest orientation when needed. Unreachable targets show a warning. Drag the translation arrows or plane handles directly; a vertical drag releases floor locking. The continuous skin follows the rig without cloth simulation. Select **White mannequin** or **Ivory mannequin** (default) for the material. Extreme bends can still compress the skin; there is no collision solver or corrective blendshape system. Use body type, overall scale (80–120%), position and facing controls for composition. Turn off automatic grounding to raise a figure off the floor. Drag the empty canvas to orbit; use the wheel to zoom. Camera buttons select front, three-quarter, side, above or below.
+4. Enable **Mirror left / right** to mirror subsequent paired limb edits, including sliders, numeric fields, rotation rings and finger curl. Toggling it does not alter the existing pose; presets and photo fitting remain independent. It is saved in scenes/URLs and undo history. With pinned feet, editing legs resets their anchors.
+5. Gallery tiles marked **3D** load editable hand-authored approximations. Other tiles only display a reference and leave the figure's pose unchanged. Image references are not reconstructed 3D data, and contact points/collisions are not automatically solved.
+6. **Capture PNG** exports a 1600 × 1600 image without rings, grid, selection tint, labels or reference card. **Share scene link** copies the full scene into a compressed URL fragment. Edits also update the address bar; the shared scene takes priority over browser autosave. **Save scene** / **Load scene** preserve editable joints, figures and camera. The browser also autosaves locally. Check the PNG visually before using it for AIGC.
 
 ## Automation interface
 
@@ -38,9 +39,9 @@ const url = await p.getShareURL(); // self-contained share link; no upload
 
 Save the returned base64 bytes to a `.png` file using the automation environment's file-writing API. Do not print the full data URL into the conversation. Alternatively, `capture({download:true, filename:'pose.png'})` triggers a browser download. Capture serially, and await each call. Sizes: integer 256–4096 per axis. Captures use the current camera position with the requested aspect ratio; inspect the framing when changing aspect ratio. The UI export uses 1600 × 1600; the API allows portrait or landscape captures.
 
-Figure state includes `mesh: "makehuman-v2"` (or `"procedural-v1"` fallback). Await `ready` before all operations. Legacy shared scenes still load; floor-locked scenes without a matching mesh revision are grounded to the new surface. Saved joint angles are preserved, but old model silhouettes/contact points are not identical.
+Figure state includes `mesh: "makehuman-v3"` (or `"procedural-v1"` fallback). Await `ready` before all operations. Legacy shared scenes still load; floor-locked scenes without a matching mesh revision are grounded to the new surface. Legacy torso rotation is distributed along the restored spine and constrained; old silhouettes, framing and contact points can shift.
 
-API version: **3**. Methods (all synchronous except `ready`, `loadPreset`, `showReference`, `capture`, `getShareURL`, `loadShareURL` and the photo methods below):
+API version: **4**. Methods (all synchronous except `ready`, `loadPreset`, `appendPreset`, `showReference`, `capture`, `getShareURL`, `loadShareURL` and the photo methods below):
 
 | Method | Behavior |
 | --- | --- |
@@ -69,7 +70,10 @@ Valid part and angle names:
 | Parts | Angles and limits (degrees) |
 | --- | --- |
 | `body` | `bend`, `tilt`, `turn`: −180…180. Neutral `turn` is **−90** in the rig; use figure `yaw` for overall facing. |
-| `torso` | `bend` −35…65; `tilt` −30…30; `turn` −60…60 |
+| `pelvis` | `bend` −30…30; `tilt` −20…20; `turn` −45…45 |
+| `waist` | `bend` −25…40; `tilt` −20…20; `turn` −25…25; distributed equally over the lower two spine bones |
+| `chest` | `bend` −20…30; `tilt` −20…20; `turn` −40…40; upper spine bone |
+| `torso` (legacy API alias) | `bend` −35…65; `tilt` −30…30; `turn` −60…60; distributed across waist/chest, prefer the independent controls |
 | `head` | `nod` −45…55; `tilt` −35…35; `turn` −80…80 |
 | `l_arm`, `r_arm` | `raise` −60…180; `straddle` −15…90; `turn` −90…90 |
 | `l_leg`, `r_leg` | `raise` −30…145; `straddle` −15…70; `turn` −80…80 |
@@ -79,7 +83,38 @@ Valid part and angle names:
 
 Left/right are the figure's anatomical sides. Positive raise moves a limb forward; positive straddle spreads it outward. Joint angles are fixed-order editor controls, not raw upstream Euler getter sequences. Use this API instead of manipulating Mannequin.js internals. The editor enforces artistic ranges, not a collision/biomechanics solver.
 
-The scene schema is `pose-atlas/studio@2`; v1 imports migrate with `scale:1`. Scenes without an `outfit` use `ivory`; the optional outfit field is included in new scene exports and URLs. Imported rotations are constrained to the supported ranges. Treat the per-joint quaternion data as opaque: obtain it from `exportScene()` and edit named angles via `setJoint`. For a precise camera, copy the exported scene, set `camera:{position:[x,y,z],target:[x,y,z]}`, then call `importScene`. To disable grounding or the grid programmatically, change the exported `floorLock` / `grid` booleans and import it.
+The scene schema is `pose-atlas/studio@3`; v1/v2 imports migrate the old torso quaternion into three spine rotations, then constrain them. v1 imports default to `scale:1`. The URL compression envelope remains `2.`; it is independent of the scene schema. Scenes without an `outfit` use `ivory`; the optional outfit field is included in new scene exports and URLs. Imported rotations are constrained to the supported ranges. Treat the per-joint quaternion data as opaque: obtain it from `exportScene()` and edit named angles via `setJoint`. For a precise camera, copy the exported scene, set `camera:{position:[x,y,z],target:[x,y,z]}`, then call `importScene`. To disable grounding or the grid programmatically, change the exported `floorLock` / `grid` booleans and import it.
+
+## Spine, pinned feet and adding poses
+
+Use `pelvis`, `waist` and `chest` independently. `body` remains the whole-body root. `l_leg` / `r_leg` are hip joints that rotate the corresponding thigh; the pelvis carries the whole trunk and both legs. Optionally pin feet and keep chest orientation while editing pelvis. The human mesh retains native `spine_01`, `spine_02`, `spine_03` weights; the two waist segments share a control. Do not write helper `waist_mid` quaternions directly.
+
+```js
+p.setMirrorSync(true); // mirror subsequent paired limb and finger edits
+p.setJoint('A', 'l_arm', {raise: 45}); // right arm mirrors this edit
+p.setMirrorSync(false);
+p.setChestLock('A', true); // keep chest world orientation during pelvis edits
+p.setFootLock('A', true); // capture both ankle positions + orientations
+p.setJoint('A', 'pelvis', {bend: 10}); // bounded leg IK keeps the anchors when reachable
+p.setJoint('A', 'waist', {bend: 15});
+p.setJoint('A', 'chest', {turn: 20});
+p.setFootLock('A', false);
+p.setChestLock('A', false);
+const moved = p.moveJointTarget('A', 'l_wrist', [0.35, 0.5, 0.1]); // world metres; returns actual/error/reachable/affected
+const addedIds = await p.appendPreset('solo_stand_arms-up-stretch', {view:'f'});
+```
+
+`setMirrorSync(boolean)` toggles scene-level mirrored editing; it does not retroactively alter a pose. It is saved as `mirrorSync` in scenes and URLs, defaults to false for old scenes, and applies to API `setJoint`/`setHand` as well as UI edits. Left/right pairs are mirrored in the editor coordinate convention (wrist tilt changes sign).
+
+`setChestLock(id, boolean)` captures the selected figure's world chest orientation. Pelvis edits compensate with bounded waist/chest rotations and report if the target is unreachable. Editing waist/chest or turning the whole figure updates its target. It is a per-figure scene/URL setting and does not lock chest position.
+
+`moveJointTarget(id, key, [x,y,z])` moves any selectable joint toward a world-space target using constrained IK. Waist, chest, head and shoulder targets use upstream spine rotations and may translate the root; pelvis and hip targets translate the root. `error` is in metres; `anchorsReachable`, `footError` (metres), `footAngleError` (radians), and `chestErrorDegrees` report any unsatisfied enabled anchors. It preserves local wrist/ankle orientation and does not solve collision, hand contact or foot contact. Direct knee/ankle dragging updates pinned-foot anchors and disables automatic grounding. Trunk, pelvis and hip dragging compensates against pinned feet and chest orientation where enabled; unsatisfied anchors are reported in the UI. Mirrored editing mirrors the affected limb controls.
+
+`setFootLock(id, boolean)` stores per-figure world anchors in scenes/URLs. Pelvis, waist, chest and body edits compensate with the legs; moving/resizing the whole figure or directly editing legs resets anchors. Preset/neutral/photo replacement clears anchors. Unreachable position or orientation shows a warning; constraints are not silently bypassed. This is not a floor collision or contact solver.
+
+`appendPreset(stem,{view})` adds the preset's one or two actors beside existing figures without replacing them; it fails before mutation if the six-person limit would be exceeded. `loadPreset` still applies to existing actors. Gallery **Add to 3D Studio** opens `?appendPose=STEM_VIEW`, restores local studio state and consumes the request once; reloads do not append again.
+
+The gallery lazily shares one live renderer across hovered tiles and the viewer's image/3D toggle. Preview frames never update studio autosave or shared scene URLs. Only available presets are previewed; missing conversions are labeled pending, not replaced by a generic standing figure. All current presets are unverified drafts.
 
 ## Photo to pose (on device)
 
@@ -160,3 +195,7 @@ node scripts/render_studio.mjs --scene pose.scene.json --output pose.png --width
 Compare the clean render with the actual reference from the same view, including hands, contact points, silhouette and framing. Check other available views before claiming a match. The corrected overhead-heart and raised-arms presets are still drafts; other old presets can have substantial hand/foot/contact errors. The model now uses dual-quaternion skinning with shoulder helpers to reduce large-angle collapse. Picking and grounding use the same deformation; collisions and corrective shapes are still absent.
 
 Maintainers preparing fixed line art can use the repository's [offline pipeline](https://github.com/zhuzhe1983/ai-pose-gallery-zh/tree/main/scripts/offline-pose). Downloaded model weights and upstream inference code stay local; reviewed lightweight scene data can be published separately. Do not present unreviewed fits as accurate reconstructions.
+
+## Local conversion progress (maintainers)
+
+From a repository checkout, run `python3 scripts/offline-pose/preview_server.py`, then open `http://127.0.0.1:8767/preview/`. It polls actual local records every three seconds, showing source images, detected skeletons, fitted renders and same-origin scene imports. It is a loopback-only read-only service, not a hosted inference API. See `preview/README.md` for the atomic progress/heartbeat protocol. A running preview server does not mean conversion is running. Neither a ready scene nor a low reprojection error means verified. Full Sketch2Pose, full-gallery conversion and animation are still unfinished; animation is planned in TODO.md.

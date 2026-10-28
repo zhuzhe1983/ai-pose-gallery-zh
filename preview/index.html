@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>POSE Atlas · Local conversion preview</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./preview.css">
+  <script type="module" src="./preview.js"></script>
+</head>
+<body>
+  <header>
+    <a class="brand" href="/preview/">POSE <strong>ATLAS</strong><span data-t="local">本地预览</span></a>
+    <nav><a id="studioLink" href="/studio/" target="_blank" rel="noopener" data-t="studio">打开工作台 ↗</a><select id="language" aria-label="Language"><option value="zh">中文</option><option value="en">English</option><option value="ja">日本語</option></select></nav>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow" data-t="eyebrow">OFFLINE / 本机产物</p><h1 data-t="title">转换进度与图像对照</h1><p class="lede" data-t="description">从磁盘读取真实产物。识别、拟合、落地和正式验收分别统计。</p></div>
+      <div class="connection"><span id="connection" data-t="connecting">正在连接本机服务…</span><small id="scanned"></small><button id="refresh" data-t="refresh">立即刷新</button></div>
+    </section>
+    <div id="notice" role="status" class="notice" hidden></div>
+    <section id="metrics" class="metrics" aria-label="Progress counts"></section>
+    <p class="method" data-t="method">当前算法：Sketch2Pose 的 ONNX 2D 前段 + 原创受限拟合器。不是完整 Sketch2Pose；检测峰值和重投影误差不代表 3D 准确率。</p>
+    <section class="activity"><div><span id="activityText"></span><small id="modelText"></small></div><span class="readonly" data-t="readonly">本机只读 · 每 3 秒刷新</span></section>
+    <section class="toolbar" aria-label="Filters">
+      <label class="search"><span data-t="searchLabel">查找</span><input id="search" type="search" placeholder="名称、文件名或姿势组"></label>
+      <label><span data-t="filterLabel">显示</span><select id="filter"></select></label>
+      <label><span data-t="viewLabel">视角</span><select id="view"><option value="all">全部</option><option value="f">f</option><option value="d">d</option><option value="s">s</option><option value="hi">hi</option><option value="lo">lo</option></select></label>
+    </section>
+    <div class="resultline"><span id="resultCount"></span><span data-t="approvalNote">草稿与“已落地”均不等于正式验收。</span></div>
+    <section id="cards" class="cards" aria-live="polite"></section>
+    <div class="more"><button id="loadMore" hidden data-t="loadMore">显示更多</button></div>
+    <details id="presetAudit" class="audit"><summary id="auditTitle"></summary><p data-t="auditNote">旧手工预设单列审查，不计入离线拟合进度；全部仍待校对。</p><div id="auditCards"></div></details>
+    <footer><span data-t="footer">仅服务本机文件，无上传接口。模型权重、脚本和系统文件不通过预览服务公开。</span><a href="./README.md" target="_blank" rel="noopener" data-t="protocol">进度文件协议 ↗</a></footer>
+  </main>
+</body>
+</html>

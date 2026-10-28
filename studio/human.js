@@ -9,7 +9,9 @@ const cache = new Map();
 const nativeNames = {
   body: "pelvis",
   pelvis: "pelvis",
-  torso: "spine_01",
+  waist: "spine_01",
+  waist_mid: "spine_02",
+  chest: "spine_03",
   neck: "neck_01",
   head: "head",
 };
@@ -39,8 +41,6 @@ const nativeToControl = Object.fromEntries(
 );
 Object.assign(nativeToControl, {
   Root: "body",
-  spine_02: "torso",
-  spine_03: "torso",
   clavicle_l: "clavicle_l",
   clavicle_r: "clavicle_r",
   ball_l: "l_ankle",
@@ -170,13 +170,13 @@ export function attachHuman(model, joints) {
   // the public joint positions or the editor's angle/scene protocol.
   const skinJoints = { ...joints },
     shoulders = [];
-  const torsoBind = model.torso.getWorldQuaternion(new THREE.Quaternion());
+  const torsoBind = model.chest.getWorldQuaternion(new THREE.Quaternion());
   for (const side of ["l", "r"]) {
     const key = `clavicle_${side}`,
       helper = new THREE.Bone();
     helper.name = key;
-    model.torso.add(helper);
-    helper.position.copy(model.torso.worldToLocal(asset.joints[key].clone()));
+    model.chest.add(helper);
+    helper.position.copy(model.chest.worldToLocal(asset.joints[key].clone()));
     helper.updateMatrixWorld(true);
     skinJoints[key] = helper;
     shoulders.push({
@@ -190,7 +190,7 @@ export function attachHuman(model, joints) {
   const torsoInverse = new THREE.Quaternion(),
     armRotation = new THREE.Quaternion();
   const updateShoulders = () => {
-    model.torso.getWorldQuaternion(torsoInverse).invert();
+    model.chest.getWorldQuaternion(torsoInverse).invert();
     for (const { helper, arm, armBindInverse } of shoulders) {
       arm.getWorldQuaternion(armRotation);
       armRotation
@@ -218,7 +218,7 @@ export function attachHuman(model, joints) {
   surface.userData = {
     human: true,
     suit: true,
-    joint: "torso",
+    joint: "chest",
     jointKeys: keys,
     updateShoulders,
   };
@@ -229,7 +229,7 @@ export function attachHuman(model, joints) {
     return raycast.apply(this, args);
   };
   model.userData.human = true;
-  model.userData.mesh = "makehuman-v2";
+  model.userData.mesh = "makehuman-v3";
   applyValues(model, NEUTRAL);
   model.l_fingers.bend = model.r_fingers.bend = 10;
   constrainFingers(model);
