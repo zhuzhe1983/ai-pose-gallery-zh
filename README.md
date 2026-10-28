@@ -1,6 +1,6 @@
-# AI Pose Gallery · 中文版
+# AI Pose Gallery · 中文 / English / 日本語
 
-> 288 组 / 1439 张 AI 人体姿势参考图，日文数据完整汉化，附可直接部署的响应式静态画廊。
+> 288 组 / 1439 张多角度姿势参考图，支持中英日切换、ASCII 语义短文件名和 Agent Skill。
 
 ![画廊预览](docs/preview.jpg)
 
@@ -10,13 +10,71 @@
 
 </details>
 
-**在线演示：** <https://ai-pose-gallery.anhao.app/>
+**GitHub Pages：** <https://zhuzhe1983.github.io/ai-pose-gallery-zh/>
+**语言：** [中文](https://zhuzhe1983.github.io/ai-pose-gallery-zh/?lang=zh) · [English](https://zhuzhe1983.github.io/ai-pose-gallery-zh/?lang=en) · [日本語](https://zhuzhe1983.github.io/ai-pose-gallery-zh/?lang=ja)
+**Agent Skill：** [SKILL.md](https://zhuzhe1983.github.io/ai-pose-gallery-zh/skills/ai-pose-gallery/SKILL.md)
+**上游中文版：** <https://ai-pose-gallery.anhao.app/>
 **原始站点：** <https://ai-pose-gallery.pages.dev/>
 **原作者：** ギア（@giaaibusi）
 **中文版维护：** Anhao · [X @anhao_ai](https://x.com/anhao_ai)
-**GitHub：** <https://github.com/anhao/ai-pose-gallery-zh>
+**GitHub：** <https://github.com/zhuzhe1983/ai-pose-gallery-zh>
+**上游仓库：** <https://github.com/anhao/ai-pose-gallery-zh>
 
 ---
+
+## Agent 访问与 AIGC
+
+先读 [skill](skills/ai-pose-gallery/SKILL.md)，也可从 [llms.txt](llms.txt) 发现入口。本站不提供图片生成服务；agent 下载原图后，把它作为真实的图像输入交给可用的生成工具。
+
+图片统一命名为 `{type}_{category}_{pose}_{view}.png`，例如：
+
+```text
+img/solo_sit_lean-bk-kn-up_f.png
+thumbs/solo_sit_lean-bk-kn-up_f.jpg
+```
+
+`solo` 表示标准单人，`sit` 表示坐姿，`lean-bk-kn-up` 表示后仰抬膝，`f` 表示正面。常用缩写和其他类型、视角见 skill。只用小写 ASCII 字母、数字、`-` 和 `_`；含扩展名最多 64 个字符，目前最长 38 个字符。名称不随页面语言变化。
+
+- 已知准确名称：直接访问原图，不需要索引。
+- 查找姿势：[data/catalog/solo/sit.json](data/catalog/solo/sit.json) 等分类小目录包含名称、中英日说明和实际可用视角，每个姿势只记录一次。
+- 不知道分类：[data/catalog.json](data/catalog.json) 列出 4 个体系、30 个体系内分类目录。
+- 原始编号只用于溯源；[data/asset-names.json](data/asset-names.json) 保存固定映射。修改显示标题不会改动图片 URL。个别姿势缺少部分视角，须以目录为准。
+
+安装到本机 Codex（只下载 skill 的 3 个小文件，不克隆图库）：
+
+```bash
+pose_skill_dir="${CODEX_HOME:-$HOME/.codex}/skills/ai-pose-gallery"
+pose_site="https://zhuzhe1983.github.io/ai-pose-gallery-zh"
+mkdir -p "$pose_skill_dir/scripts" "$pose_skill_dir/agents"
+curl -fL "$pose_site/skills/ai-pose-gallery/SKILL.md" -o "$pose_skill_dir/SKILL.md"
+curl -fL "$pose_site/skills/ai-pose-gallery/scripts/pose_ref.py" -o "$pose_skill_dir/scripts/pose_ref.py"
+curl -fL "$pose_site/skills/ai-pose-gallery/agents/openai.yaml" -o "$pose_skill_dir/agents/openai.yaml"
+```
+
+其他 agent 也可直接读取公开的 SKILL.md 并按约定访问，不依赖 Codex。Python 辅助脚本仅使用标准库：
+
+```bash
+python3 skills/ai-pose-gallery/scripts/pose_ref.py list --system solo --category sit --query 'knee'
+python3 skills/ai-pose-gallery/scripts/pose_ref.py download --system solo --category sit --pose lean-bk-kn-up --view d --output-dir ./output/pose-refs
+```
+
+## 三语与数据维护
+
+语言选择器和 `?lang=zh|en|ja` 控制界面、分类、姿势与视角；选择会保存在浏览器本地。关键词搜索同时匹配三种语言和新旧 ID。
+
+- `data/ui.json`：三语界面文案。
+- `data/pose-zh.json`、`data/pose-en.json`、`data/pose-ja.json`：同一组图片的三语展示数据，三者字段结构一致。
+- `data/pose.json`：原站日文数据，原始路径只用于向原站下载，**不是本站的图片地址**。
+- `data/pose-titles-en.json`：288 个英文显示标题；中文译文在 `scripts/i18n.py`，日文采用原数据。
+- `data/asset-names.json`：原始姿势组 ID 到固定短名称的映射；需要维护名称时在此修改。
+
+修改译文后运行 `python3 scripts/apply_translation.py`，会生成三语数据和分类目录。`python3 scripts/verify.py` 校验命名长度、ASCII、唯一性、三语引用一致性、目录覆盖与全部图片文件。原图内容没有修改。
+
+## 部署到 GitHub Pages
+
+本仓库使用 `main` 分支根目录发布，`.nojekyll` 关闭 Jekyll 处理，无需安装依赖或构建框架。GitHub 仓库 Settings → Pages → Deploy from a branch → `main` / `(root)`。之后推送到 `main` 即自动发布。发布方式参见 [GitHub 官方文档](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)。
+
+正式地址为 `https://zhuzhe1983.github.io/ai-pose-gallery-zh/`。所有运行时资源用相对路径，支持项目子目录；不能省略 `/ai-pose-gallery-zh/`。其他静态平台可运行 `bash scripts/build.sh`，发布 `dist/`。
 
 ## 这是什么
 
@@ -50,7 +108,7 @@
 - `robots.txt` 放行全站并声明 sitemap，`sitemap.xml` 指向首页
 - 语义结构：单一 H1、分区 H2、卡片 H3；缩略图 `alt` 含姿势名与视角，图片懒加载
 
-仓库中的绝对地址统一指向 `https://ai-pose-gallery.anhao.app/`。Fork 后如使用其他域名，需同步替换 `index.html` 的 canonical、`og:*`、`twitter:*`、JSON-LD，以及 `robots.txt`、`sitemap.xml` 中的地址。
+本站的 SEO 地址指向 `https://zhuzhe1983.github.io/ai-pose-gallery-zh/`。Fork 后如使用其他域名，需同步替换 `index.html` 的 canonical、`og:*`、`twitter:*`、JSON-LD，以及 `robots.txt`、`sitemap.xml` 中的地址。
 
 ## 数据规模
 
@@ -68,13 +126,21 @@
 
 ```
 .
-├── index.html              # 单页画廊（零依赖，直接打开即可）
+├── index.html              # 单页画廊（零依赖，需 HTTP 预览）
+├── app.js                  # 画廊交互与语言切换
+├── skills/ai-pose-gallery/ # 可安装的 Agent Skill
+├── llms.txt                # Agent 发现入口
 ├── robots.txt              # 搜索引擎抓取规则
 ├── sitemap.xml             # 站点地图
 ├── og-cover.jpg            # 1200×630 社交分享封面
 ├── data/
 │   ├── pose.json           # 原始日文数据（1439 条，未改动）
-│   ├── pose-zh.json        # 中文数据（前端实际读取，含检索字段）
+│   ├── pose-zh.json        # 中文展示数据（en / ja 同结构）
+│   ├── catalog.json        # 按需查找分类入口
+│   ├── catalog/            # 30 个分类小目录
+│   ├── ui.json             # 中英日界面文案
+│   ├── asset-names.json    # 固定短名称映射
+│   ├── pose-titles-en.json # 英文姿势标题
 │   ├── meta.json           # 原始体系分类
 │   ├── meta-zh.json        # 中文体系分类
 │   └── translations.csv    # 日⇄中对照表（323 条，便于校对）
@@ -98,7 +164,8 @@
 
 | 字段 | 原日文字段 | 示例 | 说明 |
 | --- | --- | --- | --- |
-| `id` | — | `full_sexy_P001_front` | 唯一标识 |
+| `id` | — | `solo_sit_lean-bk-kn-up_f` | 固定语义短 ID |
+| `source_id` | — | `full_single_P001_front` | 原站 ID，用于溯源 |
 | `体系` | `系統` | 全身单人・性感系 | 4 大类 |
 | `姿势编号` | `ポーズ番号` | `P001` | 80 组编号 |
 | `分类` | `分類` | 站姿 | 26 类动作 |
@@ -108,7 +175,7 @@
 | `原图` | `原寸` | `img/…png` | 相对路径 |
 | `检索` | — | 拼接串 | 供前端模糊搜索 |
 
-原始日文数据 `data/pose.json` 保持原样，字段名与站点接口一致，便于对照或回灌。
+原始日文数据 `data/pose.json` 保持原样，用于对照和上游下载；本站日文展示使用带新路径的 `data/pose-ja.json`。
 
 ## 本地预览
 
@@ -156,10 +223,10 @@ python3 scripts/verify.py
 
 > ⚠️ **不要**把 Build output directory 直接填 `/`。仓库根目录含 `.git`（数百 MB），
 > Cloudflare 会把它当静态资源扫描，pack 文件超过 25 MiB 单文件限制会导致构建失败。
-> `scripts/build.sh` 只拷贝 `index.html`、`_headers`、`data/`、`thumbs/`、`img/` 到 `dist/`。
+> `scripts/build.sh` 只拷贝站点代码、数据、图片和 skill 等发布文件到 `dist/`，排除 Git 历史。
 > 若确实想用根目录，仓库已附 `.assetsignore` 兜底排除非站点文件。
 
-> 站点限制：单文件 ≤ 25 MiB、每次部署 ≤ 20,000 个文件。本仓库最大文件 917 KB、共 2883 个文件，均在限制内。
+> 站点限制：单文件 ≤ 25 MiB、每次部署 ≤ 20,000 个文件。图片最大约 917 KB；具体发布体积及文件数可运行构建脚本查看。
 
 **方式二：命令行直传**
 

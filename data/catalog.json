@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "image_template": "img/{system}_{category}_{pose}_{view}.png",
+  "thumbnail_template": "thumbs/{system}_{category}_{pose}_{view}.jpg",
+  "views": {
+    "f": "正面",
+    "hi": "俯视",
+    "lo": "仰视",
+    "s": "侧面",
+    "d": "斜侧"
+  },
+  "systems": {
+    "sexy": {
+      "name": {
+        "zh": "全身单人・性感系",
+        "en": "Solo · sensual",
+        "ja": "全身1人・セクシー系"
+      },
+      "categories": {
+        "stand": {
+          "name": {
+            "zh": "站姿",
+            "en": "Standing",
+            "ja": "立ち"
+          },
+          "index": "data/catalog/sexy/stand.json",
+          "pose_count": 15
+        },
+        "sit": {
+          "name": {
+            "zh": "坐姿",
+            "en": "Sitting",
+            "ja": "座り"
+          },
+          "index": "data/catalog/sexy/sit.json",
+          "pose_count": 15
+        },
+        "floor": {
+          "name": {
+            "zh": "跪立・四肢着地",
+            "en": "Kneeling / all fours",
+            "ja": "膝立ち・四つん這い"
+          },
+          "index": "data/catalog/sexy/floor.json",
+          "pose_count": 15
+        },
+        "lie": {
+          "name": {
+            "zh": "趴卧",
+            "en": "Lying",
+            "ja": "寝そべり"
+          },
+          "index": "data/catalog/sexy/lie.json",
+          "pose_count": 20
+        },
+        "spec": {
+          "name": {
+            "zh": "特殊",
+            "en": "Special",
+            "ja": "特殊"
+          },
+          "index": "data/catalog/sexy/spec.json",
+          "pose_count": 15
+        }
+      }
+    },
+    "solo": {
+      "name": {
+        "zh": "全身单人・标准系",
+        "en": "Solo · standard",
+        "ja": "全身1人・標準系"
+      },
+      "categories": {
+        "sit": {
+          "name": {
+            "zh": "坐姿",
+            "en": "Sitting",
+            "ja": "座り"
+          },
+          "index": "data/catalog/solo/sit.json",
+          "pose_count": 14
+        },
+        "stand": {
+          "name": {
+            "zh": "站姿",
+            "en": "Standing",
+            "ja": "立ち"
+          },
+          "index": "data/catalog/solo/stand.json",
+          "pose_count": 14
+        },
+        "kneel": {
+          "name": {
+            "zh": "跪立",
+            "en": "Kneeling",
+            "ja": "膝立ち"
+          },
+          "index": "data/catalog/solo/kneel.json",
+          "pose_count": 10
+        },
+        "side-sit": {
+          "name": {
+            "zh": "侧坐・女孩坐",
+            "en": "Side / W-sitting",
+            "ja": "横座り・女の子座り"
+          },
+          "index": "data/catalog/solo/side-sit.json",
+          "pose_count": 8
+        },
+        "lie": {
+          "name": {
+            "zh": "趴卧",
+            "en": "Lying",
+            "ja": "寝そべり"
+          },
+          "index": "data/catalog/solo/lie.json",
+          "pose_count": 9
+        },
+        "squat": {
+          "name": {
+            "zh": "蹲姿",
+            "en": "Squatting",
+            "ja": "しゃがみ"
+          },
+          "index": "data/catalog/solo/squat.json",
+          "pose_count": 6
+        },
+        "bend": {
+          "name": {
+            "zh": "前倾",
+            "en": "Leaning forward",
+            "ja": "前かがみ"
+          },
+          "index": "data/catalog/solo/bend.json",
+          "pose_count": 6
+        },
+        "arch": {
+          "name": {
+            "zh": "后仰・挺背",
+            "en": "Backbends",
+            "ja": "のけぞり・反り"
+          },
+          "index": "data/catalog/solo/arch.json",
+          "pose_count": 3
+        },
+        "twist": {
+          "name": {
+            "zh": "扭身",
+            "en": "Twisting",
+            "ja": "ひねり"
+          },
+          "index": "data/catalog/solo/twist.json",
+          "pose_count": 3
+        }
+      }
+    },
+    "upper": {
+      "name": {
+        "zh": "上半身单人",
+        "en": "Upper body",
+        "ja": "上半身1人"
+      },
+      "categories": {
+        "cute": {
+          "name": {
+            "zh": "可爱系",
+            "en": "Cute gestures",
+            "ja": "かわいい系"
+          },
+          "index": "data/catalog/upper/cute.json",
+          "pose_count": 25
+        },
+        "chest": {
+          "name": {
+            "zh": "挤胸・强调事业线系",
+            "en": "Chest emphasis",
+            "ja": "胸寄せ・谷間強調系"
+          },
+          "index": "data/catalog/upper/chest.json",
+          "pose_count": 25
+        },
+        "bold": {
+          "name": {
+            "zh": "性感・大胆系",
+            "en": "Sensual / bold",
+            "ja": "セクシー・露骨寄り系"
+          },
+          "index": "data/catalog/upper/bold.json",
+          "pose_count": 30
+        }
+      }
+    },
+    "duo": {
+      "name": {
+        "zh": "双人缠绵",
+        "en": "Two-person poses",
+        "ja": "2人絡み"
+      },
+      "categories": {
+        "stand": {
+          "name": {
+            "zh": "立位",
+            "en": "Standing",
+            "ja": "立位"
+          },
+          "index": "data/catalog/duo/stand.json",
+          "pose_count": 4
+        },
+        "face": {
+          "name": {
+            "zh": "贴脸系",
+            "en": "Face-to-face",
+            "ja": "顔寄せ系"
+          },
+          "index": "data/catalog/duo/face.json",
+          "pose_count": 6
+        },
+        "miss": {
+          "name": {
+            "zh": "正常位（传教士）",
+            "en": "Missionary",
+            "ja": "正常位"
+          },
+          "index": "data/catalog/duo/miss.json",
+          "pose_count": 11
+        },
+        "rear": {
+          "name": {
+            "zh": "后入位",
+            "en": "Rear entry",
+            "ja": "後背位"
+          },
+          "index": "data/catalog/duo/rear.json",
+          "pose_count": 7
+        },
+        "sit": {
+          "name": {
+            "zh": "坐位",
+            "en": "Sitting",
+            "ja": "座位"
+          },
+          "index": "data/catalog/duo/sit.json",
+          "pose_count": 2
+        },
+        "bk-sit": {
+          "name": {
+            "zh": "背向坐位",
+            "en": "Back-facing sitting",
+            "ja": "背面座位"
+          },
+          "index": "data/catalog/duo/bk-sit.json",
+          "pose_count": 7
+        },
+        "strad": {
+          "name": {
+            "zh": "骑乘位",
+            "en": "Straddling",
+            "ja": "騎乗位"
+          },
+          "index": "data/catalog/duo/strad.json",
+          "pose_count": 6
+        },
+        "side-lie": {
+          "name": {
+            "zh": "侧卧位",
+            "en": "Side-lying",
+            "ja": "側位"
+          },
+          "index": "data/catalog/duo/side-lie.json",
+          "pose_count": 3
+        },
+        "face-sit": {
+          "name": {
+            "zh": "面对面坐位",
+            "en": "Face-to-face sitting",
+            "ja": "対面座位"
+          },
+          "index": "data/catalog/duo/face-sit.json",
+          "pose_count": 2
+        },
+        "stand-close": {
+          "name": {
+            "zh": "立位贴身",
+            "en": "Standing close",
+            "ja": "立位密着"
+          },
+          "index": "data/catalog/duo/stand-close.json",
+          "pose_count": 4
+        },
+        "sit-close": {
+          "name": {
+            "zh": "坐位贴身",
+            "en": "Sitting close",
+            "ja": "座位密着"
+          },
+          "index": "data/catalog/duo/sit-close.json",
+          "pose_count": 1
+        },
+        "lie": {
+          "name": {
+            "zh": "趴卧",
+            "en": "Lying",
+            "ja": "寝そべり"
+          },
+          "index": "data/catalog/duo/lie.json",
+          "pose_count": 1
+        },
+        "close": {
+          "name": {
+            "zh": "贴身",
+            "en": "Close contact",
+            "ja": "密着"
+          },
+          "index": "data/catalog/duo/close.json",
+          "pose_count": 1
+        }
+      }
+    }
+  }
+}

@@ -11,16 +11,19 @@
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="application-name" content="POSE Atlas">
 <meta name="theme-color" content="#f5f7fb">
-<link rel="canonical" href="https://ai-pose-gallery.anhao.app/">
-<link rel="sitemap" type="application/xml" href="/sitemap.xml">
-<link rel="alternate" hreflang="zh-CN" href="https://ai-pose-gallery.anhao.app/">
+<link rel="canonical" href="https://zhuzhe1983.github.io/ai-pose-gallery-zh/">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<link rel="alternate" hreflang="zh-CN" href="https://zhuzhe1983.github.io/ai-pose-gallery-zh/?lang=zh">
+<link rel="alternate" hreflang="en" href="https://zhuzhe1983.github.io/ai-pose-gallery-zh/?lang=en">
+<link rel="alternate" hreflang="ja" href="https://zhuzhe1983.github.io/ai-pose-gallery-zh/?lang=ja">
+<link rel="alternate" type="text/plain" title="Agent access" href="llms.txt">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:site_name" content="POSE Atlas">
 <meta property="og:title" content="AI 姿势参考库｜288 组人体姿势 · 1439 张多角度参考图">
 <meta property="og:description" content="按体系、分类、视角筛选 288 组人体姿势，多角度对比并下载 900×1200 原图，适用于 AI 绘画、构图与动作参考。">
-<meta property="og:url" content="https://ai-pose-gallery.anhao.app/">
-<meta property="og:image" content="https://ai-pose-gallery.anhao.app/og-cover.jpg">
+<meta property="og:url" content="https://zhuzhe1983.github.io/ai-pose-gallery-zh/">
+<meta property="og:image" content="https://zhuzhe1983.github.io/ai-pose-gallery-zh/og-cover.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -28,7 +31,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AI 姿势参考库｜288 组人体姿势 · 1439 张参考图">
 <meta name="twitter:description" content="288 组人体姿势、1439 张多角度参考图，支持筛选、对比与下载原图。">
-<meta name="twitter:image" content="https://ai-pose-gallery.anhao.app/og-cover.jpg">
+<meta name="twitter:image" content="https://zhuzhe1983.github.io/ai-pose-gallery-zh/og-cover.jpg">
 <meta name="twitter:image:alt" content="AI 姿势参考库页面预览">
 <meta name="twitter:site" content="@anhao_ai">
 <meta name="twitter:creator" content="@anhao_ai">
@@ -39,8 +42,8 @@
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://ai-pose-gallery.anhao.app/#website",
-      "url": "https://ai-pose-gallery.anhao.app/",
+      "@id": "https://zhuzhe1983.github.io/ai-pose-gallery-zh/#website",
+      "url": "https://zhuzhe1983.github.io/ai-pose-gallery-zh/",
       "name": "POSE Atlas",
       "alternateName": "AI 姿势参考库",
       "description": "288 组人体姿势、1439 张多角度 AI 绘画姿势参考图。",
@@ -48,16 +51,16 @@
     },
     {
       "@type": "ImageGallery",
-      "@id": "https://ai-pose-gallery.anhao.app/#webpage",
-      "url": "https://ai-pose-gallery.anhao.app/",
+      "@id": "https://zhuzhe1983.github.io/ai-pose-gallery-zh/#webpage",
+      "url": "https://zhuzhe1983.github.io/ai-pose-gallery-zh/",
       "name": "AI 姿势参考库 · POSE Atlas",
       "description": "收录 288 组人体姿势、1439 张 900×1200 多角度参考图，支持分类筛选、多角度对比与原图下载。",
-      "isPartOf": { "@id": "https://ai-pose-gallery.anhao.app/#website" },
+      "isPartOf": { "@id": "https://zhuzhe1983.github.io/ai-pose-gallery-zh/#website" },
       "inLanguage": "zh-CN",
       "about": { "@type": "Thing", "name": "人体姿势参考" },
       "primaryImageOfPage": {
         "@type": "ImageObject",
-        "url": "https://ai-pose-gallery.anhao.app/og-cover.jpg",
+        "url": "https://zhuzhe1983.github.io/ai-pose-gallery-zh/og-cover.jpg",
         "width": 1200,
         "height": 630
       }
@@ -94,6 +97,9 @@ svg{display:block;flex:0 0 auto}
 .brand-copy strong{font-size:15px;letter-spacing:.02em}
 .brand-copy span{font-size:10px;color:var(--text-3);letter-spacing:.16em;text-transform:uppercase;margin-top:4px}
 .top-actions{display:flex;align-items:center;gap:6px}
+.language-control select{max-width:100px;height:36px;padding:0 8px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text);font:inherit}
+.topbar{flex-wrap:wrap;padding-block:10px}
+.top-actions{margin-left:auto}
 .action-btn{height:38px;padding:0 12px;border:0;border-radius:9px;background:transparent;color:var(--text-2);display:inline-flex;align-items:center;gap:7px;cursor:pointer;text-decoration:none;font-size:13px;font-weight:600}
 .action-btn:hover{background:var(--surface-2);color:var(--text)}
 .action-btn.author{border:1px solid var(--line);margin-left:5px}
@@ -355,88 +361,90 @@ main{padding:22px 0 54px}
 <body>
 <header class="site-header">
   <div class="shell topbar">
-    <a class="brand" href="./" aria-label="返回姿势参考库首页">
+    <a class="brand" href="./" aria-label="返回姿势参考库首页" data-i18n-aria-label="home">
       <span class="brand-mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="5" r="2.4"/><path d="M12 8v6m0-3-4 2m4-2 4 2m-4 2-3 6m3-6 3 6"/></svg></span>
       <span class="brand-copy"><strong>POSE Atlas</strong><span>Reference Library</span></span>
     </a>
-    <nav class="top-actions" aria-label="帮助与来源">
-      <button class="action-btn" type="button" data-info="guide"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 0 1 4.6 1c0 1.8-2.3 2-2.3 3.6M12 17h.01"/></svg><span class="action-text">使用指南</span></button>
-      <button class="action-btn" type="button" data-info="notice"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5m0 3h.01"/></svg><span class="action-text">注意事项</span></button>
-      <a class="action-btn author" href="https://github.com/anhao/ai-pose-gallery-zh" target="_blank" rel="noopener noreferrer" aria-label="访问我们的 GitHub 仓库"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .8a11.3 11.3 0 0 0-3.6 22c.6.1.8-.2.8-.5v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.3 11.3 0 0 0 12 .8Z"/></svg><span class="action-text">GitHub</span></a>
-      <a class="action-btn author" href="https://x.com/anhao_ai" target="_blank" rel="noopener noreferrer" aria-label="访问我们的 X 主页"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span class="action-text">@anhao_ai</span></a>
+    <nav class="top-actions" aria-label="帮助与来源" data-i18n-aria-label="helpSources">
+      <button class="action-btn" type="button" data-info="guide" aria-label="使用指南" data-i18n-aria-label="guide"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 0 1 4.6 1c0 1.8-2.3 2-2.3 3.6M12 17h.01"/></svg><span class="action-text" data-i18n="guide">使用指南</span></button>
+      <button class="action-btn" type="button" data-info="notice" aria-label="注意事项" data-i18n-aria-label="notice"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5m0 3h.01"/></svg><span class="action-text" data-i18n="notice">注意事项</span></button>
+      <a class="action-btn author" href="https://github.com/zhuzhe1983/ai-pose-gallery-zh" target="_blank" rel="noopener noreferrer" aria-label="访问我们的 GitHub 仓库" data-i18n-aria-label="repo"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .8a11.3 11.3 0 0 0-3.6 22c.6.1.8-.2.8-.5v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.3 11.3 0 0 0 12 .8Z"/></svg><span class="action-text">GitHub</span></a>
+      <a class="action-btn author" href="https://x.com/anhao_ai" target="_blank" rel="noopener noreferrer" aria-label="访问我们的 X 主页" data-i18n-aria-label="authorX"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span class="action-text">@anhao_ai</span></a>
+      <label class="language-control"><span class="sr-only" data-i18n="language">界面语言</span><select id="languageSelect" aria-label="界面语言" data-i18n-aria-label="language"><option value="zh">中文</option><option value="en">English</option><option value="ja">日本語</option></select></label>
     </nav>
   </div>
   <div class="shell hero">
     <div>
-      <p class="eyebrow">AI POSE REFERENCE · 中文版图库</p>
-      <h1>AI 姿势参考库<span class="hero-tagline">找到你想要的每一个姿势</span></h1>
-      <p class="hero-desc">多角度人体素体线稿，适用于 AI 绘画、构图与动作参考。按体系、分类、视角筛选，一键下载原图。</p>
+      <p class="eyebrow" data-i18n="eyebrow">AI POSE REFERENCE · 中文版图库</p>
+      <h1><span data-i18n="title">AI 姿势参考库</span><span class="hero-tagline" data-i18n="tagline">找到你想要的每一个姿势</span></h1>
+      <p class="hero-desc" data-i18n="description">多角度人体素体线稿，适用于 AI 绘画、构图与动作参考。按体系、分类、视角筛选，一键下载原图。</p>
     </div>
-    <div class="hero-stats" aria-label="图库统计">
-      <div class="stat"><strong id="statPoses">288</strong><span>组姿势</span></div>
-      <div class="stat"><strong id="statImages">1,439</strong><span>张参考图</span></div>
-      <div class="stat"><strong>5</strong><span>种视角</span></div>
+    <div class="hero-stats" aria-label="图库统计" data-i18n-aria-label="stats">
+      <div class="stat"><strong id="statPoses">288</strong><span data-i18n="poseUnit">组姿势</span></div>
+      <div class="stat"><strong id="statImages">1,439</strong><span data-i18n="imageUnit">张参考图</span></div>
+      <div class="stat"><strong>5</strong><span data-i18n="viewUnit">种视角</span></div>
     </div>
   </div>
 </header>
 
-<section class="controls" aria-label="图库筛选">
+<section class="controls" aria-label="图库筛选" data-i18n-aria-label="filterGallery">
   <div class="shell controls-inner">
-    <div class="line-tabs" id="lineTabs" role="tablist" aria-label="体系分类"></div>
+    <div class="line-tabs" id="lineTabs" role="tablist" aria-label="体系分类" data-i18n-aria-label="system"></div>
     <div class="search-row">
       <label class="search-box">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m20 20-4.2-4.2"/></svg>
-        <input id="searchInput" type="search" placeholder="搜索姿势名、编号、ID 或分类" autocomplete="off" aria-label="搜索姿势">
-        <button class="search-clear" id="searchClear" type="button" aria-label="清空搜索" hidden><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        <input id="searchInput" type="search" placeholder="搜索姿势名、编号、ID 或分类" data-i18n-placeholder="searchPlaceholder" autocomplete="off" aria-label="搜索姿势" data-i18n-aria-label="search">
+        <button class="search-clear" id="searchClear" type="button" aria-label="清空搜索" data-i18n-aria-label="clearSearch" hidden><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
         <span class="search-key" aria-hidden="true">/</span>
       </label>
-      <button class="filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPanel"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>筛选<span class="filter-badge" id="filterBadge"></span></button>
+      <button class="filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPanel"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M7 12h10m-7 6h4"/></svg><span data-i18n="filters">筛选</span><span class="filter-badge" id="filterBadge"></span></button>
     </div>
     <div class="filter-panel" id="filterPanel">
       <div class="filter-field">
-        <label class="filter-label" for="categorySelect">动作分类</label>
-        <div class="select-wrap"><select id="categorySelect"><option value="">全部分类</option></select></div>
+        <label class="filter-label" for="categorySelect" data-i18n="category">动作分类</label>
+        <div class="select-wrap"><select id="categorySelect"><option value="" data-i18n="allCategories">全部分类</option></select></div>
       </div>
       <div class="filter-field">
-        <span class="filter-label">视角</span>
-        <div class="segmented" id="angleFilter" role="group" aria-label="按视角筛选"></div>
+        <span class="filter-label" data-i18n="angle">视角</span>
+        <div class="segmented" id="angleFilter" role="group" aria-label="按视角筛选" data-i18n-aria-label="filterAngle"></div>
       </div>
       <div class="filter-field view-field">
-        <span class="filter-label">展示方式</span>
-        <div class="segmented" id="viewFilter" role="group" aria-label="切换展示方式">
-          <button type="button" data-view="pose" aria-pressed="true">按姿势分组</button>
-          <button type="button" data-view="single" aria-pressed="false">逐张浏览</button>
+        <span class="filter-label" data-i18n="display">展示方式</span>
+        <div class="segmented" id="viewFilter" role="group" aria-label="切换展示方式" data-i18n-aria-label="switchDisplay">
+          <button type="button" data-view="pose" aria-pressed="true" data-i18n="groupMode">按姿势分组</button>
+          <button type="button" data-view="single" aria-pressed="false" data-i18n="singleMode">逐张浏览</button>
         </div>
       </div>
-      <button class="reset-btn" id="resetFilters" type="button">重置筛选</button>
+      <button class="reset-btn" id="resetFilters" type="button" data-i18n="reset">重置筛选</button>
     </div>
   </div>
 </section>
 
 <main class="shell">
-  <h2 class="sr-only">姿势图库列表</h2>
+  <h2 class="sr-only" data-i18n="galleryList">姿势图库列表</h2>
   <div class="result-head">
-    <div class="result-summary"><strong id="resultCount">正在加载图库…</strong><span id="visibleCount"></span></div>
-    <div class="result-hint"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/><circle cx="12" cy="12" r="3"/></svg>悬停缩略图切换角度 · 点击查看原图</div>
+    <div class="result-summary"><strong id="resultCount" data-i18n="loading">正在加载图库…</strong><span id="visibleCount"></span></div>
+    <div class="result-hint"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/><circle cx="12" cy="12" r="3"/></svg><span data-i18n="hint">悬停缩略图切换角度 · 点击查看原图</span></div>
   </div>
-  <div class="active-filters" id="activeFilters" aria-label="当前筛选条件"></div>
+  <div class="active-filters" id="activeFilters" aria-label="当前筛选条件" data-i18n-aria-label="activeFilters"></div>
   <div class="grid" id="grid" aria-live="polite">
     <div class="pose-card skeleton"><div class="card-image"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
     <div class="pose-card skeleton"><div class="card-image"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
     <div class="pose-card skeleton"><div class="card-image"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
     <div class="pose-card skeleton"><div class="card-image"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
   </div>
-  <button class="load-more" id="loadMore" type="button" hidden>加载更多</button>
+  <button class="load-more" id="loadMore" type="button" hidden data-i18n="loadMore">加载更多</button>
 </main>
 
 <footer class="site-footer">
   <div class="shell footer-inner">
     <div class="footer-copy">
-      <p><strong>POSE Atlas 中文版</strong> · 图片与原始数据版权归原作者ギア所有 · 中文版由 Anhao 整理维护</p>
-      <p>来源：<a href="https://ai-pose-gallery.pages.dev/" target="_blank" rel="noopener noreferrer">ai-pose-gallery.pages.dev</a> · 使用图片前请阅读注意事项，图片数据的再分发、转载与再售以原作者条款为准。</p>
+      <p data-i18n-html="footerCredit"><strong>POSE Atlas 中文版</strong> · 图片与原始数据版权归原作者ギア所有 · 中文版由 Anhao 整理维护</p>
+      <p data-i18n-html="footerSource">来源：<a href="https://ai-pose-gallery.pages.dev/" target="_blank" rel="noopener noreferrer">ai-pose-gallery.pages.dev</a> · 使用图片前请阅读注意事项，图片数据的再分发、转载与再售以原作者条款为准。</p>
     </div>
     <div class="footer-links">
-      <a href="https://github.com/anhao/ai-pose-gallery-zh" target="_blank" rel="noopener noreferrer">GitHub 源码<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4h6v6m0-6-9 9M19 14v6H4V5h6"/></svg></a>
+      <a href="skills/ai-pose-gallery/SKILL.md" data-i18n="agentSkill">Agent Skill</a>
+      <a href="https://github.com/zhuzhe1983/ai-pose-gallery-zh" target="_blank" rel="noopener noreferrer"><span data-i18n="github">GitHub 源码</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4h6v6m0-6-9 9M19 14v6H4V5h6"/></svg></a>
       <a href="https://x.com/anhao_ai" target="_blank" rel="noopener noreferrer">X @anhao_ai<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4h6v6m0-6-9 9M19 14v6H4V5h6"/></svg></a>
     </div>
   </div>
@@ -444,479 +452,39 @@ main{padding:22px 0 54px}
 
 <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewerTitle" hidden>
   <section class="viewer-panel">
-    <button class="viewer-close" id="viewerClose" type="button" aria-label="关闭大图"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    <button class="viewer-close" id="viewerClose" type="button" aria-label="关闭大图" data-i18n-aria-label="closeViewer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     <div class="viewer-stage" id="viewerStage">
       <img class="viewer-image" id="viewerImage" alt="" draggable="false">
-      <span class="image-status" id="imageStatus" hidden>正在加载原图…</span>
-      <button class="viewer-nav prev" id="anglePrev" type="button" aria-label="上一个角度"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m15 5-7 7 7 7"/></svg></button>
-      <button class="viewer-nav next" id="angleNext" type="button" aria-label="下一个角度"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m9 5 7 7-7 7"/></svg></button>
+      <span class="image-status" id="imageStatus" hidden data-i18n="loadingImage">正在加载原图…</span>
+      <button class="viewer-nav prev" id="anglePrev" type="button" aria-label="上一个角度" data-i18n-aria-label="prevAngle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m15 5-7 7 7 7"/></svg></button>
+      <button class="viewer-nav next" id="angleNext" type="button" aria-label="下一个角度" data-i18n-aria-label="nextAngle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m9 5 7 7-7 7"/></svg></button>
     </div>
     <aside class="viewer-side">
       <div class="viewer-heading">
         <div class="viewer-eyebrow"><span id="viewerNumber">POSE</span><span class="viewer-position" id="viewerPosition"></span></div>
-        <h2 id="viewerTitle">姿势详情</h2>
-        <div class="id-row"><code class="viewer-id" id="viewerId"></code><button class="copy-btn" id="copyId" type="button">复制 ID</button></div>
+        <h2 id="viewerTitle" data-i18n="poseDetails">姿势详情</h2>
+        <div class="id-row"><code class="viewer-id" id="viewerId"></code><button class="copy-btn" id="copyId" type="button" data-i18n="copyId">复制 ID</button></div>
       </div>
       <div>
-        <h3 class="side-section-title">切换视角</h3>
+        <h3 class="side-section-title" data-i18n="switchAngle">切换视角</h3>
         <div class="viewer-angles" id="viewerAngles"></div>
       </div>
       <div class="download-stack">
-        <a class="download-btn" id="downloadImage" href="#" download><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12m-5-5 5 5 5-5M4 20h16"/></svg>下载原尺寸 PNG</a>
-        <a class="open-btn" id="openImage" href="#" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 4h6v6m0-6-9 9M19 14v6H4V5h6"/></svg>新窗口打开</a>
+        <a class="download-btn" id="downloadImage" href="#" download><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12m-5-5 5 5 5-5M4 20h16"/></svg><span data-i18n="download">下载原尺寸 PNG</span></a>
+        <a class="open-btn" id="openImage" href="#" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 4h6v6m0-6-9 9M19 14v6H4V5h6"/></svg><span data-i18n="openImage">新窗口打开</span></a>
       </div>
       <dl class="metadata" id="viewerMeta"></dl>
-      <div class="keyboard-help"><kbd>←</kbd> <kbd>→</kbd> 切换角度　<kbd>↑</kbd> <kbd>↓</kbd> 切换姿势<br><kbd>Esc</kbd> 关闭 · 手机可左右滑动切换角度</div>
+      <div class="keyboard-help" data-i18n-html="keyboard"><kbd>←</kbd> <kbd>→</kbd> 切换角度　<kbd>↑</kbd> <kbd>↓</kbd> 切换姿势<br><kbd>Esc</kbd> 关闭 · 手机可左右滑动切换角度</div>
     </aside>
   </section>
 </div>
 
 <dialog class="info-dialog" id="infoDialog">
-  <div class="info-head"><h2 id="infoTitle">使用指南</h2><button class="info-close" id="infoClose" type="button" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+  <div class="info-head"><h2 id="infoTitle" data-i18n="guide">使用指南</h2><button class="info-close" id="infoClose" type="button" aria-label="关闭" data-i18n-aria-label="close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
   <div class="info-content" id="infoContent"></div>
 </dialog>
 
-<script>
-(() => {
-'use strict';
-const ANGLES = ['正面', '俯视', '仰视', '侧面', '斜侧'];
-const PAGE_SIZE = { pose: 60, single: 96 };
-const state = { line: '', category: '', angle: '', query: '', view: 'pose', shown: PAGE_SIZE.pose };
-const $ = selector => document.querySelector(selector);
-const grid = $('#grid');
-const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const format = value => Number(value).toLocaleString('zh-CN');
-const icon = name => ({
-  expand: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/></svg>',
-  search: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m20 20-4.2-4.2"/></svg>'
-}[name] || '');
-
-let DATA = [];
-let GROUPS = [];
-let LINES = [];
-let currentList = [];
-let renderedCount = 0;
-const groupMap = new Map();
-const viewerState = { index: 0, item: null, token: 0, returnFocus: null };
-
-function groupKey(item) { return `${item.体系}|${item.姿势编号 || item.id}`; }
-
-function prepareData(data) {
-  DATA = data;
-  LINES = [...new Set(DATA.map(item => item.体系))];
-  DATA.forEach(item => {
-    item._search = `${item.姿势名称} ${item.id} ${item.分类} ${item.姿势编号}`.toLowerCase();
-    const key = groupKey(item);
-    if (!groupMap.has(key)) {
-      const group = { key, system: item.体系, number: item.姿势编号, name: item.姿势名称, category: item.分类, items: [], angles: {}, order: [] };
-      groupMap.set(key, group);
-      GROUPS.push(group);
-    }
-    const group = groupMap.get(key);
-    group.items.push(item);
-    if (item.角度 && !group.angles[item.角度]) group.angles[item.角度] = item;
-  });
-  GROUPS.sort((a, b) => (LINES.indexOf(a.system) - LINES.indexOf(b.system)) || String(a.number).localeCompare(String(b.number)));
-  GROUPS.forEach(group => {
-    group.order = ANGLES.map(angle => group.angles[angle]).filter(Boolean);
-    group.items.forEach(item => { if (!group.order.includes(item)) group.order.push(item); });
-  });
-  $('#statPoses').textContent = format(GROUPS.length);
-  $('#statImages').textContent = format(DATA.length);
-  renderTabs();
-  renderCategoryOptions();
-  renderAngleFilter();
-  render();
-}
-
-function renderTabs() {
-  const tabs = [['', '全部', DATA.length, GROUPS.length], ...LINES.map(line => [line, line, DATA.filter(item => item.体系 === line).length, GROUPS.filter(group => group.system === line).length])];
-  $('#lineTabs').innerHTML = tabs.map(([value, label, images, poses]) => `<button class="line-tab" type="button" role="tab" data-line="${esc(value)}" aria-selected="${state.line === value}"><span class="tab-name">${esc(label)}</span><span class="tab-count">${format(images)} 张 · ${format(poses)} 组</span></button>`).join('');
-}
-
-function renderCategoryOptions() {
-  const categories = [...new Set(DATA.filter(item => !state.line || item.体系 === state.line).map(item => item.分类).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
-  $('#categorySelect').innerHTML = '<option value="">全部分类</option>' + categories.map(category => `<option value="${esc(category)}"${state.category === category ? ' selected' : ''}>${esc(category)}</option>`).join('');
-}
-
-function renderAngleFilter() {
-  $('#angleFilter').innerHTML = ['', ...ANGLES].map(angle => `<button type="button" data-angle="${esc(angle)}" aria-pressed="${state.angle === angle}">${angle || '全部视角'}</button>`).join('');
-}
-
-function hit(item) {
-  return (!state.line || item.体系 === state.line) &&
-    (!state.category || item.分类 === state.category) &&
-    (!state.angle || item.角度 === state.angle) &&
-    (!state.query || item._search.includes(state.query));
-}
-
-function computeList() {
-  if (state.view === 'single') {
-    return DATA.filter(hit).map(item => ({ group: groupMap.get(groupKey(item)), item, matched: 1 }));
-  }
-  return GROUPS.filter(group => group.items.some(hit)).map(group => ({
-    group,
-    item: (state.angle && group.angles[state.angle]) || group.order[0],
-    matched: group.items.filter(hit).length
-  }));
-}
-
-function cardImage(item, name, number) {
-  return `<div class="card-image"><img class="main-image" src="${esc(item.缩略图)}" alt="${esc(name)} · ${esc(item.角度)}" loading="lazy" decoding="async"><div class="image-top"><span class="pose-no">${esc(number)}</span><span class="angle-tag">${esc(item.角度)}</span></div><span class="zoom-hint">${icon('expand')}</span></div>`;
-}
-
-function poseCard(entry, index) {
-  const { group, item } = entry;
-  const strip = ANGLES.filter(angle => group.angles[angle]).map(angle => {
-    const angleItem = group.angles[angle];
-    return `<button class="angle-thumb${angleItem === item ? ' on' : ''}" type="button" data-angle="${esc(angle)}" title="${esc(angle)}" aria-label="查看${esc(angle)}视角"><img src="${esc(angleItem.缩略图)}" alt="" loading="lazy" decoding="async"><span>${esc(angle)}</span></button>`;
-  }).join('');
-  return `<article class="pose-card" tabindex="0" data-index="${index}" aria-label="${esc(group.name)}，${esc(item.角度)}视角">${cardImage(item, group.name, group.number)}<div class="card-body"><h3>${esc(group.name)}</h3><div class="card-meta"><span class="system">${esc(group.system)}</span><span class="meta-dot">·</span><span class="category">${esc(group.category)}</span></div></div><div class="angle-strip">${strip}</div></article>`;
-}
-
-function singleCard(entry, index) {
-  const { item } = entry;
-  return `<article class="pose-card" tabindex="0" data-index="${index}" aria-label="${esc(item.姿势名称)}，${esc(item.角度)}视角">${cardImage(item, item.姿势名称, item.姿势编号)}<div class="card-body"><h3>${esc(item.姿势名称)}</h3><div class="card-meta"><span class="system">${esc(item.体系)}</span><span class="meta-dot">·</span><span class="category">${esc(item.分类)}</span></div><code class="card-id">${esc(item.id)}</code></div></article>`;
-}
-
-function syncControls() {
-  document.querySelectorAll('.line-tab').forEach(button => button.setAttribute('aria-selected', button.dataset.line === state.line));
-  document.querySelectorAll('#angleFilter button').forEach(button => button.setAttribute('aria-pressed', button.dataset.angle === state.angle));
-  document.querySelectorAll('#viewFilter button').forEach(button => button.setAttribute('aria-pressed', button.dataset.view === state.view));
-  $('#searchClear').hidden = !state.query;
-  const count = [state.category, state.angle].filter(Boolean).length + (state.view === 'single' ? 1 : 0);
-  $('#filterBadge').textContent = count || '';
-}
-
-function renderActiveFilters() {
-  const filters = [];
-  if (state.line) filters.push(['line', `体系：${state.line}`]);
-  if (state.category) filters.push(['category', `分类：${state.category}`]);
-  if (state.angle) filters.push(['angle', `视角：${state.angle}`]);
-  if (state.query) filters.push(['query', `搜索：${state.query}`]);
-  if (state.view === 'single') filters.push(['view', '逐张浏览']);
-  $('#activeFilters').innerHTML = filters.map(([key, label]) => `<button class="filter-chip" type="button" data-clear="${key}" title="移除此筛选">${esc(label)}</button>`).join('');
-}
-
-function render(append = false) {
-  if (!append) {
-    currentList = computeList();
-    renderedCount = 0;
-    grid.innerHTML = '';
-  }
-  const total = currentList.length;
-  const visible = currentList.slice(renderedCount, state.shown);
-  grid.insertAdjacentHTML('beforeend', visible.map((entry, offset) => state.view === 'pose' ? poseCard(entry, renderedCount + offset) : singleCard(entry, renderedCount + offset)).join(''));
-  renderedCount += visible.length;
-
-  if (state.view === 'pose') {
-    const images = currentList.reduce((sum, entry) => sum + entry.matched, 0);
-    $('#resultCount').textContent = `${format(total)} 组姿势 · ${format(images)} 张图片`;
-  } else {
-    $('#resultCount').textContent = `${format(total)} 张图片`;
-  }
-  $('#visibleCount').textContent = total > state.shown ? `已显示 ${format(renderedCount)} / ${format(total)} ${state.view === 'pose' ? '组' : '张'}` : `共 ${format(total)} ${state.view === 'pose' ? '组' : '张'}`;
-
-  if (!total) {
-    grid.innerHTML = `<div class="empty"><div class="empty-icon">${icon('search')}</div><h3>没有找到匹配的姿势</h3><p>试试更换关键词或减少筛选条件。</p><button type="button" id="emptyReset">清除全部筛选</button></div>`;
-  }
-  const more = $('#loadMore');
-  more.hidden = renderedCount >= total || !total;
-  more.textContent = `加载更多（剩余 ${format(total - renderedCount)} ${state.view === 'pose' ? '组' : '张'}）`;
-  syncControls();
-  renderActiveFilters();
-}
-
-function resetView() {
-  state.shown = PAGE_SIZE[state.view];
-  render();
-}
-
-function resetAll() {
-  state.line = '';
-  state.category = '';
-  state.angle = '';
-  state.query = '';
-  state.view = 'pose';
-  $('#searchInput').value = '';
-  renderTabs();
-  renderCategoryOptions();
-  resetView();
-}
-
-function updateCardPreview(card, entry) {
-  const item = entry.item;
-  const image = card.querySelector('.main-image');
-  image.src = item.缩略图;
-  image.alt = `${entry.group.name} · ${item.角度}`;
-  card.querySelector('.angle-tag').textContent = item.角度;
-  card.setAttribute('aria-label', `${entry.group.name}，${item.角度}视角`);
-  card.querySelectorAll('.angle-thumb').forEach(button => button.classList.toggle('on', button.dataset.angle === item.角度));
-}
-
-$('#lineTabs').addEventListener('click', event => {
-  const button = event.target.closest('.line-tab');
-  if (!button || button.dataset.line === state.line) return;
-  state.line = button.dataset.line;
-  state.category = '';
-  renderCategoryOptions();
-  resetView();
-});
-
-$('#categorySelect').addEventListener('change', event => {
-  state.category = event.target.value;
-  resetView();
-});
-
-$('#angleFilter').addEventListener('click', event => {
-  const button = event.target.closest('button[data-angle]');
-  if (!button) return;
-  state.angle = button.dataset.angle;
-  resetView();
-});
-
-$('#viewFilter').addEventListener('click', event => {
-  const button = event.target.closest('button[data-view]');
-  if (!button) return;
-  state.view = button.dataset.view;
-  resetView();
-});
-
-let searchTimer;
-$('#searchInput').addEventListener('input', event => {
-  $('#searchClear').hidden = !event.target.value;
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    state.query = event.target.value.trim().toLowerCase();
-    resetView();
-  }, 120);
-});
-
-$('#searchClear').addEventListener('click', () => {
-  $('#searchInput').value = '';
-  state.query = '';
-  resetView();
-  $('#searchInput').focus();
-});
-
-$('#filterToggle').addEventListener('click', () => {
-  const open = $('#filterPanel').classList.toggle('open');
-  $('#filterToggle').setAttribute('aria-expanded', String(open));
-});
-
-$('#resetFilters').addEventListener('click', resetAll);
-$('#activeFilters').addEventListener('click', event => {
-  const button = event.target.closest('button[data-clear]');
-  if (!button) return;
-  const key = button.dataset.clear;
-  if (key === 'line') { state.line = ''; state.category = ''; renderTabs(); renderCategoryOptions(); }
-  if (key === 'category') state.category = '';
-  if (key === 'angle') state.angle = '';
-  if (key === 'query') { state.query = ''; $('#searchInput').value = ''; }
-  if (key === 'view') state.view = 'pose';
-  resetView();
-});
-
-grid.addEventListener('click', event => {
-  if (event.target.closest('#emptyReset')) { resetAll(); return; }
-  const card = event.target.closest('.pose-card[data-index]');
-  if (!card) return;
-  const index = Number(card.dataset.index);
-  const entry = currentList[index];
-  const angleButton = event.target.closest('.angle-thumb');
-  if (angleButton && state.view === 'pose') {
-    entry.item = entry.group.angles[angleButton.dataset.angle];
-    updateCardPreview(card, entry);
-  }
-  openViewer(index, entry.item);
-});
-
-grid.addEventListener('mouseover', event => {
-  const button = event.target.closest('.angle-thumb');
-  if (!button || state.view !== 'pose') return;
-  const card = button.closest('.pose-card[data-index]');
-  const entry = currentList[Number(card.dataset.index)];
-  const item = entry.group.angles[button.dataset.angle];
-  if (!item || entry.item === item) return;
-  entry.item = item;
-  updateCardPreview(card, entry);
-});
-
-grid.addEventListener('keydown', event => {
-  if ((event.key === 'Enter' || event.key === ' ') && event.target.matches('.pose-card[data-index]')) {
-    event.preventDefault();
-    const index = Number(event.target.dataset.index);
-    openViewer(index, currentList[index].item);
-  }
-});
-
-$('#loadMore').addEventListener('click', () => {
-  state.shown = Math.min(state.shown + PAGE_SIZE[state.view], currentList.length);
-  render(true);
-});
-
-function openViewer(index, item) {
-  viewerState.index = index;
-  viewerState.item = item;
-  viewerState.returnFocus = document.activeElement;
-  $('#viewer').hidden = false;
-  document.body.classList.add('viewer-open');
-  showViewer();
-  $('#viewerClose').focus({ preventScroll: true });
-}
-
-function closeViewer() {
-  if ($('#viewer').hidden) return;
-  viewerState.token++;
-  $('#viewer').hidden = true;
-  document.body.classList.remove('viewer-open');
-  if (viewerState.returnFocus && document.contains(viewerState.returnFocus)) viewerState.returnFocus.focus({ preventScroll: true });
-}
-
-function showViewer() {
-  const entry = currentList[viewerState.index];
-  if (!entry) return;
-  const item = viewerState.item || entry.item;
-  const group = entry.group;
-  viewerState.item = item;
-  entry.item = item;
-  const token = ++viewerState.token;
-  const image = $('#viewerImage');
-  image.src = item.缩略图;
-  image.alt = `${item.姿势名称} · ${item.角度}`;
-  image.classList.add('is-loading');
-  $('#imageStatus').textContent = '正在加载原图…';
-  $('#imageStatus').hidden = false;
-  const full = new Image();
-  full.decoding = 'async';
-  full.onload = () => {
-    if (token !== viewerState.token) return;
-    image.src = item.原图;
-    image.classList.remove('is-loading');
-    $('#imageStatus').hidden = true;
-  };
-  full.onerror = () => {
-    if (token !== viewerState.token) return;
-    image.classList.remove('is-loading');
-    $('#imageStatus').textContent = '原图加载失败，可点击新窗口重试';
-    $('#imageStatus').hidden = false;
-  };
-  full.src = item.原图;
-
-  $('#viewerNumber').textContent = item.姿势编号 || 'POSE';
-  $('#viewerPosition').textContent = `${viewerState.index + 1} / ${currentList.length}`;
-  $('#viewerTitle').textContent = item.姿势名称;
-  $('#viewerId').textContent = item.id;
-  $('#copyId').textContent = '复制 ID';
-  $('#viewerMeta').innerHTML = [['体系', item.体系], ['姿势编号', item.姿势编号 || '—'], ['动作分类', item.分类 || '—'], ['当前视角', item.角度 || '—'], ['图片规格', '900 × 1200 PNG']].map(([key, value]) => `<dt>${key}</dt><dd>${esc(value)}</dd>`).join('');
-  $('#viewerAngles').innerHTML = ANGLES.filter(angle => group.angles[angle]).map(angle => {
-    const angleItem = group.angles[angle];
-    return `<button class="angle-thumb${angleItem === item ? ' on' : ''}" type="button" data-angle="${esc(angle)}" aria-label="切换到${esc(angle)}"><img src="${esc(angleItem.缩略图)}" alt="${esc(angle)}"><span>${esc(angle)}</span></button>`;
-  }).join('');
-  const download = $('#downloadImage');
-  download.href = item.原图;
-  download.setAttribute('download', `${item.id}.png`);
-  $('#openImage').href = item.原图;
-}
-
-function stepAngle(direction) {
-  const group = currentList[viewerState.index]?.group;
-  if (!group || group.order.length < 2) return;
-  const current = group.order.indexOf(viewerState.item);
-  viewerState.item = group.order[(current + direction + group.order.length) % group.order.length];
-  showViewer();
-}
-
-function stepPose(direction) {
-  const next = viewerState.index + direction;
-  if (next < 0 || next >= currentList.length) return;
-  const angle = viewerState.item.角度;
-  viewerState.index = next;
-  viewerState.item = currentList[next].group.angles[angle] || currentList[next].item;
-  showViewer();
-}
-
-$('#viewerClose').addEventListener('click', closeViewer);
-$('#viewer').addEventListener('click', event => { if (event.target === $('#viewer')) closeViewer(); });
-$('#anglePrev').addEventListener('click', () => stepAngle(-1));
-$('#angleNext').addEventListener('click', () => stepAngle(1));
-$('#viewerAngles').addEventListener('click', event => {
-  const button = event.target.closest('button[data-angle]');
-  if (!button) return;
-  viewerState.item = currentList[viewerState.index].group.angles[button.dataset.angle];
-  showViewer();
-});
-
-$('#copyId').addEventListener('click', async () => {
-  try {
-    await navigator.clipboard.writeText(viewerState.item.id);
-    $('#copyId').textContent = '已复制';
-  } catch {
-    $('#copyId').textContent = '请手动复制';
-  }
-});
-
-let touchStart = null;
-$('#viewerStage').addEventListener('touchstart', event => {
-  const touch = event.touches[0];
-  touchStart = { x: touch.clientX, y: touch.clientY };
-}, { passive: true });
-$('#viewerStage').addEventListener('touchend', event => {
-  if (!touchStart) return;
-  const touch = event.changedTouches[0];
-  const dx = touch.clientX - touchStart.x;
-  const dy = touch.clientY - touchStart.y;
-  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) stepAngle(dx < 0 ? 1 : -1);
-  touchStart = null;
-}, { passive: true });
-
-document.addEventListener('keydown', event => {
-  if (!$('#viewer').hidden) {
-    if (event.key === 'Escape') closeViewer();
-    else if (event.key === 'ArrowRight') stepAngle(1);
-    else if (event.key === 'ArrowLeft') stepAngle(-1);
-    else if (event.key === 'ArrowDown') { event.preventDefault(); stepPose(1); }
-    else if (event.key === 'ArrowUp') { event.preventDefault(); stepPose(-1); }
-    return;
-  }
-  if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
-    event.preventDefault();
-    $('#searchInput').focus();
-  }
-});
-
-const INFO = {
-  guide: {
-    title: '使用指南',
-    html: '<ul><li>将参考图导入各类 AI 工具的<strong>姿势参考 / 构图参考</strong>功能。</li><li>同一姿势连续使用多个视角，更容易保持生成图片或视频中的姿态一致。</li><li>点击卡片或缩略图进入大图，可下载 <strong>900 × 1200 原尺寸 PNG</strong>，便于查看细节。</li><li>图片为无五官的灰色人体素体线稿，不包含面部、服装与背景，请通过提示词或其他参考图补充。</li><li>电脑端使用 <strong>← / →</strong> 切换角度，<strong>↑ / ↓</strong> 切换姿势；手机端可左右滑动大图。</li></ul>'
-  },
-  notice: {
-    title: '注意事项',
-    html: '<ul><li>原作者允许免费用于作品制作，包括商业作品、编辑加工与姿势参考。</li><li><strong>禁止对图片数据本身（原尺寸或加工后）进行再分发、转载或转售。</strong></li><li>署名不是必须的（可自愿标注）。图片元数据已删除，素材按无保证方式提供。</li><li>图中为人体素体线稿，并非真实人物。</li><li>请勿用于真实人物、未成年人相关用途或违反公序良俗的用途。</li></ul><div class="info-note">以上为原站注意事项的中文整理。完整条款以原作者发布内容为准；本镜像的公开展示与转载授权问题，请站点维护者另行确认。</div>'
-  }
-};
-
-document.querySelectorAll('[data-info]').forEach(button => {
-  button.addEventListener('click', () => {
-    const info = INFO[button.dataset.info];
-    $('#infoTitle').textContent = info.title;
-    $('#infoContent').innerHTML = info.html;
-    $('#infoDialog').showModal();
-  });
-});
-$('#infoClose').addEventListener('click', () => $('#infoDialog').close());
-$('#infoDialog').addEventListener('click', event => { if (event.target === $('#infoDialog')) $('#infoDialog').close(); });
-
-fetch('data/pose-zh.json')
-  .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
-  .then(prepareData)
-  .catch(error => {
-    console.error(error);
-    $('#resultCount').textContent = '图库加载失败';
-    grid.innerHTML = '<div class="empty"><h3>无法读取姿势数据</h3><p>请确认通过 HTTP 服务访问页面，并检查 data/pose-zh.json 是否存在。</p><button type="button" onclick="location.reload()">重新加载</button></div>';
-  });
-})();
-</script>
+<script src="app.js"></script>
 <script defer src="https://u.authbox.cn/script.js" data-website-id="cde8a23b-4bf6-4ded-8cd9-2c9551dc8d38"></script>
 </body>
 </html>

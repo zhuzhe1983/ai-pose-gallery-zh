@@ -24,3 +24,5 @@ node_modules/
 
 # 构建产物
 dist/
+output/
+.playwright-cli/

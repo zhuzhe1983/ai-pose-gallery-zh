@@ -1,0 +1,18 @@
+# AI Pose Gallery
+
+> 288 poses, 1439 multi-angle mannequin references. Chinese, English and Japanese UI and pose labels. Public static files; no authentication. This site supplies reference images, not an image-generation API.
+
+- Site: https://zhuzhe1983.github.io/ai-pose-gallery-zh/
+- Agent skill: https://zhuzhe1983.github.io/ai-pose-gallery-zh/skills/ai-pose-gallery/SKILL.md
+- Optional Python helper: https://zhuzhe1983.github.io/ai-pose-gallery-zh/skills/ai-pose-gallery/scripts/pose_ref.py
+- Collection/category directory: https://zhuzhe1983.github.io/ai-pose-gallery-zh/data/catalog.json
+- Example small category: https://zhuzhe1983.github.io/ai-pose-gallery-zh/data/catalog/solo/sit.json
+- Example original: https://zhuzhe1983.github.io/ai-pose-gallery-zh/img/solo_sit_lean-bk-kn-up_f.png
+
+Original path: img/{type}_{category}_{pose}_{view}.png
+Thumbnail path: thumbs/{type}_{category}_{pose}_{view}.jpg
+Types: solo, sexy, upper, duo. Views: f (front), d (three-quarter), s (side), hi (high angle), lo (low angle).
+Known exact name: fetch directly. Unknown pose: read one category at data/catalog/{type}/{category}.json for canonical pose names and available views. Do not download the full index for a single lookup. Filenames are stable lowercase ASCII, at most 64 characters; display-language changes do not affect URLs.
+Originals are 900x1200 PNG drawings, not precomputed OpenPose skeletons. Attach the actual image to the generation tool as a reference; merely placing a URL in the prompt is not a reference-image input.
+
+UI language links: ?lang=zh, ?lang=en, ?lang=ja. Image rights belong to the original creator ギア; the code's MIT license does not cover images or original data.

@@ -10,6 +10,7 @@ import os
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from semantic_assets import asset_paths, read_names
 
 BASE = "https://ai-pose-gallery.pages.dev/"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,9 +22,10 @@ with open(os.path.join(ROOT, "data", "pose.json"), encoding="utf-8") as f:
     data = json.load(f)
 
 tasks = []
+names = read_names()
 for item in data:
-    for key in ("サムネ", "原寸"):
-        tasks.append((BASE + item[key], os.path.join(ROOT, item[key])))
+    for key, destination in zip(("サムネ", "原寸"), asset_paths(item["id"], names)):
+        tasks.append((BASE + item[key], os.path.join(ROOT, destination)))
 tasks = list(dict.fromkeys(tasks))
 
 

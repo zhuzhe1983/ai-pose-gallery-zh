@@ -10,6 +10,8 @@ import sys
 from collections import Counter
 
 import i18n
+import i18n_en
+from semantic_assets import asset_paths, read_names, semantic_id, write_catalog
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
@@ -37,20 +39,41 @@ if bad:
 
 # 中文键名版本
 out = []
+names = read_names()
 for x in data:
+    thumb, image = asset_paths(x["id"], names)
+    asset_id = semantic_id(x["id"], names)
     out.append({
-        "id": x["id"],
+        "id": asset_id,
+        "source_id": x["id"],
         "体系": i18n.SYSTEM[x["系統"]],
         "姿势编号": x["ポーズ番号"],
         "分类": i18n.CATEGORY[x["分類"]],
         "姿势名称": i18n.POSE[x["ポーズ名"]],
         "角度": i18n.ANGLE[x["アングル"]],
-        "缩略图": x["サムネ"],
-        "原图": x["原寸"],
-        "检索": f'{x["id"]} {i18n.SYSTEM[x["系統"]]}{i18n.CATEGORY[x["分類"]]}{i18n.POSE[x["ポーズ名"]]}{i18n.ANGLE[x["アングル"]]}',
+        "缩略图": thumb,
+        "原图": image,
+        "检索": f'{asset_id} {x["id"]} {i18n.SYSTEM[x["系統"]]}{i18n.CATEGORY[x["分類"]]}{i18n.POSE[x["ポーズ名"]]}{i18n.ANGLE[x["アングル"]]}',
     })
-with open(os.path.join(DATA, "pose-zh.json"), "w", encoding="utf-8") as f:
-    json.dump(out, f, ensure_ascii=False, indent=1)
+with open(os.path.join(DATA, "pose-titles-en.json"), encoding="utf-8") as f:
+    titles_en = json.load(f)
+locales = {"zh": out, "en": [], "ja": []}
+for original, zh in zip(data, out):
+    group = original["id"].rsplit("_", 1)[0]
+    en = {**zh, "体系": i18n_en.SYSTEM[zh["体系"]], "分类": i18n_en.CATEGORY[zh["分类"]],
+          "姿势名称": titles_en[group], "角度": i18n_en.ANGLE[zh["角度"]]}
+    ja = {**zh, "体系": original["系統"], "分类": original["分類"],
+          "姿势名称": original["ポーズ名"], "角度": original["アングル"]}
+    search = " ".join([zh["id"], zh["source_id"]] + [item[key] for item in (zh, en, ja)
+                     for key in ("体系", "分类", "姿势名称", "角度")])
+    for row in (zh, en, ja):
+        row["检索"] = search
+    locales["en"].append(en)
+    locales["ja"].append(ja)
+for lang, rows in locales.items():
+    with open(os.path.join(DATA, f"pose-{lang}.json"), "w", encoding="utf-8") as f:
+        json.dump(rows, f, ensure_ascii=False, indent=1)
+write_catalog(locales)
 
 with open(os.path.join(DATA, "meta-zh.json"), "w", encoding="utf-8") as f:
     json.dump({"体系分类": [i18n.SYSTEM[s] for s in meta["lines"]]}, f, ensure_ascii=False, indent=2)
