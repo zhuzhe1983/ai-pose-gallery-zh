@@ -28,7 +28,9 @@ export function bones(model) {
   return result;
 }
 export function createFigure(sex, height) {
-  const model = sex === "male" ? new Male(height) : new Female(height);
+  // Keep rig proportions fixed: base height and user scale are uniform sizing,
+  // so exporting/importing a resized figure cannot change its head or neck.
+  const model = sex === "male" ? new Male(1.8) : new Female(1.65);
   const all = bones(model),
     female = sex === "female";
   // Align chest, pelvis and legs on one neutral sagittal axis. The stock -2
