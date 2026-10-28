@@ -3,7 +3,14 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
 import { scene } from "./vendor/mannequin/scene.js";
-import { createFigure, groundFigure, disposeFigure, bones } from "./figure.js";
+import {
+  createFigure,
+  groundFigure,
+  disposeFigure,
+  bones,
+  setOutfit,
+  figureBounds,
+} from "./figure.js";
 import {
   PRESETS,
   NEUTRAL,
@@ -19,6 +26,13 @@ import {
 import { locales, translate } from "./i18n.js";
 import { FIGURE_IDS, MAX_FIGURES, SCALE_RANGE, BASE_HEIGHT } from "./config.js";
 import { shareURL, sceneFragment, decodeScene } from "./scene-url.js";
+import { readPoseImage, detectPoseImage } from "./pose-detection.js";
+import {
+  retargetPerson,
+  validateDetection,
+  usablePerson,
+} from "./pose-retarget.js";
+import { setupPosePhotoUI } from "./pose-photo-ui.js";
 
 const $ = (id) => document.getElementById(id),
   STORE = "pose-atlas-studio-v1",
@@ -54,6 +68,8 @@ let reference = null,
   urlTimer,
   urlRevision = 0,
   sharingReady = false;
+let applyingPhoto = false,
+  photoUI;
 const cache = new Map(),
   sliders = new Map();
 const rad = THREE.MathUtils.degToRad,
@@ -127,27 +143,37 @@ function translatePage() {
     $("backend").textContent = renderer.backend.isWebGPUBackend
       ? "WebGPU"
       : t("fallback");
+  photoUI?.translate();
 }
 function makeFigure(
   sex = "female",
   height = BASE_HEIGHT[sex],
   id = FIGURE_IDS.find((id) => !figures.some((f) => f.id === id)),
   scale = 1,
+  outfit = "ivory",
 ) {
   if (!["female", "male"].includes(sex)) throw Error("Invalid body type");
+  if (!["white", "ivory"].includes(outfit)) throw Error("Invalid outfit");
   finite(height, 1.2, 2.2, "height");
   if (!id || figures.length >= MAX_FIGURES) throw Error("Six figures maximum");
   finite(scale, SCALE_RANGE.min, SCALE_RANGE.max, "scale");
   const model = createFigure(sex, height);
+  setOutfit(model, outfit);
   model.scale.multiplyScalar(scale);
   groundFigure(model);
-  const f = { id, sex, height, scale, model };
+  const f = { id, sex, height, scale, outfit, model };
   figures.push(f);
   return f;
 }
 function addFigure(options = {}) {
   if (figures.length >= MAX_FIGURES) throw Error("Six figures maximum");
-  const f = makeFigure(options.sex, options.height, undefined, options.scale);
+  const f = makeFigure(
+    options.sex,
+    options.height,
+    undefined,
+    options.scale,
+    options.outfit,
+  );
   const placements = [
     [0, 0],
     [0.8, 0],
@@ -193,6 +219,11 @@ function selectFigure(id) {
 }
 function setFigure(id, changes = {}) {
   const f = figure(id);
+  if (
+    changes.outfit !== undefined &&
+    !["white", "ivory"].includes(changes.outfit)
+  )
+    throw Error("Invalid outfit");
   if (changes.sex !== undefined && !["female", "male"].includes(changes.sex))
     throw Error("Invalid body type");
   if (changes.height !== undefined) finite(changes.height, 1.2, 2.2, "height");
@@ -206,6 +237,7 @@ function setFigure(id, changes = {}) {
     f.sex = changes.sex;
     f.height = changes.height ?? BASE_HEIGHT[f.sex];
     f.model = createFigure(f.sex, f.height);
+    setOutfit(f.model, f.outfit);
     f.model.scale.multiplyScalar(f.scale);
     restoreFigure(f, { ...state, sex: f.sex });
     disposeFigure(old);
@@ -219,6 +251,10 @@ function setFigure(id, changes = {}) {
     f.scale = changes.scale;
   }
   if (changes.yaw !== undefined) f.model.rotation.y = rad(changes.yaw);
+  if (changes.outfit !== undefined) {
+    setOutfit(f.model, changes.outfit);
+    f.outfit = changes.outfit;
+  }
   if (changes.position) f.model.position.fromArray(changes.position);
   if (changes.ground === true || (!changes.position && $("floorLock").checked))
     groundFigure(f.model);
@@ -263,12 +299,159 @@ function neutralFigure(id) {
   refresh();
   commit();
 }
+async function detectImage(source, options = {}) {
+  const image = await readPoseImage(source, options);
+  return detectPoseImage(image, options);
+}
+async function applyDetectedPose(
+  raw,
+  { sex = "female", signal, onProgress = () => {} } = {},
+) {
+  if (applyingPhoto) throw Error("poseBusy");
+  if (!["female", "male"].includes(sex)) throw Error("Invalid body type");
+  const detection = structuredClone(validateDetection(raw));
+  const people = detection.people.filter(usablePerson);
+  if (!people.length)
+    throw Error(detection.people.length ? "poseLowConfidence" : "poseNoPeople");
+  const before = JSON.stringify(getState());
+  const targets = [...figures].sort((a, b) => a.id.localeCompare(b.id));
+  const staged = [],
+    reports = [];
+  applyingPhoto = true;
+  try {
+    // Stage hidden models. Cancellation/failure leaves the existing scene untouched.
+    const centers = people.map(
+      (p) => (p.landmarks[23].x + p.landmarks[24].x) / 2,
+    );
+    const center = (Math.min(...centers) + Math.max(...centers)) / 2;
+    const centersY = people.map(
+      (p) => (p.landmarks[23].y + p.landmarks[24].y) / 2,
+    );
+    const centerY = (Math.min(...centersY) + Math.max(...centersY)) / 2;
+    const bodyPixels = people
+      .map((p) => {
+        const a = p.landmarks;
+        return Math.hypot(
+          ((a[11].x + a[12].x - a[23].x - a[24].x) * detection.width) / 2,
+          ((a[11].y + a[12].y - a[23].y - a[24].y) * detection.height) / 2,
+        );
+      })
+      .sort((a, b) => a - b);
+    const metersPerPixel =
+      0.43 / Math.max(25, bodyPixels[Math.floor(bodyPixels.length / 2)]);
+    for (let i = 0; i < people.length; i++) {
+      signal?.throwIfAborted();
+      onProgress("fittingPose", i + 1, people.length);
+      const prior = targets[i];
+      const id =
+        prior?.id ||
+        FIGURE_IDS.find(
+          (id) =>
+            !figures.some((f) => f.id === id) &&
+            !staged.some((f) => f.id === id),
+        );
+      const f = {
+        id,
+        sex: prior?.sex || sex,
+        height: prior?.height || BASE_HEIGHT[sex],
+        scale: prior?.scale || 1,
+        outfit: prior?.outfit || "ivory",
+      };
+      f.model = createFigure(f.sex, f.height);
+      f.model.visible = false;
+      staged.push(f);
+      f.model.scale.multiplyScalar(f.scale);
+      setOutfit(f.model, f.outfit);
+      reports.push({
+        id,
+        ...(await retargetPerson(f.model, people[i], {
+          width: detection.width,
+          height: detection.height,
+          signal,
+        })),
+      });
+      const hip = f.model.l_leg
+        .getWorldPosition(new THREE.Vector3())
+        .add(f.model.r_leg.getWorldPosition(new THREE.Vector3()))
+        .multiplyScalar(0.5);
+      f.model.position.x = THREE.MathUtils.clamp(
+        (centers[i] - center) * detection.width * metersPerPixel - hip.x,
+        -8,
+        8,
+      );
+      f.model.position.z = 0;
+      if (people.length === 1) groundFigure(f.model);
+      else
+        f.model.position.y +=
+          THREE.MathUtils.clamp(
+            -(centersY[i] - centerY) * detection.height * metersPerPixel,
+            -7,
+            7,
+          ) - hip.y;
+    }
+    if (people.length > 1) {
+      const bounds = new THREE.Box3();
+      for (const f of staged) bounds.union(figureBounds(f.model));
+      const shift = FLOOR - bounds.min.y + 0.003;
+      for (const f of staged)
+        f.model.position.y = THREE.MathUtils.clamp(
+          f.model.position.y + shift,
+          -9,
+          9,
+        );
+    }
+    signal?.throwIfAborted();
+    if (JSON.stringify(getState()) !== before) throw Error("poseSceneChanged");
+    gizmo.detach();
+    for (const f of staged) {
+      const index = figures.findIndex((old) => old.id === f.id);
+      if (index >= 0) {
+        disposeFigure(figures[index].model);
+        figures[index] = f;
+      } else figures.push(f);
+      f.model.visible = true;
+    }
+    active = staged[0].id;
+    joint = "torso";
+    moveMode = false;
+    reference = null;
+    referenceRequest++;
+    renderReference();
+    renderLibrary();
+    if (people.length > 1) $("floorLock").checked = false;
+    refresh();
+    frameAll([0, 0, 1]);
+    document
+      .querySelectorAll("[data-camera]")
+      .forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.camera === "f")),
+      );
+    commit();
+    return {
+      applied: staged.length,
+      added: Math.max(0, staged.length - targets.length),
+      ignored: detection.people.length - people.length,
+      reports,
+    };
+  } catch (e) {
+    for (const f of staged) if (!figures.includes(f)) disposeFigure(f.model);
+    throw e;
+  } finally {
+    applyingPhoto = false;
+  }
+}
+async function poseFromImage(source, options = {}) {
+  const detection = await detectImage(source, options);
+  const report = await applyDetectedPose(detection, options);
+  return { detection, ...report };
+}
 function figureState(f) {
   return {
     id: f.id,
     sex: f.sex,
     height: f.height,
     scale: f.scale,
+    outfit: f.outfit,
     position: f.model.position.toArray(),
     rotation: f.model.quaternion.toArray(),
     joints: Object.fromEntries(
@@ -321,6 +504,8 @@ function validateState(s) {
     ids.add(f.id);
     finite(f.height, 1.2, 2.2);
     finite(f.scale ?? 1, SCALE_RANGE.min, SCALE_RANGE.max, "scale");
+    if (f.outfit !== undefined && !["white", "ivory"].includes(f.outfit))
+      throw Error("Invalid outfit");
     vector(f.position, 3, -10, 10);
     quaternion(f.rotation);
     if (!f.joints || Object.keys(f.joints).length !== keys.length)
@@ -347,7 +532,10 @@ function validateState(s) {
     throw Error("Invalid reference");
   const validated = structuredClone(s);
   validated.schema = "pose-atlas/studio@2";
-  validated.figures.forEach((f) => (f.scale ??= 1));
+  validated.figures.forEach((f) => {
+    f.scale ??= 1;
+    f.outfit ??= "ivory";
+  });
   return validated;
 }
 function restoreFigure(f, s) {
@@ -366,7 +554,13 @@ function restoreState(raw) {
     const old = figures;
     figures = [];
     for (const state of s.figures) {
-      const f = makeFigure(state.sex, state.height, state.id, state.scale);
+      const f = makeFigure(
+        state.sex,
+        state.height,
+        state.id,
+        state.scale,
+        state.outfit,
+      );
       restoreFigure(f, state);
     }
     old.forEach((f) => disposeFigure(f.model));
@@ -452,7 +646,10 @@ function setHighlight(enabled = true) {
     f.model.traverse((o) => {
       if (o.isMesh && o.material.emissive)
         o.material.emissive.setHex(
-          enabled && f.id === active && o.userData.joint === joint
+          enabled &&
+            f.id === active &&
+            o.userData.joint === joint &&
+            !o.userData.suit
             ? 0x201849
             : 0x000000,
         );
@@ -470,6 +667,9 @@ function attachGizmo() {
   gizmo.showZ = true;
   helper.visible = true;
   $("moveMode").setAttribute("aria-pressed", String(moveMode));
+  $("canvasMove").setAttribute("aria-pressed", String(moveMode));
+  $("canvasRotate").setAttribute("aria-pressed", String(!moveMode));
+  $("modeHint").textContent = t(moveMode ? "moveAxisHint" : "rotateAxisHint");
   setHighlight();
 }
 function slider(
@@ -572,6 +772,7 @@ function refresh() {
   $("joint").replaceChildren(...JOINTS.map((key) => new Option(t(key), key)));
   $("joint").value = joint;
   $("sex").value = current().sex;
+  $("outfit").value = current().outfit;
   sliders.clear();
   $("jointControls").replaceChildren();
   $("figureControls").replaceChildren();
@@ -646,8 +847,7 @@ function refresh() {
 function sceneBounds() {
   const box = new THREE.Box3();
   for (const f of figures) {
-    f.model.updateMatrixWorld(true);
-    box.union(new THREE.Box3().setFromObject(f.model));
+    box.union(figureBounds(f.model));
   }
   return box;
 }
@@ -803,6 +1003,7 @@ async function showReference(stem, view) {
   return { stem, view: reference.view, hasPreset: Boolean(PRESETS[stem]) };
 }
 function renderReference(forceOpen = false) {
+  $("detectReference").disabled = !reference;
   const collapsed = Boolean(reference) && innerWidth <= 540 && !forceOpen;
   $("reference").hidden = !reference || collapsed;
   $("showReference").hidden = !collapsed;
@@ -992,6 +1193,7 @@ function bindUI() {
   $("addMale").onclick = () => addFigure({ sex: "male" });
   $("removeActor").onclick = () => removeFigure(active);
   $("sex").onchange = () => setFigure(active, { sex: $("sex").value });
+  $("outfit").onchange = () => setFigure(active, { outfit: $("outfit").value });
   $("joint").onchange = () => {
     joint = $("joint").value;
     moveMode = false;
@@ -1019,6 +1221,14 @@ function bindUI() {
     moveMode = !moveMode;
     attachGizmo();
   };
+  $("canvasMove").onclick = () => {
+    moveMode = true;
+    attachGizmo();
+  };
+  $("canvasRotate").onclick = () => {
+    moveMode = false;
+    attachGizmo();
+  };
   $("floorLock").onchange = () => {
     if ($("floorLock").checked) figures.forEach((f) => groundFigure(f.model));
     refreshValues();
@@ -1031,6 +1241,22 @@ function bindUI() {
   $("undo").onclick = undo;
   $("redo").onclick = redo;
   document.addEventListener("keydown", (e) => {
+    if (
+      !e.ctrlKey &&
+      !e.metaKey &&
+      !e.altKey &&
+      !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) &&
+      !document.querySelector("dialog[open]")
+    ) {
+      if (e.key.toLowerCase() === "w") {
+        moveMode = true;
+        attachGizmo();
+      }
+      if (e.key.toLowerCase() === "e") {
+        moveMode = false;
+        attachGizmo();
+      }
+    }
     if (
       (e.ctrlKey || e.metaKey) &&
       e.key.toLowerCase() === "z" &&
@@ -1123,12 +1349,19 @@ function bindUI() {
       ),
       ray = new THREE.Raycaster();
     ray.setFromCamera(p, camera);
+    for (const f of figures)
+      f.model.traverse((o) => {
+        if (o.isSkinnedMesh && o.visible) {
+          o.computeBoundingSphere();
+          o.computeBoundingBox();
+        }
+      });
     const hit = ray
       .intersectObjects(
         figures.map((f) => f.model),
         true,
       )
-      .find((h) => h.object.userData.joint);
+      .find((h) => h.object.visible && h.object.userData.joint);
     if (hit) {
       const f = figures.find((f) => {
         let o = hit.object;
@@ -1140,11 +1373,33 @@ function bindUI() {
       });
       active = f.id;
       joint = hit.object.userData.joint;
-      moveMode = false;
+      if (hit.object.userData.suit && hit.face) {
+        const weights = new Map(),
+          geometry = hit.object.geometry;
+        for (const index of [hit.face.a, hit.face.b, hit.face.c])
+          for (let channel = 0; channel < 4; channel++) {
+            const key = geometry.attributes.skinIndex.getComponent(
+                index,
+                channel,
+              ),
+              weight = geometry.attributes.skinWeight.getComponent(
+                index,
+                channel,
+              );
+            weights.set(key, (weights.get(key) || 0) + weight);
+          }
+        const key =
+          hit.object.userData.jointKeys[
+            [...weights].sort((a, b) => b[1] - a[1])[0][0]
+          ];
+        joint = key === "pelvis" ? "body" : key === "neck" ? "head" : key;
+      }
       refresh();
     }
   });
   gizmo.addEventListener("dragging-changed", (e) => {
+    if (e.value && moveMode && gizmo.axis?.includes("Y"))
+      $("floorLock").checked = false;
     orbit.enabled = !e.value;
     if (down) down.dragged = true;
     if (!e.value) commit();
@@ -1298,6 +1553,12 @@ async function init() {
     setCamera("d");
   }
   sharingReady = true;
+  photoUI = setupPosePhotoUI({
+    t,
+    applyDetectedPose,
+    referenceURL: () =>
+      reference ? `../img/${reference.stem}_${reference.view}.png` : null,
+  });
   commit();
   renderer.setAnimationLoop(() => {
     if (!capturing && !document.hidden) {
@@ -1310,7 +1571,10 @@ async function init() {
   return true;
 }
 const api = {
-  version: 2,
+  version: 3,
+  detectImage,
+  applyDetectedPose,
+  poseFromImage,
   getShareURL,
   loadShareURL,
   getJointLimits: jointAxes,

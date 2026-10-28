@@ -1,6 +1,180 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Each row: Simplified Chinese, English, Japanese.
 const rows = {
+  outfit: ["表面 / 服装", "Surface / outfit", "表面・衣装"],
+  outfitWhite: ["白色素体", "White mannequin", "白い素体"],
+  outfitIvory: ["浅色紧身衣", "Ivory stretch suit", "淡色のストレッチスーツ"],
+  poseMode: ["操作方式", "Manipulation mode", "操作モード"],
+  rotateMode: ["旋转关节 · E", "Rotate joint · E", "関節を回転 · E"],
+  moveModeLabel: ["移动人物 · W", "Move figure · W", "人物を移動 · W"],
+  moveAxisHint: [
+    "拖动箭头移动；拖动平面可沿两个方向移动。向上拖会解除贴地。",
+    "Drag an arrow or plane to move. Vertical dragging releases the floor lock.",
+    "矢印・平面をドラッグして移動。上下移動で床への固定を解除します。",
+  ],
+  rotateAxisHint: [
+    "点击身体部位，再拖动彩色旋转环。",
+    "Select a body part, then drag a colored ring.",
+    "部位を選択し、色付きのリングをドラッグします。",
+  ],
+  photoPose: ["图片转姿势", "Pose from image", "画像からポーズ"],
+  onDevice: ["本机运行", "On device", "端末内処理"],
+  uploadPose: [
+    "选择照片 · 识别并同步",
+    "Choose photo · detect & sync",
+    "写真を選択・検出して反映",
+  ],
+  detectReference: [
+    "识别当前参考图",
+    "Detect current reference",
+    "現在の参考画像を検出",
+  ],
+  reviewPhoto: [
+    "查看识别结果 / 修正关键点",
+    "Review / correct landmarks",
+    "結果を確認・関節点を修正",
+  ],
+  photoPrivacy: [
+    "照片仅在浏览器内处理，不上传。最多六人，人物不足自动补齐。",
+    "Photos stay in your browser. Up to six people; missing figures are added automatically.",
+    "写真はブラウザ内で処理し、送信しません。最大 6 人、不足するフィギュアは自動追加。",
+  ],
+  photoSkeleton: [
+    "照片与识别骨架，可拖动关键点",
+    "Photo and detected skeleton; drag landmarks to correct",
+    "写真と検出した骨格。関節点はドラッグで修正可能",
+  ],
+  photoEditHint: [
+    "可拖动彩色关键点修正，再同步到人物。虚线表示不可靠的部位。",
+    "Drag colored landmarks to correct, then sync again. Dashed limbs have low confidence.",
+    "色付きの関節点をドラッグで修正し、再反映できます。破線は信頼度の低い部位です。",
+  ],
+  photoOptions: [
+    "识别与同步说明",
+    "Detection & sync options",
+    "検出・反映の設定",
+  ],
+  photoLimitations: [
+    "结果是近似姿势；遮挡、线稿、侧背面可能漏检。照片中的人物从左到右依次对应现有人物 A–F，多余人物保留。手指、深度和人物接触需手动调整。",
+    "Approximate poses: occlusion, drawings and side/back views can fail. People map left-to-right to existing figures A–F; extra figures stay. Refine fingers, depth and contact manually.",
+    "近似ポーズです。遮蔽・線画・側面・背面では検出に失敗する場合があります。画像の左から順に既存の A–F に反映し、余分な人物は残します。指・奥行き・接触は手動調整してください。",
+  ],
+  newFigureType: [
+    "新增人物体型",
+    "Body type for new figures",
+    "追加人物の体型",
+  ],
+  detectAgain: ["重新识别", "Detect again", "再検出"],
+  syncPhoto: ["同步到人物", "Sync to figures", "フィギュアに反映"],
+  cancelPose: ["取消", "Cancel", "キャンセル"],
+  returnStudio: ["返回工作台", "Back to studio", "スタジオに戻る"],
+  photoReading: ["正在读取图片…", "Reading image…", "画像を読み込み中…"],
+  modelLoading: [
+    "正在准备识别模型…首次使用需下载约 24 MB，之后可使用浏览器缓存。",
+    "Preparing model… first use downloads about 24 MB; later runs can use the browser cache.",
+    "モデルを準備中…初回は約 24 MB をダウンロードし、次回以降はブラウザのキャッシュを利用できます。",
+  ],
+  detectingPose: [
+    "正在本机识别肢体…",
+    "Detecting body landmarks locally…",
+    "端末内で骨格を検出中…",
+  ],
+  fittingPose: [
+    "正在同步人物 {n} / {total}…",
+    "Fitting figure {n} / {total}…",
+    "人物 {n} / {total} を調整中…",
+  ],
+  photoDetected: [
+    "识别到 {n} 人 · 推理 {ms} ms",
+    "Detected {n} people · {ms} ms inference",
+    "{n} 人検出 · 推論 {ms} ms",
+  ],
+  photoApplied: [
+    "已同步 {n} 人，自动新增 {added} 人。",
+    "Synced {n} figures; added {added} automatically.",
+    "{n} 人を反映し、{added} 人を自動追加しました。",
+  ],
+  photoAppliedHint: [
+    "{skipped} 处低置信度肢体保留初始姿势；{ignored} 个人物因关键点不足未同步。可返回工作台调整，或撤销整批同步。",
+    "{skipped} uncertain limbs kept neutral; {ignored} incomplete people skipped. Refine in the studio or undo the entire sync.",
+    "信頼度の低い {skipped} 部位は初期姿勢を維持し、関節点が不足する {ignored} 人は反映していません。スタジオで調整するか、まとめて元に戻せます。",
+  ],
+  detectedPerson: ["人物 {n}", "Person {n}", "人物 {n}"],
+  uncertainPerson: [
+    "人物 {n} · 需修点",
+    "Person {n} · check points",
+    "人物 {n} · 要修正",
+  ],
+  photoEdited: [
+    "关键点已修改。点击“同步到人物”应用修正。",
+    "Landmarks edited. Sync to figures to apply corrections.",
+    "関節点を修正しました。「フィギュアに反映」で適用します。",
+  ],
+  poseCancelled: [
+    "已取消，原场景保持不变。",
+    "Cancelled; the existing scene is unchanged.",
+    "キャンセルしました。元のシーンは変更していません。",
+  ],
+  poseNoPeople: [
+    "未识别到人物，原场景未改变。请换用身体清晰、尽量完整的照片；线稿可能无法识别。",
+    "No people detected; scene unchanged. Try a clear, mostly full-body photo. Drawings may not be detected.",
+    "人物を検出できませんでした。シーンは変更していません。全身が鮮明な写真をお試しください。線画は検出できない場合があります。",
+  ],
+  poseLowConfidence: [
+    "关键点不足，未改变场景。请修正关节位置或换一张遮挡较少的图片。",
+    "Not enough reliable landmarks; scene unchanged. Correct points or try a less occluded image.",
+    "信頼できる関節点が不足しています。関節点を修正するか、遮蔽の少ない画像をお試しください。",
+  ],
+  poseImageOrigin: [
+    "参考图片须来自本站；个人照片请用文件选择器。",
+    "Reference images must be from this site; choose a local file for personal photos.",
+    "参考画像は同じサイトのものを指定してください。個人写真はファイルから選択してください。",
+  ],
+  poseImageType: [
+    "请选择 JPG、PNG、WebP、AVIF、GIF 或 BMP 图片。",
+    "Choose a JPG, PNG, WebP, AVIF, GIF or BMP image.",
+    "JPG・PNG・WebP・AVIF・GIF・BMP の画像を選択してください。",
+  ],
+  poseImageSize: [
+    "图片不能超过 25 MB，请缩小后重试。",
+    "Image exceeds 25 MB. Resize and try again.",
+    "画像は 25 MB 以下に縮小してください。",
+  ],
+  poseImageFailed: [
+    "无法读取图片，请检查文件格式或重新选择。",
+    "Could not read the image. Check its format or choose another file.",
+    "画像を読み込めません。形式を確認するか、別の画像を選択してください。",
+  ],
+  poseUnsupported: [
+    "此浏览器不支持本机识别，请使用新版 Chrome、Edge、Firefox 或 Safari。",
+    "Local detection is unavailable. Try a recent Chrome, Edge, Firefox or Safari.",
+    "このブラウザでは端末内検出を利用できません。最新版の Chrome・Edge・Firefox・Safari をお試しください。",
+  ],
+  poseBusy: [
+    "正在处理图片，请完成或取消后再试。",
+    "An image is being processed. Finish or cancel before retrying.",
+    "画像を処理中です。完了またはキャンセル後に再試行してください。",
+  ],
+  poseTimeout: [
+    "识别超时，原场景未改变。请检查网络、缩小图片后重试。",
+    "Detection timed out; scene unchanged. Check your connection or resize the image and retry.",
+    "検出がタイムアウトしました。接続を確認するか、画像を縮小して再試行してください。",
+  ],
+  poseDetectFailed: [
+    "识别模型未能运行，原场景未改变。请检查网络或换用新版浏览器，再点击重新识别。",
+    "The model could not run; scene unchanged. Check your connection or update your browser, then detect again.",
+    "モデルを実行できません。接続またはブラウザを確認し、再検出してください。シーンは変更していません。",
+  ],
+  poseInvalidResult: [
+    "识别数据无效，未改变场景。",
+    "Invalid detection data; scene unchanged.",
+    "検出データが無効です。シーンは変更していません。",
+  ],
+  poseSceneChanged: [
+    "识别期间场景已被修改。本次未覆盖修改，请重新同步。",
+    "The scene changed during fitting. Your edits were kept; sync again.",
+    "調整中にシーンが変更されました。変更を保持しましたので、再度反映してください。",
+  ],
   poseRoadmap: ["姿势还原计划", "Pose reconstruction plan", "ポーズ再現計画"],
   draftBadge: ["3D 草稿", "3D draft", "3D 仮"],
   scale: ["整体大小 (%)", "Overall size (%)", "全体サイズ (%)"],

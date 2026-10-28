@@ -106,6 +106,35 @@
           </div>
           <p class="micro" data-t="twoPeopleHint">最多六人，各自独立摆姿。</p>
         </section>
+        <section class="panel-section photo-section">
+          <div class="section-heading">
+            <h2 data-t="photoPose">图片转姿势</h2>
+            <span class="local-badge" data-t="onDevice">本机运行</span>
+          </div>
+          <button id="uploadPose" class="primary" data-t="uploadPose">
+            选择照片 · 识别并同步
+          </button>
+          <input
+            id="posePhotoFile"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/bmp"
+            hidden
+          />
+          <button id="detectReference" data-t="detectReference" disabled>
+            识别当前参考图
+          </button>
+          <button
+            id="reviewPhoto"
+            class="text-button"
+            data-t="reviewPhoto"
+            hidden
+          >
+            查看识别结果 / 修正关键点
+          </button>
+          <p class="micro" data-t="photoPrivacy">
+            照片仅在浏览器内处理，不上传。最多六人，人物不足自动补齐。
+          </p>
+        </section>
         <section class="panel-section pose-library">
           <div class="section-heading">
             <h2 data-t="poseLibrary">图库姿势</h2>
@@ -179,6 +208,20 @@
             ><button id="fitCamera" data-t="frame">居中</button>
           </div>
           <span class="backend" id="backend" role="status">WebGPU…</span>
+        </div>
+        <div
+          class="pose-mode-toolbar"
+          role="group"
+          data-aria="poseMode"
+          aria-label="操作方式"
+        >
+          <button id="canvasRotate" aria-pressed="true" data-t="rotateMode">
+            旋转关节 · E
+          </button>
+          <button id="canvasMove" aria-pressed="false" data-t="moveModeLabel">
+            移动人物 · W
+          </button>
+          <span id="modeHint"></span>
         </div>
         <canvas
           id="sceneCanvas"
@@ -295,6 +338,13 @@
               <option value="male" data-t="male">男素体</option>
             </select></label
           >
+          <label class="field"
+            ><span data-t="outfit">表面 / 服装</span
+            ><select id="outfit">
+              <option value="white" data-t="outfitWhite">白色素体</option>
+              <option value="ivory" data-t="outfitIvory">浅色紧身衣</option>
+            </select></label
+          >
           <div class="sliders" id="figureControls"></div>
           <div class="button-pair">
             <button id="moveMode" aria-pressed="false" data-t="moveFigure">
@@ -348,6 +398,51 @@
       <label for="shareUrl" data-t="sceneLink">场景链接</label
       ><textarea id="shareUrl" readonly rows="4"></textarea>
       <button id="copyShare" class="primary" data-t="copyLink">复制链接</button>
+    </dialog>
+    <dialog
+      id="posePhotoDialog"
+      class="photo-dialog"
+      aria-labelledby="photoTitle"
+    >
+      <div class="section-heading">
+        <h2 id="photoTitle" data-t="photoPose">图片转姿势</h2>
+        <button id="closePhoto" data-t="close">关闭</button>
+      </div>
+      <p class="micro" data-t="photoPrivacy">照片仅在浏览器内处理，不上传。</p>
+      <div class="photo-preview">
+        <canvas
+          id="posePhotoCanvas"
+          data-aria="photoSkeleton"
+          aria-label="照片与识别骨架"
+        ></canvas>
+      </div>
+      <div id="photoStatus" role="status" aria-live="polite"></div>
+      <progress id="photoProgress" hidden></progress>
+      <p id="photoSummary" class="micro"></p>
+      <div id="photoPeople" class="photo-people"></div>
+      <p class="micro" data-t="photoEditHint">
+        可拖动彩色关键点修正，再同步到人物。虚线表示不可靠的部位。
+      </p>
+      <details>
+        <summary data-t="photoOptions">识别与同步说明</summary>
+        <p class="micro" data-t="photoLimitations">
+          结果是近似姿势；遮挡、线稿、侧背面可能漏检。照片中人物从左到右对应场景人物，已有多余人物会保留。手指和人物间接触需手动调整。
+        </p>
+        <label class="field"
+          ><span data-t="newFigureType">新增人物体型</span
+          ><select id="photoSex">
+            <option value="female" data-t="female">女素体</option>
+            <option value="male" data-t="male">男素体</option>
+          </select></label
+        >
+      </details>
+      <div class="photo-actions">
+        <button id="photoRetry" data-t="detectAgain">重新识别</button
+        ><button id="photoApply" class="primary" data-t="syncPhoto" disabled>
+          同步到人物</button
+        ><button id="photoCancel" data-t="cancelPose" hidden>取消</button
+        ><button id="photoDone" data-t="returnStudio">返回工作台</button>
+      </div>
     </dialog>
     <script type="module" src="app.js"></script>
   </body>

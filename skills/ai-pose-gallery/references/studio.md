@@ -2,13 +2,13 @@
 
 Studio: `https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/`. Add `?lang=zh`, `en` or `ja`. To open a gallery pose, append e.g. `?pose=sexy_sit_w-sit-hands-fw_hi&lang=en`.
 
-The studio uses Mannequin.js's skeleton with custom white articulated figure surfaces and a new UI. It supports one to six adult male/female figures. It renders with Three.js WebGPU, with WebGL 2 fallback displayed accurately in the toolbar. No authentication, server, API key or AIGC service is needed to render white-model PNGs. Source and GPL-3.0 license: `studio/THIRD_PARTY.md`, `studio/LICENSE`.
+The studio uses Mannequin.js's skeleton with custom articulated figure surfaces and a continuous ivory stretch suit and a new UI. It supports one to six adult male/female figures. It renders with Three.js WebGPU, with WebGL 2 fallback displayed accurately in the toolbar. No authentication, server, API key or AIGC service is needed to render white-model PNGs. Source and GPL-3.0 license: `studio/THIRD_PARTY.md`, `studio/LICENSE`.
 
 ## Interactive operation
 
 1. Select figure A–F; add male or female figures (maximum six). Each figure card has a visible Delete button. Keep at least one figure.
 2. Choose a body part from the inspector or click it on the figure. Use labeled sliders, numeric angles, or the rotation rings. Sliders, rings, presets and scene imports all obey the same limits. Knees and elbows have one bend axis. Hands have a finger-curl slider.
-3. Use body type, overall scale (80–120%), position and facing controls for composition. Turn off automatic grounding to raise a figure off the floor. Drag the empty canvas to orbit; use the wheel to zoom. Camera buttons select front, three-quarter, side, above or below.
+3. The canvas toolbar switches **Rotate joint (E)** and **Move figure (W)**. Drag the translation arrows or plane handles directly; a vertical drag releases floor locking. The suit smooths the shoulder, elbow, waist, hip and knee transitions, follows the rig, and does not simulate cloth. Select **White mannequin** for exposed articulation or **Ivory stretch suit** (default). Use body type, overall scale (80–120%), position and facing controls for composition. Turn off automatic grounding to raise a figure off the floor. Drag the empty canvas to orbit; use the wheel to zoom. Camera buttons select front, three-quarter, side, above or below.
 4. Gallery tiles marked **3D** load editable hand-authored approximations. Other tiles only display a reference and leave the figure's pose unchanged. Image references are not reconstructed 3D data, and contact points/collisions are not automatically solved.
 5. **Capture PNG** exports a 1600 × 1600 image without rings, grid, selection tint, labels or reference card. **Share scene link** copies the full scene into a compressed URL fragment. Edits also update the address bar; the shared scene takes priority over browser autosave. **Save scene** / **Load scene** preserve editable joints, figures and camera. The browser also autosaves locally. Check the PNG visually before using it for AIGC.
 
@@ -38,15 +38,15 @@ const url = await p.getShareURL(); // self-contained share link; no upload
 
 Save the returned base64 bytes to a `.png` file using the automation environment's file-writing API. Do not print the full data URL into the conversation. Alternatively, `capture({download:true, filename:'pose.png'})` triggers a browser download. Capture serially, and await each call. Sizes: integer 256–4096 per axis. Captures use the current camera position with the requested aspect ratio; inspect the framing when changing aspect ratio. The UI export uses 1600 × 1600; the API allows portrait or landscape captures.
 
-Methods (all synchronous except `ready`, `loadPreset`, `showReference`, `capture`, `getShareURL`, `loadShareURL`):
+API version: **3**. Methods (all synchronous except `ready`, `loadPreset`, `showReference`, `capture`, `getShareURL`, `loadShareURL` and the photo methods below):
 
 | Method | Behavior |
 | --- | --- |
 | `reset({sex})` | Replace scene with one neutral adult figure A; sex defaults to `female`. |
-| `addFigure({sex,height,scale})` | Add a free ID from A–F without moving existing figures; returns ID. Maximum six; scale 0.8–1.2 (default 1). |
+| `addFigure({sex,height,scale,outfit})` | Add a free ID from A–F without moving existing figures; returns ID. Maximum six; scale 0.8–1.2 (default 1). |
 | `removeFigure(id)` | Remove a figure, retaining at least one. IDs of remaining figures stay stable. |
 | `selectFigure(id)` | Select A–F in the UI. |
-| `setFigure(id,{sex,height,scale,position,yaw,ground})` | Optional properties: sex `female`/`male`; base height 1.2–2.2 metres (legacy API; defaults 1.65 female / 1.8 male); uniform `scale` 0.8–1.2; rendered height = base height × scale; absolute XYZ position in metres (each −10…10); yaw −180…180 degrees. `ground:true` overrides Y to touch the floor. |
+| `setFigure(id,{sex,height,scale,outfit,position,yaw,ground})` | Optional properties: `outfit` is `ivory` (continuous light suit) or `white` (articulated mannequin); sex `female`/`male`; base height 1.2–2.2 metres (legacy API; defaults 1.65 female / 1.8 male); uniform `scale` 0.8–1.2; rendered height = base height × scale; absolute XYZ position in metres (each −10…10); yaw −180…180 degrees. `ground:true` overrides Y to touch the floor. |
 | `setJoint(id,part,angles)` | Set the named angles below, in degrees. Other angles are preserved. |
 | `getJoint(id,part)` | Read named angles. |
 | `setHand(id,'l'\|'r',curl)` | Curl all fingers on one hand, 0–100 degrees. |
@@ -77,7 +77,34 @@ Valid part and angle names:
 
 Left/right are the figure's anatomical sides. Positive raise moves a limb forward; positive straddle spreads it outward. Joint angles are fixed-order editor controls, not raw upstream Euler getter sequences. Use this API instead of manipulating Mannequin.js internals. The editor enforces artistic ranges, not a collision/biomechanics solver.
 
-The scene schema is `pose-atlas/studio@2`; v1 imports migrate with `scale:1`. Imported rotations are constrained to the supported ranges. Treat the per-joint quaternion data as opaque: obtain it from `exportScene()` and edit named angles via `setJoint`. For a precise camera, copy the exported scene, set `camera:{position:[x,y,z],target:[x,y,z]}`, then call `importScene`. To disable grounding or the grid programmatically, change the exported `floorLock` / `grid` booleans and import it.
+The scene schema is `pose-atlas/studio@2`; v1 imports migrate with `scale:1`. Scenes without an `outfit` use `ivory`; the optional outfit field is included in new scene exports and URLs. Imported rotations are constrained to the supported ranges. Treat the per-joint quaternion data as opaque: obtain it from `exportScene()` and edit named angles via `setJoint`. For a precise camera, copy the exported scene, set `camera:{position:[x,y,z],target:[x,y,z]}`, then call `importScene`. To disable grounding or the grid programmatically, change the exported `floorLock` / `grid` booleans and import it.
+
+## Photo to pose (on device)
+
+The UI **Choose photo · detect & sync** accepts JPEG, PNG, WebP, AVIF, GIF and BMP, at most 25 MB. GIF uses a still frame. EXIF orientation is handled and the image is resized to at most 1600 pixels on its longest side. The browser downloads the pinned MediaPipe model/WASM on first use (about 24 MB), then runs inference in a Worker. Photo bytes, filenames, landmarks and previews are not written into autosave or share URLs. Only the resulting scene is saved/shared.
+
+The detector scans the full image and overlapping crops, merges duplicate hip locations and retains at most six people. People sort left to right and map to existing figure IDs A–F; missing IDs are created using the specified `sex`. The model does **not** infer body type. Existing figure sex, size and outfit are preserved; extra existing figures remain unchanged. Multi-person placement approximates image X/Y positions with a common floor offset, not calibrated inter-person depth; automatic grounding is disabled for these layouts. Adjust placement/contact manually.
+
+The preview overlays colored landmarks, dashed uncertain limbs, selection checkboxes and draggable keypoints. After editing points, **Sync to figures** applies the corrections. Low-confidence limbs keep a neutral pose; incomplete people are skipped. No usable person means no scene mutation. **Cancel**, errors or concurrent scene edits leave the existing scene unchanged. A completed batch can be undone in one step. Head/foot orientation is approximate; fingers, depth, collisions and contact are not solved.
+
+```js
+const p = window.poseStudio;
+await p.ready;
+// Same-origin gallery image URL, or a File/Blob from a local file chooser.
+const detection = await p.detectImage('../img/solo_stand_contrapposto-hip_f.png');
+// A drawing may return zero people: do not invent a successful detection.
+if (detection.people.length) {
+  const report = await p.applyDetectedPose(detection, {sex:'female'});
+  // report: {applied, added, ignored, reports:[{id, skipped, errors}]}
+}
+// Local file chooser: #posePhotoFile. Combined API:
+// const result = await p.poseFromImage(file, {sex:'male', signal:controller.signal});
+// result = {detection, ...report}; use AbortController to cancel.
+```
+
+`detectImage(source,{signal,onProgress})` returns `{model,width,height,elapsed,people:[{landmarks,worldLandmarks}]}` with 33 points per person. `onProgress` receives a translation key; fitting additionally passes the current figure and total count. `applyDetectedPose(result, options)` validates the whole input before staging hidden figures and commits atomically. `poseFromImage(source, options)` composes both operations. Keep scene edits serial while fitting. The diagnostic direction errors describe the fit to the model's estimated landmarks, **not accuracy against the real photographed person**.
+
+For corrected keypoints, retain a copy in `person.originalLandmarks`, then edit normalized X/Y in `person.landmarks`; those changes offset the corresponding estimated world points. Preview coordinates use the decoded image orientation, not mirrored camera coordinates. Do not alter MediaPipe point indices or replace anatomical left/right with screen left/right.
 
 ## Reusable headless renderer
 
@@ -106,10 +133,12 @@ Example `job.json`:
 node scripts/render_studio.mjs --job job.json --output pose.png --scene-out scene.json --preview studio.png
 ```
 
+For a local photo, add `--image /absolute/path/photo.jpg`; `--detection-out landmarks.json` optionally saves the local detection/report. A job may instead specify same-origin `imageUrl`. Detection happens before the job’s manual pose/figure overrides. Start with one figure in the job to allow automatic population; no photo upload endpoint is involved.
+
 `figures` contains one to six configurations; IDs are A through F. Each accepts the figure properties, `joints`, `hands`, and optional solo `preset` shown above. A top-level `preset` can set a duo pose before per-figure adjustments. `cameraPosition` optionally overrides the camera with `{position,target}`. `--url` permits a local preview or alternate deployed studio. `--share-out scene.url.txt` saves a reusable share link. `--preview` is an optional screenshot of the whole editor; **`--output` is the clean reference image**. The script closes its own browser in `finally`.
 
 Inspect the output PNG, adjust if needed, then attach its actual image bytes/path to the available image-generation tool. Rendering the mannequin is not itself an AIGC illustration: follow the main skill's reference-to-artwork workflow for that additional step.
 
 ## Reconstruction status
 
-All 288 gallery groups are tracked in `data/pose-3d-status.json`; 24 have unverified drafts and none have passed accurate reconstruction review. Read `TODO.md` at the site root for the plan: image landmark detection, manual correction, skeleton/camera fitting, constrained IK, multi-view optimization and visual acceptance. Browser-based detection can supply an initial estimate; automatic accurate image-to-3D conversion is **not implemented**.
+All 288 gallery groups are tracked in `data/pose-3d-status.json`; 24 have unverified drafts and none have passed accurate reconstruction review. Read `TODO.md` at the site root for the plan: image landmark detection, manual correction, skeleton/camera fitting, constrained IK, multi-view optimization and visual acceptance. Browser photo detection, keypoint correction and constrained initial pose fitting are implemented. Accurate conversion of all gallery drawings, calibrated cameras, multi-view optimization and contact/collision solving remain unfinished. Five sampled gallery line drawings returned no usable detection in the initial smoke check; do not claim this model reconstructs the gallery reliably.

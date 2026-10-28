@@ -14,6 +14,7 @@ for (const name of ["three.webgpu.js", "three.core.js"]) {
   );
 }
 for (const file of [
+  "objects/MarchingCubes.js",
   "controls/OrbitControls.js",
   "controls/TransformControls.js",
   "geometries/ParametricGeometry.js",

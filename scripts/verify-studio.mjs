@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { execFileSync } from "node:child_process";
 import * as THREE from "three";
 import {
   PRESETS,
@@ -41,6 +42,15 @@ for (const side of ["l", "r"]) {
 }
 const html = fs.readFileSync("studio/index.html", "utf8"),
   app = fs.readFileSync("studio/app.js", "utf8");
+for (const file of [
+  "pose-worker.js",
+  "pose-detection.js",
+  "pose-retarget.js",
+  "pose-photo-ui.js",
+  "suit.js",
+  "figure.js",
+])
+  execFileSync(process.execPath, ["--check", "studio/" + file]);
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
 assert.equal(new Set(ids).size, ids.length, "Duplicate HTML IDs");
 const keys = [...html.matchAll(/data-(?:t|aria|placeholder)="([^"]+)"/g)].map(
@@ -50,6 +60,21 @@ keys.push(
   ...[...app.matchAll(/\bt\(["']([^"']+)["']\)/g)].map((m) => m[1]),
   ...JOINTS,
 );
+for (const file of [
+  "pose-photo-ui.js",
+  "pose-detection.js",
+  "pose-retarget.js",
+  "pose-worker.js",
+]) {
+  const source = fs.readFileSync("studio/" + file, "utf8");
+  keys.push(
+    ...[
+      ...source.matchAll(
+        /(?:status|Error)\("(pose[A-Z][^"]*|photo[A-Z][^"]*|modelLoading|detectingPose|fittingPose)"/g,
+      ),
+    ].map((m) => m[1]),
+  );
+}
 for (const lang of locales)
   for (const key of keys)
     assert.notEqual(translate(key, lang), key, `${lang}: ${key}`);
@@ -95,4 +120,37 @@ for (const invalid of ["bad", "2.not-gzip", "2." + "a".repeat(90000)])
   await assert.rejects(() => decodeScene(invalid));
 console.log(
   "All joint limits and six-figure URL round-trip / malformed URL rejection verified.",
+);
+
+const { validateDetection, usablePerson } =
+  await import("../studio/pose-retarget.js");
+const points = Array.from({ length: 33 }, (_, i) => ({
+  x: 0.2 + i * 0.01,
+  y: 0.4,
+  z: 0,
+  visibility: 0.9,
+  presence: 0.95,
+}));
+const detection = {
+  width: 1000,
+  height: 667,
+  people: [{ landmarks: points, worldLandmarks: structuredClone(points) }],
+};
+assert.equal(validateDetection(detection), detection);
+assert.ok(usablePerson(detection.people[0]));
+for (const mutate of [
+  (d) => (d.people[0].landmarks[0].x = NaN),
+  (d) => d.people[0].worldLandmarks.pop(),
+  (d) => (d.people[0].landmarks[11].visibility = Infinity),
+  (d) => (d.people = Array.from({ length: 7 }, () => d.people[0])),
+]) {
+  const bad = structuredClone(detection);
+  mutate(bad);
+  assert.throws(() => validateDetection(bad));
+}
+const hidden = structuredClone(detection.people[0]);
+for (const i of [11, 12, 23, 24]) hidden.landmarks[i].visibility = 0;
+assert.equal(usablePerson(hidden), false);
+console.log(
+  "Photo result validation rejects malformed, nonfinite, oversized and unreliable inputs.",
 );

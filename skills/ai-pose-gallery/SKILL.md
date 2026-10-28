@@ -1,6 +1,6 @@
 ---
 name: ai-pose-gallery
-description: Find pose references or pose one to six male/female white figures in the gallery’s Mannequin.js WebGPU studio, export PNG references, then use them for AIGC artwork. Use for compact image URLs, character/joint limits, URL scene sharing, camera angles, and pose-guided generation.
+description: Find pose references or pose one to six male/female figures in the gallery’s Mannequin.js WebGPU studio, export PNG references, then use them for AIGC artwork. Use for compact image URLs, local photo-to-pose detection, character/joint limits, URL scene sharing, camera angles, and pose-guided generation.
 ---
 
 # AI Pose Gallery
@@ -11,6 +11,7 @@ Base URL: `https://zhuzhe1983.github.io/ai-pose-gallery-zh/` (keep the repositor
 
 - **Existing gallery pose:** use the compact URLs below; no browser rendering is needed.
 - **Custom or multi-person pose:** open `studio/` and read [references/studio.md](references/studio.md). It covers adding/deleting up to six male/female figures, 80–120% scale, bounded joint controls, URL sharing, draft presets, cameras and clean PNG captures through `window.poseStudio`. A reusable headless helper is [scripts/render_studio.mjs](scripts/render_studio.mjs). Both files are available under `skills/ai-pose-gallery/` on the same site. This avoids loading the full image index or rediscovering the UI.
+- **Photo to editable pose:** open `studio/`, choose a local photo, and let the browser detect and sync up to six people (adding missing figures). Read [references/studio.md](references/studio.md#photo-to-pose-on-device) for the API, confidence handling, cancellation and headless `--image` helper. Photos stay on the device; inspect and refine the approximate result before generating artwork. Line-art detection is unreliable.
 - **AIGC artwork:** first obtain and visually inspect a gallery PNG or studio capture, then attach it to the image tool as described below.
 
 ## Direct image access

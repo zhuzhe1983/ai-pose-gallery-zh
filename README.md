@@ -239,9 +239,13 @@ npx wrangler pages deploy dist --project-name ai-pose-gallery-zh
 
 ## 3D 白模摆姿工作台
 
+现在支持**照片转初始姿势**：选择本地照片，浏览器内识别最多六人并同步到场景，人物不足自动补齐。照片不上传服务器；识别模型首次按需下载。可以查看骨架、拖动修点、选择人物再同步；取消、失败和未检出人物时保留原场景，成功同步可整批撤销。手指、深度、遮挡和接触仍需人工调整。本模型对本项目线稿的抽测结果不理想，不能把它当成准确图库转换工具，详见 [实测与待办](TODO.md)。
+
+人物默认穿连续的浅色紧身衣，肩肘、腰胯和膝部随骨架变形；可切回分段白模。画布上方提供“移动人物（W）/ 旋转关节（E）”切换，可直接拖动坐标轴，向上拖动自动解除贴地。
+
 访问 [3D 工作台](https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/)。支持中、英、日三语，WebGPU 优先；不支持时自动使用 WebGL 2，并在界面标明。
 
-- 一到六个男女素体，重新制作的白色分段外观；每个人物卡片可直接删除；支持 80%–120% 整体缩放，点击部位、角度滑块、数值输入、旋转环和位置控制。
+- 一到六个男女素体，连续浅色紧身衣与分段白模两种外观；每个人物卡片可直接删除；支持 80%–120% 整体缩放，点击部位、角度滑块、数值输入、旋转环和位置控制。
 - 24 个待校对的人工近似草稿，支持从图库打开；其他图库图片可作旁边的视觉参考。图库没有 3D 骨骼数据，预设不代表精确重建；接触点和穿插需要手动调整。
 - 镜头快捷键、撤销/重做、本机自动保存、场景 JSON 导入导出。场景参数自动写入 URL，也可点击“分享场景链接”；链接优先于本机缓存恢复。
 - 滑块、旋转环、API 与导入共用关节范围。校正了默认腰胯前后错位，使用连续曲面重新连接胸、腰、骨盆。
@@ -249,9 +253,9 @@ npx wrangler pages deploy dist --project-name ai-pose-gallery-zh
 - 1600 × 1600 PNG 截图，自动隐藏操作环、网格、选中高亮及参考卡片；agent 接口可指定其他尺寸。
 - [Agent 操作说明](skills/ai-pose-gallery/references/studio.md)包含页面 API 和可执行的截图脚本，用于生成后续 AIGC 的姿势参考。
 
-工作台使用 [Mannequin.js](https://github.com/boytchev/mannequin.js) 的骨骼系统，不沿用原来的操控界面；人物外观由本项目重新制作，并非 SHF 官方模型。`studio/` 独立采用 **GPL-3.0-only**，保留上游许可和完整可编辑源码；Three.js 采用 MIT。详见 [第三方来源与修改说明](studio/THIRD_PARTY.md)。原图库代码和图片的许可范围保持原状。
+工作台使用 [Mannequin.js](https://github.com/boytchev/mannequin.js) 的骨骼系统，不沿用原来的操控界面；人物外观由本项目重新制作，并非 SHF 官方模型。`studio/` 独立采用 **GPL-3.0-only**，保留上游许可和完整可编辑源码；Three.js 采用 MIT；MediaPipe 运行时和姿势模型采用 Apache-2.0。详见 [第三方来源与修改说明](studio/THIRD_PARTY.md)。原图库代码和图片的许可范围保持原状。
 
-浏览器依赖已固定版本并随站点托管，无外部 CDN 依赖。重新生成依赖：`npm ci --ignore-scripts && npm run vendor:studio`。检查站点：`npm run verify`；构建发布目录：`npm run build`。
+浏览器依赖已固定版本并随站点托管，无外部 CDN 依赖。重新生成依赖：`npm ci --ignore-scripts && npm run vendor:studio && npm run vendor:pose`。检查站点：`npm run verify`；构建发布目录：`npm run build`。
 
 ## 内容提示
 

@@ -5,6 +5,20 @@ import { Female } from "./vendor/mannequin/bodies/Female.js";
 import { Male } from "./vendor/mannequin/bodies/Male.js";
 import { NEUTRAL, applyValues, constrainFingers } from "./presets.js";
 
+import { createSuit } from "./suit.js";
+
+export function setOutfit(model, outfit = "ivory") {
+  if (!["white", "ivory"].includes(outfit)) throw Error("Invalid outfit");
+  model.userData.outfit = outfit;
+  let garment = model.children.find((o) => o.userData.suit);
+  if (outfit === "ivory" && !garment) garment = createSuit(model);
+  if (garment) garment.visible = outfit === "ivory";
+  model.traverse((o) => {
+    if (o.isMesh && o.userData.surface)
+      o.visible = outfit === "white" || !o.userData.covered;
+  });
+}
+
 export function bones(model) {
   const result = {};
   for (const key of [
@@ -40,6 +54,7 @@ export function createFigure(sex, height) {
   model.r_leg.position.set(0, -3.2, female ? 3.45 : 3.3);
   model.neck.position.x = 0;
   model.head.position.x = 0.25;
+  model.head.scale.setScalar(0.9);
   // Remove stock surfaces entirely. Skeleton and anatomical angle setters remain upstream.
   for (const joint of Object.values(all)) {
     joint.image.removeFromParent();
@@ -63,6 +78,13 @@ export function createFigure(sex, height) {
     m.position.set(...pos);
     m.castShadow = true;
     m.receiveShadow = true;
+    m.userData.surface = true;
+    m.userData.socket = joint;
+    m.userData.covered =
+      !["head", "neck"].includes(key) &&
+      !key.includes("finger") &&
+      !key.endsWith("_wrist") &&
+      !key.endsWith("_ankle");
     m.userData.joint = key.includes("finger")
       ? key.slice(0, 2) + "wrist"
       : key === "neck"
@@ -85,15 +107,40 @@ export function createFigure(sex, height) {
       indices = [],
       rings = 48,
       sides = 36;
+    const uv = [];
     for (let i = 0; i <= rings; i++) {
       const p = curve.getPoint(i / rings);
       for (let j = 0; j <= sides; j++) {
         const a = (j / sides) * Math.PI * 2;
-        vertices.push(
-          Math.cos(a) * Math.max(0.005, p.y),
-          p.x,
-          Math.sin(a) * Math.max(0.005, p.z),
-        );
+        let x = Math.cos(a) * Math.max(0.005, p.y),
+          z = Math.sin(a) * Math.max(0.005, p.z);
+        const bell = (v, center, width) =>
+          Math.exp(-(((v - center) / width) ** 2));
+        if (key === "torso" && x > 0) {
+          // Paired chest volumes flow into the rib cage rather than separate balls.
+          const chest =
+            bell(z, female ? 2.25 : 2.6, female ? 1.75 : 2.2) +
+            bell(z, female ? -2.25 : -2.6, female ? 1.75 : 2.2);
+          x +=
+            (female ? 2.35 : 1.15) *
+            bell(p.x, female ? 10 : 10.7, female ? 2.5 : 2.25) *
+            chest *
+            Math.max(0, Math.cos(a));
+          if (!female)
+            x +=
+              0.28 *
+              (bell(p.x, 2.8, 1) + bell(p.x, 5.1, 1) + bell(p.x, 7.2, 1)) *
+              bell(z, 0, 2.7) *
+              Math.max(0, Math.cos(a));
+        }
+        if (key === "pelvis" && x < 0)
+          x -=
+            (female ? 0.85 : 0.65) *
+            bell(p.x, -0.8, 2.2) *
+            (bell(z, 2.2, 2) + bell(z, -2.2, 2)) *
+            Math.max(0, -Math.cos(a));
+        vertices.push(x, p.x, z);
+        uv.push(j / sides, i / rings);
       }
     }
     for (let i = 0; i < rings; i++)
@@ -110,27 +157,28 @@ export function createFigure(sex, height) {
       new THREE.Float32BufferAttribute(vertices, 3),
     );
     geometry.setIndex(indices);
+    geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
     geometry.computeVertexNormals();
     return mesh(key, [1, 1, 1], [0, 0, 0], false, geometry);
   }
   shell("pelvis", [
     [-5.2, 0.05, 0.05],
     [-4, 2.1, 2.7],
-    [-2, 3.05, female ? 4.55 : 4.1],
-    [0.5, 3.0, female ? 4.4 : 4.0],
-    [3, 2.45, 3.25],
-    [4.5, 2.2, 3.0],
+    [-2, 3.1, female ? 5.1 : 4.45],
+    [0.5, 2.9, female ? 4.9 : 4.25],
+    [3, 2.3, female ? 3.1 : 3.5],
+    [4.5, 2.05, female ? 2.8 : 3.25],
     [4.7, 0.05, 0.05],
   ]);
   mesh("torso", [2.25, 2.4, 2.85], [0, 0, 0], true);
   shell("torso", [
     [-1.1, 0.05, 0.05],
-    [-0.8, 2.25, 3.0],
-    [2, 2.4, female ? 3.1 : 3.45],
-    [5, 2.85, female ? 3.7 : 4.2],
-    [9, 3.25, female ? 4.7 : 5.35],
-    [12, 3.0, female ? 5.05 : 5.8],
-    [14, 2.4, female ? 4.3 : 4.85],
+    [-0.8, 2.1, female ? 2.8 : 3.3],
+    [2, 2.05, female ? 2.75 : 3.5],
+    [5, 2.45, female ? 3.35 : 4.35],
+    [9, 2.8, female ? 4.6 : 5.9],
+    [12, 2.65, female ? 4.8 : 6.1],
+    [14, 2.35, female ? 4.3 : 5.7],
     [15.9, 1.35, 1.8],
     [16.1, 0.05, 0.05],
   ]);
@@ -156,16 +204,21 @@ export function createFigure(sex, height) {
     ]);
   }
   for (const s of ["l", "r"]) {
-    mesh(s + "_arm", [2.0, 2.0, 2.0], [0, 0, 0], true);
-    limb(s + "_arm", 11, female ? 1.75 : 2.05, 1.35);
+    mesh(
+      s + "_arm",
+      female ? [1.9, 1.9, 1.9] : [2.45, 2.45, 2.45],
+      [0, 0, 0],
+      true,
+    );
+    limb(s + "_arm", 11, female ? 1.85 : 2.65, female ? 1.25 : 1.6);
     mesh(s + "_elbow", [1.5, 1.5, 1.5], [0, 0, 0], true);
-    limb(s + "_elbow", 11, 1.5, 0.88);
+    limb(s + "_elbow", 11, female ? 1.65 : 2.05, female ? 0.85 : 1.05);
     mesh(s + "_wrist", [0.9, 0.9, 0.9], [0, 0, 0], true);
     mesh(s + "_wrist", [0.65, 1.35, 1.15], [0, 1.2, 0]);
     mesh(s + "_leg", [2.25, 2.25, 2.25], [0, 0, 0], true);
-    limb(s + "_leg", 15, female ? 2.5 : 2.4, 1.65);
+    limb(s + "_leg", 15, female ? 3.0 : 3.2, female ? 1.65 : 1.85);
     mesh(s + "_knee", [1.65, 1.65, 1.65], [0, 0, 0], true);
-    limb(s + "_knee", 14, 1.9, 1.05);
+    limb(s + "_knee", 14, female ? 2.15 : 2.5, female ? 1.0 : 1.2);
     mesh(s + "_ankle", [1.35, 1.35, 1.35], [0, 0, 0], true);
     mesh(s + "_ankle", [3.4, 1.35, 1.65], [1.6, 1.2, 0]);
     for (let i = 0; i < 5; i++)
@@ -197,9 +250,23 @@ export function createFigure(sex, height) {
 export function groundFigure(model) {
   model.position.y = 0;
   model.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(model);
+  const box = figureBounds(model);
   model.position.y = -0.7 - box.min.y + 0.003;
   model.updateMatrixWorld(true);
+}
+export function figureBounds(model) {
+  // The fitted layer follows the body. Use its rigid segments for framing and
+  // grounding instead of CPU-skinning every garment vertex on each slider tick.
+  model.updateMatrixWorld(true);
+  const box = new THREE.Box3(),
+    part = new THREE.Box3();
+  model.traverse((o) => {
+    if (!o.isMesh || o.userData.suit) return;
+    if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+    part.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld);
+    box.union(part);
+  });
+  return box;
 }
 export function disposeFigure(model) {
   model.removeFromParent();
@@ -209,6 +276,11 @@ export function disposeFigure(model) {
     if (o.geometry) geometries.add(o.geometry);
     if (o.material) for (const m of [].concat(o.material)) materials.add(m);
   });
-  geometries.forEach((g) => g.dispose());
+  geometries.forEach((g) => {
+    if (!g.userData.sharedPoseSuit) g.dispose();
+  });
+  model.traverse((o) => {
+    if (o.skeleton) o.skeleton.dispose();
+  });
   materials.forEach((m) => m.dispose());
 }

@@ -20,3 +20,5 @@ UI language links: ?lang=zh, ?lang=en, ?lang=ja. Image rights belong to the orig
 ## Editable 3D pose references
 - Studio: https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/
 - Character control, scene and PNG API: https://zhuzhe1983.github.io/ai-pose-gallery-zh/skills/ai-pose-gallery/references/studio.md
+
+The studio supports browser-local photo pose detection and up to six editable figures, adding missing figures automatically. Upload no photo to a remote API. Use poseStudio.poseFromImage(File/Blob), or the renderer helper with --image. Continuous ivory stretch suits and white articulated mannequins are available; share links contain scene parameters, not photo bytes. Detection is approximate and the sampled gallery line drawings were not reliably detected.

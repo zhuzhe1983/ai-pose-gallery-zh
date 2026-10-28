@@ -11,13 +11,30 @@ page. This notice does not change the image collection's original rights.
   mannequin files are unchanged. The embedded font retains its original notice.
 - [Three.js](https://github.com/mrdoob/three.js), `three@0.186.1`, MIT.
   Source and license: `vendor/three/`. Vendored files are unchanged.
+- [MediaPipe](https://github.com/google-ai-edge/mediapipe), Google,
+  `@mediapipe/tasks-vision@1.2.0`, Apache-2.0. Unmodified browser bundle and
+  SIMD/non-SIMD WASM files: `vendor/mediapipe/`; license: `vendor/mediapipe/LICENSE`.
+  Loaded only when image pose detection is requested, in a classic Web Worker.
+- Pose Landmarker Full, float16, model version **1**, Apache-2.0 per the
+  [BlazePose GHUM model card](https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf).
+  [Pinned upstream model](https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task).
+  Local file: `vendor/mediapipe/pose_landmarker_full.task`.
+  SHA-256: `5134a3aad27a58b93da0088d431f366da362b44e3ccfbe3462b3827a839011b1`.
 
 Reproduce these dependencies from the pinned npm packages using
 `npm ci --ignore-scripts && npm run vendor:studio`. The public page loads the
 checked-in files from this site; it does not depend on an external CDN.
+Run `npm run vendor:pose` to reproduce the inference assets and verify the model
+checksum. It reuses the checked-in Apache license. User photos and landmarks are
+processed on the device; no inference server or external upload endpoint is used.
 
-POSE Atlas adds original articulated surfaces (`figure.js`), fixed-order angle
-controls, a new multilingual UI, hand-authored presets and a PNG/scene API.
+POSE Atlas adds original articulated surfaces (`figure.js`), a continuous skinned
+stretch suit (`suit.js`, using Three.js MarchingCubes), fixed-order angle controls,
+a multilingual UI, local image pose detection and constrained fitting,
+hand-authored presets and a PNG/scene API. The suit is built once per body type
+with separated arms/legs in its bind pose and follows the existing rig; it does
+not use a cloth physics solver. Low-confidence or undetected body parts are not
+treated as validated reconstructions.
 No stock editor interface or SHF-branded model is included. Generated captures
 are output images; this source-code license does not automatically license the
 gallery collection or apply to independent artwork made using the references.
