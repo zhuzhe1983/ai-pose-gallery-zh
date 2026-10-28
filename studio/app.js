@@ -328,6 +328,7 @@ const centralPull = (key) =>
     "pelvis",
     "waist",
     "chest",
+    "neck",
     "head",
     "l_arm",
     "r_arm",
@@ -1254,23 +1255,46 @@ function renderReference(forceOpen = false) {
   $("reference").hidden = !reference || collapsed;
   $("showReference").hidden = !collapsed;
   if (!reference) return;
-  $("referenceImage").src = `../thumbs/${reference.stem}_${reference.view}.jpg`;
-  $("referenceImage").alt = localName(reference.entry.name);
-  $("referenceLink").href = `../img/${reference.stem}_${reference.view}.png`;
   $("referenceName").textContent = localName(reference.entry.name);
   $("referenceView").replaceChildren(
-    ...reference.entry.views.map(
-      (v) =>
-        new Option(
-          t({ f: "front", d: "diagonal", s: "side", hi: "high", lo: "low" }[v]),
-          v,
-        ),
-    ),
+    ...["f", "d", "s", "hi", "lo"]
+      .filter((view) => reference.entry.views.includes(view))
+      .map((view) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.view = view;
+        button.textContent = t(
+          { f: "front", d: "diagonal", s: "side", hi: "high", lo: "low" }[view],
+        );
+        button.onmouseenter = button.onclick = () => selectReferenceView(view);
+        return button;
+      }),
   );
-  $("referenceView").value = reference.view;
+  updateReferenceView();
   $("referenceState").textContent = t(
     PRESETS[reference.stem] ? "approximation" : "referenceOnly",
   );
+}
+function updateReferenceView() {
+  $("referenceImage").src = `../thumbs/${reference.stem}_${reference.view}.jpg`;
+  $("referenceImage").alt = localName(reference.entry.name);
+  $("referenceLink").href = `../img/${reference.stem}_${reference.view}.png`;
+  for (const button of $("referenceView").children)
+    button.setAttribute(
+      "aria-pressed",
+      String(button.dataset.view === reference.view),
+    );
+}
+function selectReferenceView(view) {
+  if (
+    !reference ||
+    reference.view === view ||
+    !reference.entry.views.includes(view)
+  ) return;
+  reference.view = view;
+  // Keep the same buttons and focus while hovering; also keep mobile cards open.
+  updateReferenceView();
+  setCamera(view);
 }
 async function appendPreset(stem, { view } = {}) {
   const preset = PRESETS[stem];
@@ -1594,11 +1618,6 @@ function bindUI() {
     $("showReference").hidden = false;
   };
   $("showReference").onclick = () => renderReference(true);
-  $("referenceView").onchange = () => {
-    reference.view = $("referenceView").value;
-    renderReference();
-    setCamera(reference.view);
-  };
   $("language").onchange = () => {
     lang = $("language").value;
     try {
@@ -1709,11 +1728,9 @@ function bindUI() {
           ? `${key.slice(-1)}_arm`
           : key === "waist_mid" || key === "torso"
             ? "waist"
-            : key === "neck"
-              ? "head"
-              : key.includes("finger")
-                ? key.slice(0, 2) + "wrist"
-                : key;
+            : key.includes("finger")
+              ? key.slice(0, 2) + "wrist"
+              : key;
       }
       refresh();
     }
@@ -1945,7 +1962,7 @@ async function init() {
   return true;
 }
 const api = {
-  version: 4,
+  version: 5,
   detectImage,
   applyDetectedPose,
   poseFromImage,

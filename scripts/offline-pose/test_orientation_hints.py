@@ -20,7 +20,8 @@ class FakeRig:
         self.controls = [
             {'key': key, 'property': prop, 'min': minimum, 'max': maximum}
             for key, limits in {
-                'head': {'nod': (-45, 55), 'tilt': (-35, 35), 'turn': (-80, 80)},
+                'neck': {'nod': (-35, 45), 'tilt': (-25, 25), 'turn': (-45, 45)},
+                'head': {'nod': (-30, 35), 'tilt': (-20, 20), 'turn': (-40, 40)},
                 'l_wrist': {'bend': (-80, 80), 'tilt': (-30, 30), 'turn': (-90, 90)},
                 'r_wrist': {'bend': (-80, 80), 'tilt': (-30, 30), 'turn': (-90, 90)},
                 'l_ankle': {'bend': (-45, 60), 'tilt': (-25, 25), 'turn': (-35, 35)},
@@ -90,6 +91,18 @@ class HintValidation(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 're-export'):
             load_orientation_hints(sample(), self.rig, POSE)
 
+    def test_neck_hint_is_independent_and_requires_current_rig(self):
+        hints = sample()
+        hints['joints']['neck'] = {'nod': -10}
+        hints['evidence']['neck'] = [{'image': IMAGE, 'note': 'Neck angle; skull adjusted separately.'}]
+        flat, report = load_orientation_hints(hints, self.rig, POSE)
+        self.assertEqual(flat['neck.nod'], -10)
+        self.assertEqual(flat['head.nod'], 8)
+        self.assertEqual(report['joints']['neck']['turn'], 'unresolved')
+        self.rig.controls = [c for c in self.rig.controls if c['key'] != 'neck']
+        with self.assertRaisesRegex(ValueError, 're-export'):
+            load_orientation_hints(hints, self.rig, POSE)
+
 
 class RealFit(unittest.TestCase):
     def test_fixed_controls_and_fk(self):
@@ -98,7 +111,13 @@ class RealFit(unittest.TestCase):
         from fit_pose import Rig, fit, project
         import numpy as np
         rig = Rig(json.loads(Path(path).read_text()))
-        self.assertEqual(len(rig.controls), 43)
+        self.assertIn(len(rig.controls), (43, 46))
+        if rig.data.get('jointControlVersion', 4) >= 5:
+            self.assertEqual(len(rig.controls), 46)
+            for key in ('neck', 'head'):
+                controls = [c for c in rig.controls if c['key'] == key]
+                self.assertEqual(len(controls), 3)
+                self.assertTrue(all(len(c['drivers']) == 1 for c in controls))
         np.testing.assert_allclose(rig.forward(rig.defaults), rig.data['worldPoints'], atol=1e-8)
         # Real offsets and constraints, synthetic observations with known rigid root.
         values = rig.defaults.copy()
@@ -124,7 +143,7 @@ class RealFit(unittest.TestCase):
         self.assertAlmostEqual(missing_toe['angles']['l_ankle.bend'],
                                rig.data['presets'][POSE]['l_ankle.bend'], places=8)
         for c in rig.controls:
-            if c['key'] == 'body':
+            if c['key'] in ('body', 'neck'):
                 key = f"{c['key']}.{c['property']}"
                 expected = rig.data['presets'][POSE].get(key, c['value'])
                 self.assertAlmostEqual(result['angles'][key], expected, places=8)

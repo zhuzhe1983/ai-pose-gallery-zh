@@ -75,11 +75,16 @@ export const PRESETS = {
     view: "f",
   },
   "solo_stand_look-bk": {
-    actors: one({ "torso.turn": 30, "head.turn": 65, "body.turn": -130 }),
+    actors: one({
+      "torso.turn": 30,
+      "neck.turn": 32.5,
+      "head.turn": 32.5,
+      "body.turn": -130,
+    }),
     view: "d",
   },
   "solo_stand_hands-hair": {
-    actors: one({ ...headHands, "head.tilt": 12 }),
+    actors: one({ ...headHands, "neck.tilt": 6, "head.tilt": 6 }),
     view: "f",
   },
   "solo_sit_lean-bk-kn-up": {
@@ -120,7 +125,8 @@ export const PRESETS = {
       "l_arm.raise": 45,
       "l_elbow.bend": 130,
       "l_wrist.bend": 20,
-      "head.nod": 12,
+      "neck.nod": 6,
+      "head.nod": 6,
     }),
     view: "d",
   },
@@ -202,7 +208,8 @@ export const PRESETS = {
       "l_arm.straddle": 45,
       "l_elbow.bend": 115,
       "r_arm.raise": 20,
-      "head.tilt": -15,
+      "neck.tilt": -7.5,
+      "head.tilt": -7.5,
     }),
     view: "d",
   },
@@ -212,7 +219,8 @@ export const PRESETS = {
       ...both("arm", { raise: 150, straddle: 35 }),
       ...both("elbow", { bend: 120 }),
       ...both("leg", { straddle: 8 }),
-      "head.turn": 35,
+      "neck.turn": 17.5,
+      "head.turn": 17.5,
     }),
     view: "hi",
   },
@@ -224,7 +232,8 @@ export const PRESETS = {
       ...both("elbow", { bend: 12 }),
       ...both("knee", { bend: 12 }),
       ...both("leg", { raise: 4, straddle: 12 }),
-      "head.nod": -15,
+      "neck.nod": -7.5,
+      "head.nod": -7.5,
     }),
     view: "d",
   },
@@ -233,7 +242,8 @@ export const PRESETS = {
       "torso.turn": 38,
       ...both("arm", { straddle: 85 }),
       ...both("elbow", { bend: 12 }),
-      "head.turn": 20,
+      "neck.turn": 10,
+      "head.turn": 10,
     }),
     view: "d",
   },
@@ -253,8 +263,10 @@ export const PRESETS = {
       ...both("arm", { raise: 30, straddle: -7 }),
       ...both("elbow", { bend: 8 }),
       ...both("wrist", { bend: -70 }),
-      "head.tilt": 8,
-      "head.nod": -12,
+      "neck.tilt": 4,
+      "head.tilt": 4,
+      "neck.nod": -6,
+      "head.nod": -6,
     }),
     view: "hi",
   },
@@ -265,7 +277,8 @@ export const PRESETS = {
       "r_arm.turn": -29,
       "r_elbow.bend": 134,
       "r_wrist.bend": 10,
-      "head.tilt": 5,
+      "neck.tilt": 2.5,
+      "head.tilt": 2.5,
     }),
     view: "f",
   },
@@ -295,8 +308,10 @@ export const PRESETS = {
         position: [-0.26, 0, 0],
         yaw: -0.2,
         values: {
-          "head.turn": -25,
-          "head.tilt": -6,
+          "neck.turn": -12.5,
+          "head.turn": -12.5,
+          "neck.tilt": -3,
+          "head.tilt": -3,
           "r_arm.raise": 35,
           "r_elbow.bend": 45,
         },
@@ -307,8 +322,10 @@ export const PRESETS = {
         yaw: -0.7,
         values: {
           "body.bend": 12,
-          "head.turn": -30,
-          "head.nod": 12,
+          "neck.turn": -15,
+          "head.turn": -15,
+          "neck.nod": 6,
+          "head.nod": 6,
           "l_arm.raise": 50,
           "l_arm.straddle": 10,
           "l_elbow.bend": 100,
@@ -328,6 +345,9 @@ export const NEUTRAL = {
       ["bend", "tilt", "turn"].map((p) => [`${k}.${p}`, 0]),
     ),
   ),
+  "neck.nod": 0,
+  "neck.tilt": 0,
+  "neck.turn": 0,
   "head.nod": 0,
   "head.tilt": 0,
   "head.turn": 0,
@@ -344,6 +364,7 @@ export const JOINTS = [
   "pelvis",
   "waist",
   "chest",
+  "neck",
   "head",
   "l_arm",
   "l_elbow",
@@ -404,14 +425,20 @@ export function jointAxes(key) {
         ],
       }[key],
     );
-  if (key === "head")
+  if (key === "neck" || key === "head")
     return axes(
       ["nod", "tilt", "turn"],
-      [
-        [-45, 55],
-        [-35, 35],
-        [-80, 80],
-      ],
+      key === "neck"
+        ? [
+            [-35, 45],
+            [-25, 25],
+            [-45, 45],
+          ]
+        : [
+            [-30, 35],
+            [-20, 20],
+            [-40, 40],
+          ],
     );
   if (key.endsWith("_arm"))
     return axes(
@@ -456,10 +483,10 @@ export function jointAxes(key) {
 // Upstream getters reorder rotations per access, which is unsuitable for a multi-axis inspector.
 function convention(key) {
   const side = key.startsWith("l_") ? -1 : 1;
-  if (key === "head")
+  if (key === "neck" || key === "head")
     return {
       order: "YXZ",
-      axes: { nod: ["z", -2], tilt: ["x", -2], turn: ["y", 2] },
+      axes: { nod: ["z", -1], tilt: ["x", -1], turn: ["y", 1] },
     };
   if (key === "waist")
     return {
@@ -528,7 +555,6 @@ export function writeAngles(model, key, values) {
       180 /
       factor;
   }
-  if (key === "head") model.neck.quaternion.copy(model.head.quaternion);
   if (key === "waist") model.waist_mid.quaternion.copy(model.waist.quaternion);
 }
 export function applyValues(model, values) {

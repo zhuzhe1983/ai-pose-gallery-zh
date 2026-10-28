@@ -253,7 +253,8 @@ export async function retargetPerson(
       errors.push({ part: upper, directionError: Math.sqrt(error / 2) });
     }
   }
-  // Head tilt/nod and feet can be refined without touching the fitted limbs.
+  // Face landmarks constrain the combined neck/head direction, not each bone.
+  // A weak sharing prior avoids arbitrarily putting all rotation in one joint.
   if ([0, 7, 8, 11, 12].every(confident)) {
     const up = direction(
       midpoint(points[11], points[12]),
@@ -262,19 +263,30 @@ export async function retargetPerson(
     const forward = direction(midpoint(points[7], points[8]), points[0]);
     const cost = () => {
       const q = model.head.getWorldQuaternion(new THREE.Quaternion());
+      const neck = readAngles(model, "neck"),
+        head = readAngles(model, "head");
+      const sharing = Object.keys(neck).reduce(
+        (sum, axis) =>
+          sum + THREE.MathUtils.degToRad(neck[axis] - head[axis]) ** 2,
+        0,
+      );
       return (
         new THREE.Vector3(0, 1, 0).applyQuaternion(q).distanceToSquared(up) +
         0.65 *
           new THREE.Vector3(1, 0, 0)
             .applyQuaternion(q)
-            .distanceToSquared(forward)
+            .distanceToSquared(forward) +
+        0.05 * sharing
       );
     };
     await fitAngles(
       model,
-      ["head"],
+      ["neck", "head"],
       cost,
-      [{ head: { nod: 0, tilt: 0, turn: 0 } }],
+      [{
+        neck: { nod: 0, tilt: 0, turn: 0 },
+        head: { nod: 0, tilt: 0, turn: 0 },
+      }],
       signal,
     );
   }

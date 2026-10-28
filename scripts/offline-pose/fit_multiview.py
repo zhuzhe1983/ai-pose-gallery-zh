@@ -162,7 +162,7 @@ def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
         reason = None
         if key == "body":
             reason = "manual_root_prior_removes_body_pelvis_duplicate_dof"
-        elif key == "head" or (key.endswith("_wrist") and not contact_profile):
+        elif key in ("neck", "head") or (key.endswith("_wrist") and not contact_profile):
             reason = "endpoint_orientation_unobserved_preserve_prior"
         elif key.endswith("_ankle") and not contact_profile and (axis != "bend" or not toe_observed[key[0]]):
             reason = "ankle_roll_yaw_or_missing_multiview_toe_evidence"

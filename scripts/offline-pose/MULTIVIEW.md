@@ -34,7 +34,7 @@ Outputs:
 An old mesh/scene rig, old/normalized point protocol, unknown view suffix, duplicate
 views, mixed pose groups, invalid exclusions and out-of-range manual angles are
 rejected. Numerical tests support both the previous 37-control v3 export and the
-43-control export with wrists. Non-neutral wrist priors or explicit wrist hints
+43-control export with wrists, as well as the current 46-control export with independent neck/head angles. Non-neutral wrist priors or explicit wrist hints
 require the newer export.
 
 ## Fixed and unresolved degrees of freedom
@@ -45,7 +45,7 @@ rotation is removed. The baseline is the exported manual preset, or an explicit
 flat named-angle JSON supplied via `--prior`. A pose with no manual preset needs
 an explicit prior; an unverified preset is still only a prior.
 
-All head and wrist axes are held at their prior values. A head-center point or
+All neck, head and wrist axes are held at their prior values. A head-center point or
 wrist-center point does not observe orientation. Ankle `bend` is active only if
 that ankle and toe are usable in at least two supplied views; otherwise it also
 stays at the prior. Ankle `tilt`/`turn` stay fixed unless manually supplied. The

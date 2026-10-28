@@ -103,11 +103,9 @@ try {
             order: joint.rotation.order,
           },
         ];
-        if (key === "head" || key === "waist")
+        if (key === "waist")
           drivers.push({
-            node: objects.indexOf(
-              key === "head" ? model.neck : model.waist_mid,
-            ),
+            node: objects.indexOf(model.waist_mid),
             component,
             factor,
             order: joint.rotation.order,
@@ -220,6 +218,7 @@ try {
     template.reference = null;
     return {
       schema: "pose-atlas/fitting-rig@1",
+      jointControlVersion: poseStudio.version,
       mesh: model.userData.mesh,
       sex,
       nodes,

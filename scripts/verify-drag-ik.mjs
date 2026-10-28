@@ -111,6 +111,7 @@ try {
           "pelvis",
           "waist",
           "chest",
+          "neck",
           "head",
           "l_arm",
           "r_arm",
@@ -160,16 +161,19 @@ try {
         for (const [key, source] of [
           ["waist", "pelvis"],
           ["chest", "waist"],
-          ["head", "chest"],
+          ["neck", "chest"],
+          ["head", "neck"],
           ["l_arm", "chest"],
           ["r_arm", "chest"],
         ]) {
           for (const joint of ["pelvis", "waist", "chest"])
             writeAngles(model, joint, { bend: 0, tilt: 0, turn: 0 });
-          writeAngles(model, source, { bend: 15 });
+          writeAngles(model, "neck", { nod: 0, tilt: 0, turn: 0 });
+          const bendAxis = source === "neck" ? "nod" : "bend";
+          writeAngles(model, source, { [bendAxis]: 15 });
           model.updateMatrixWorld(true);
           const target = model[key].getWorldPosition(new THREE.Vector3());
-          writeAngles(model, source, { bend: 0 });
+          writeAngles(model, source, { [bendAxis]: 0 });
           model.updateMatrixWorld(true);
           const local = solveDragIK(model, key, target);
           check(

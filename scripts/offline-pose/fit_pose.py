@@ -187,7 +187,7 @@ def fit(record, rig, excluded=(), starts=4, max_evaluations=200, orientations=No
     # Head/hand orientation is not determined by head center or wrist position.
     # The only automatic ankle control uses an approximate ankle-to-toe marker.
     active = [i for i,c in enumerate(rig.controls) if not (
-        c['key'] in ('body', 'head', 'l_wrist', 'r_wrist') or
+        c['key'] in ('body', 'neck', 'head', 'l_wrist', 'r_wrist') or
         (c['key'].endswith('_ankle') and c['property']!='bend') or
         (c['key'].endswith('_ankle') and not toe_observed[c['key'][0]]) or
         f"{c['key']}.{c['property']}" in manual_angles)]

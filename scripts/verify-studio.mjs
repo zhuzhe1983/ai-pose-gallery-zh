@@ -16,6 +16,19 @@ import { locales, translate } from "../studio/i18n.js";
 const model = Object.fromEntries(
   [...JOINTS, "neck", "waist_mid"].map((k) => [k, new THREE.Object3D()]),
 );
+// Neck and skull are independent local controls. An edit or limit clamp of one
+// must never overwrite the other's saved quaternion (including during import).
+for (const [key, other] of [["neck", "head"], ["head", "neck"]]) {
+  writeAngles(model, other, { nod: -12, tilt: 8, turn: 18 });
+  const untouched = model[other].quaternion.clone();
+  writeAngles(model, key, { nod: 15, tilt: -10, turn: 25 });
+  assert.ok(model[other].quaternion.angleTo(untouched) < 1e-7);
+  for (const [axis, value] of Object.entries({ nod: 15, tilt: -10, turn: 25 }))
+    assert.ok(Math.abs(readAngles(model, key)[axis] - value) < 1e-8);
+  model[key].rotation.set(2.8, -2.7, 2.9, "XYZ");
+  constrainJoint(model, key);
+  assert.ok(model[other].quaternion.angleTo(untouched) < 1e-7);
+}
 for (const [id, preset] of Object.entries(PRESETS)) {
   assert.ok(fs.existsSync(`img/${id}_${preset.view}.png`), id);
   assert.ok(preset.actors.length >= 1 && preset.actors.length <= 2);

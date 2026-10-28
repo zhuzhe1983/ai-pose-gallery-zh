@@ -398,6 +398,7 @@ const rows = {
   straddle: ["展开", "Spread", "開く"],
   body: ["全身旋转（骨盆附近）", "Whole-body rotation", "全身回転"],
   torso: ["腰 / 胸", "Waist / chest", "腰・胸"],
+  neck: ["颈部", "Neck", "首"],
   head: ["头部", "Head", "頭"],
   l_arm: ["左肩 / 上臂", "Left shoulder", "左肩"],
   l_elbow: ["左肘", "Left elbow", "左ひじ"],

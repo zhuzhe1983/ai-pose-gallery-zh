@@ -8,7 +8,7 @@ The studio uses adult MakeHuman/MPFB meshes and authored skin weights (CC0), map
 
 1. Select figure A–F; add male or female figures (maximum six). Each figure card has a visible Delete button. Keep at least one figure.
 2. Choose a body part from the inspector or click it on the figure. Use labeled sliders, numeric angles, or the rotation rings. Sliders, rings, presets and scene imports all obey the same limits. Knees and elbows have one bend axis. Hands have a finger-curl slider.
-3. The canvas toolbar switches **Rotate joint (E)**, **Move figure (W)** and **Drag joint (T)**. In drag mode select any joint and drag an arrow; bounded IK moves the upstream joints. Dragging the pelvis, hips or trunk may translate the whole figure; pin feet and/or keep chest orientation when needed. Unreachable targets show a warning. Drag the translation arrows or plane handles directly; a vertical drag releases floor locking. The continuous skin follows the rig without cloth simulation. Select **White mannequin** or **Ivory mannequin** (default) for the material. Extreme bends can still compress the skin; there is no collision solver or corrective blendshape system. Use body type, overall scale (80–120%), position and facing controls for composition. Turn off automatic grounding to raise a figure off the floor. Drag the empty canvas to orbit; use the wheel to zoom. Camera buttons select front, three-quarter, side, above or below.
+3. The canvas toolbar switches **Rotate joint (E)**, **Move figure (W)** and **Drag joint (T)**. In drag mode select any joint and drag an arrow; bounded IK moves the upstream joints. Dragging the pelvis, hips or trunk may translate the whole figure; pin feet and/or keep chest orientation when needed. Unreachable targets show a warning. Drag the translation arrows or plane handles directly; a vertical drag releases floor locking. The continuous skin follows the rig without cloth simulation. Select **White mannequin** or **Ivory mannequin** (default) for the material. Extreme bends can still compress the skin; there is no collision solver or corrective blendshape system. Use body type, overall scale (80–120%), position and facing controls for composition. Turn off automatic grounding to raise a figure off the floor. Drag the empty canvas to orbit; use the wheel to zoom. Camera buttons select front, three-quarter, side, above or below. The reference card lists its available views inline; hovering or clicking switches the image and camera together without changing the pose. Keyboard users can activate these buttons with Enter or Space.
 4. Enable **Mirror left / right** to mirror subsequent paired limb edits, including sliders, numeric fields, rotation rings and finger curl. Toggling it does not alter the existing pose; presets and photo fitting remain independent. It is saved in scenes/URLs and undo history. With pinned feet, editing legs resets their anchors.
 5. Gallery tiles marked **3D** load editable hand-authored approximations. Other tiles only display a reference and leave the figure's pose unchanged. Image references are not reconstructed 3D data, and contact points/collisions are not automatically solved.
 6. **Capture PNG** exports a 1600 × 1600 image without rings, grid, selection tint, labels or reference card. **Share scene link** copies the full scene into a compressed URL fragment. Edits also update the address bar; the shared scene takes priority over browser autosave. **Save scene** / **Load scene** preserve editable joints, figures and camera. The browser also autosaves locally. Check the PNG visually before using it for AIGC.
@@ -23,7 +23,8 @@ const p = window.poseStudio;
 p.reset({sex: 'female'}); // deterministic start; replaces the browser's current scene
 p.addFigure({sex: 'male', height: 1.8, scale: 1.1}); // returns 'B'; up to A–F
 await p.loadPreset('solo_sit_lean-bk-kn-up', {actorId: 'A'});
-p.setJoint('A', 'head', {nod: 10, turn: 20});
+p.setJoint('A', 'neck', {nod: 10, turn: 15});
+p.setJoint('A', 'head', {nod: -5, turn: 10}); // independent skull rotation
 p.setJoint('B', 'l_arm', {raise: 60, straddle: 20, turn: 0});
 p.setJoint('B', 'l_elbow', {bend: 90});
 p.setHand('B', 'l', 35);
@@ -41,7 +42,7 @@ Save the returned base64 bytes to a `.png` file using the automation environment
 
 Figure state includes `mesh: "makehuman-v3"` (or `"procedural-v1"` fallback). Await `ready` before all operations. Legacy shared scenes still load; floor-locked scenes without a matching mesh revision are grounded to the new surface. Legacy torso rotation is distributed along the restored spine and constrained; old silhouettes, framing and contact points can shift.
 
-API version: **4**. Methods (all synchronous except `ready`, `loadPreset`, `appendPreset`, `showReference`, `capture`, `getShareURL`, `loadShareURL` and the photo methods below):
+API version: **5**. Methods (all synchronous except `ready`, `loadPreset`, `appendPreset`, `showReference`, `capture`, `getShareURL`, `loadShareURL` and the photo methods below):
 
 | Method | Behavior |
 | --- | --- |
@@ -74,7 +75,8 @@ Valid part and angle names:
 | `waist` | `bend` −25…40; `tilt` −20…20; `turn` −25…25; distributed equally over the lower two spine bones |
 | `chest` | `bend` −20…30; `tilt` −20…20; `turn` −40…40; upper spine bone |
 | `torso` (legacy API alias) | `bend` −35…65; `tilt` −30…30; `turn` −60…60; distributed across waist/chest, prefer the independent controls |
-| `head` | `nod` −45…55; `tilt` −35…35; `turn` −80…80 |
+| `neck` | `nod` −35…45; `tilt` −25…25; `turn` −45…45; carries the head |
+| `head` | `nod` −30…35; `tilt` −20…20; `turn` −40…40; skull relative to neck |
 | `l_arm`, `r_arm` | `raise` −60…180; `straddle` −15…90; `turn` −90…90 |
 | `l_leg`, `r_leg` | `raise` −30…145; `straddle` −15…70; `turn` −80…80 |
 | `l_elbow`, `r_elbow`, `l_knee`, `r_knee` | `bend` 0…150 |
@@ -83,11 +85,13 @@ Valid part and angle names:
 
 Left/right are the figure's anatomical sides. Positive raise moves a limb forward; positive straddle spreads it outward. Joint angles are fixed-order editor controls, not raw upstream Euler getter sequences. Use this API instead of manipulating Mannequin.js internals. The editor enforces artistic ranges, not a collision/biomechanics solver.
 
+API v5 exposes independent `neck` and `head` local angles. In v4, a `head` angle was split equally across both bones: to reproduce a v4 scripted head edit, set half the old value on each joint. Existing scene JSON/URLs already store both quaternions and retain their physical poses; built-in presets have been converted accordingly. Photo fitting estimates their combined direction with a distribution prior, not separately observed cervical motion.
+
 The scene schema is `pose-atlas/studio@3`; v1/v2 imports migrate the old torso quaternion into three spine rotations, then constrain them. v1 imports default to `scale:1`. The URL compression envelope remains `2.`; it is independent of the scene schema. Scenes without an `outfit` use `ivory`; the optional outfit field is included in new scene exports and URLs. Imported rotations are constrained to the supported ranges. Treat the per-joint quaternion data as opaque: obtain it from `exportScene()` and edit named angles via `setJoint`. For a precise camera, copy the exported scene, set `camera:{position:[x,y,z],target:[x,y,z]}`, then call `importScene`. To disable grounding or the grid programmatically, change the exported `floorLock` / `grid` booleans and import it.
 
 ## Spine, pinned feet and adding poses
 
-Use `pelvis`, `waist` and `chest` independently. `body` remains the whole-body root. `l_leg` / `r_leg` are hip joints that rotate the corresponding thigh; the pelvis carries the whole trunk and both legs. Optionally pin feet and keep chest orientation while editing pelvis. The human mesh retains native `spine_01`, `spine_02`, `spine_03` weights; the two waist segments share a control. Do not write helper `waist_mid` quaternions directly.
+Use `pelvis`, `waist`, `chest`, `neck` and `head` independently. Rotating `neck` carries the skull; rotating `head` leaves the neck local rotation unchanged. Both are selectable by clicking the skin or through the inspector, and both support rotation rings and drag targets. `body` remains the whole-body root. `l_leg` / `r_leg` are hip joints that rotate the corresponding thigh; the pelvis carries the whole trunk and both legs. Optionally pin feet and keep chest orientation while editing pelvis. The human mesh retains native `spine_01`, `spine_02`, `spine_03` weights; the two waist segments share a control. Do not write helper `waist_mid` quaternions directly.
 
 ```js
 p.setMirrorSync(true); // mirror subsequent paired limb and finger edits

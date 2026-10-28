@@ -11,6 +11,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[2]
 AXES = {
+    'neck': ('nod', 'tilt', 'turn'),
     'head': ('nod', 'tilt', 'turn'),
     'l_wrist': ('bend', 'tilt', 'turn'),
     'r_wrist': ('bend', 'tilt', 'turn'),
@@ -37,7 +38,7 @@ def orientation_assessment(angles=None, evidence=None, toe_observed=None):
         'evidence': evidence or {},
         'interpretation': (
             'Manual angles are fixed as supplied, not estimated or verified. '
-            'Unspecified head/hand orientation and ankle tilt/turn remain prior-only; '
+            'Unspecified neck/head/hand orientation and ankle tilt/turn remain prior-only; '
             'ankle bend uses an approximate toe marker and is not ground truth.'
         ),
     }

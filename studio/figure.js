@@ -106,11 +106,7 @@ export function createFigure(sex, height) {
         ? "waist"
         : key.includes("finger")
           ? key.slice(0, 2) + "wrist"
-          : key === "neck"
-            ? "head"
-            : key === "pelvis"
-              ? "pelvis"
-              : key;
+          : key;
     all[key].image.add(m);
     return m;
   }

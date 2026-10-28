@@ -52,7 +52,7 @@ class MultiViewTests(unittest.TestCase):
             key = self.names[i]
             self.assertGreaterEqual(report["angles"][key], control["min"] - 1e-8)
             self.assertLessEqual(report["angles"][key], control["max"] + 1e-8)
-            if control["key"] in {"body", "head"} or control["key"].endswith("_wrist"):
+            if control["key"] in {"body", "neck", "head"} or control["key"].endswith("_wrist"):
                 self.assertEqual(report["angles"][key], self.prior[i])
         self.assertFalse(report["verified"])
         self.assertEqual(report["endpoint_orientation"]["joints"]["head"]["turn"], "unresolved")
