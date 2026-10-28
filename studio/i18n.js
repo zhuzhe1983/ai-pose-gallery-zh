@@ -1,6 +1,41 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Each row: Simplified Chinese, English, Japanese.
 const rows = {
+  poseRoadmap: ["姿势还原计划", "Pose reconstruction plan", "ポーズ再現計画"],
+  draftBadge: ["3D 草稿", "3D draft", "3D 仮"],
+  scale: ["整体大小 (%)", "Overall size (%)", "全体サイズ (%)"],
+  deleteFigure: ["删除", "Delete", "削除"],
+  keepOne: [
+    "至少保留一个人物",
+    "Keep at least one figure",
+    "最低 1 体は残してください",
+  ],
+  shareScene: ["分享场景链接", "Share scene link", "シーンを共有"],
+  shareHint: [
+    "链接包含全部人物、姿势、大小和镜头。打开即可继续编辑，无需上传文件。",
+    "The link includes every figure, pose, size and camera. Open it to continue editing; no file upload needed.",
+    "全フィギュア・ポーズ・サイズ・カメラをリンクに保存。開くだけで編集を続けられます。",
+  ],
+  sceneLink: ["场景链接", "Scene URL", "シーン URL"],
+  copyLink: ["复制链接", "Copy link", "リンクをコピー"],
+  close: ["关闭", "Close", "閉じる"],
+  linkCopied: ["链接已复制", "Link copied", "リンクをコピーしました"],
+  copyManually: [
+    "请选择并复制上面的链接",
+    "Select and copy the link above",
+    "上のリンクを選択してコピーしてください",
+  ],
+  shareFailed: [
+    "无法生成分享链接，请使用保存场景",
+    "Could not create the link; save the scene instead",
+    "共有リンクを作成できません。シーンを保存してください",
+  ],
+  invalidShare: [
+    "分享链接无效，已恢复本机场景",
+    "Invalid scene link; restored the local scene",
+    "共有リンクが無効なため端末のシーンを復元しました",
+  ],
+
   studio: ["3D 摆姿工作台", "3D Pose Studio", "3D ポーズスタジオ"],
   studioShort: ["3D 摆姿", "3D Studio", "3D スタジオ"],
   gallery: ["图库", "Gallery", "ギャラリー"],
@@ -10,9 +45,9 @@ const rows = {
   addFemale: ["＋ 女素体", "＋ Female", "＋ 女性素体"],
   addMale: ["＋ 男素体", "＋ Male", "＋ 男性素体"],
   twoPeopleHint: [
-    "最多两人，各自独立摆姿。",
-    "Up to two figures, posed independently.",
-    "2 体まで、それぞれ個別に調整できます。",
+    "最多六人，各自独立摆姿。",
+    "Up to six figures, posed independently.",
+    "6 体まで、それぞれ個別に調整できます。",
   ],
   poseLibrary: ["姿势起点", "Pose starting points", "ポーズを選ぶ"],
   collection: ["体系", "Collection", "種類"],
@@ -67,9 +102,9 @@ const rows = {
   ],
   joint: ["部位", "Body part", "部位"],
   jointHint: [
-    "滑块和数值框控制角度。旋转环可直接拖动。",
-    "Use sliders or type an angle. Drag the rings for direct rotation.",
-    "スライダー・数値で調整。回転リングもドラッグできます。",
+    "滑块、数值和旋转环均受关节角度范围限制。",
+    "Sliders, numeric inputs and rotation rings all obey joint limits.",
+    "スライダー・数値・回転リングには関節の可動域制限があります。",
   ],
   fingerCurl: ["握拳程度", "Finger curl", "指の曲げ"],
   resetJoint: ["重置部位", "Reset part", "部位をリセット"],
@@ -126,9 +161,9 @@ const rows = {
   r_knee: ["右膝", "Right knee", "右ひざ"],
   r_ankle: ["右脚 / 脚踝", "Right foot / ankle", "右足・足首"],
   approximation: [
-    "已载入人工近似姿势，可继续调整",
-    "Hand-authored approximation loaded; refine as needed",
-    "手作業の近似ポーズを読み込みました。調整できます",
+    "已载入近似草稿，仍需对照原图调整",
+    "Approximate draft loaded; compare and refine against the reference",
+    "近似ポーズを読み込みました。参考画像と照合して調整してください",
   ],
   referenceOnly: [
     "仅显示参考图；当前 3D 姿势未改变",
@@ -141,9 +176,9 @@ const rows = {
     "一致するポーズがありません",
   ],
   limit: [
-    "最多可添加两个人物",
-    "A maximum of two figures",
-    "フィギュアは 2 体までです",
+    "最多可添加六个人物",
+    "A maximum of six figures",
+    "フィギュアは 6 体までです",
   ],
   saved: ["场景已保存", "Scene saved", "シーンを保存しました"],
   imported: ["场景已导入", "Scene loaded", "シーンを読み込みました"],

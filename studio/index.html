@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#f5f7fb" />
     <meta
       name="description"
-      content="浏览器里的 3D 白模摆姿工作台：男女素体、一到两人、关节调整、图库参考、场景保存和 PNG 导出。"
+      content="浏览器里的 3D 白模摆姿工作台：男女素体、一到六人、关节调整、图库参考、场景保存和 PNG 导出。"
     />
     <title>3D 摆姿工作台 · POSE Atlas</title>
     <link
@@ -97,14 +97,14 @@
         <section class="panel-section actors-section">
           <div class="section-heading">
             <h1 data-t="scene">场景人物</h1>
-            <span class="muted" id="actorCount">1 / 2</span>
+            <span class="muted" id="actorCount">1 / 6</span>
           </div>
           <div id="actors" class="actor-list"></div>
           <div class="button-pair">
             <button id="addFemale" data-t="addFemale">＋ 女素体</button
             ><button id="addMale" data-t="addMale">＋ 男素体</button>
           </div>
-          <p class="micro" data-t="twoPeopleHint">最多两人，各自独立摆姿。</p>
+          <p class="micro" data-t="twoPeopleHint">最多六人，各自独立摆姿。</p>
         </section>
         <section class="panel-section pose-library">
           <div class="section-heading">
@@ -139,6 +139,14 @@
           <div id="poseList" class="pose-list" aria-live="polite"></div>
         </section>
         <footer class="credits">
+          <a
+            href="../TODO.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-t="poseRoadmap"
+            >姿势还原计划</a
+          >
+          ·
           <a
             href="https://github.com/boytchev/mannequin.js"
             target="_blank"
@@ -306,6 +314,9 @@
           >
         </section>
         <section class="panel-section output-section">
+          <button id="shareScene" class="share-button" data-t="shareScene">
+            分享场景链接
+          </button>
           <button class="primary" id="exportPng">
             <svg><use href="#download" /></svg
             ><span data-t="exportPng">导出干净 PNG</span>
@@ -326,6 +337,18 @@
         </section>
       </aside>
     </main>
+    <dialog id="shareDialog" class="share-dialog" aria-labelledby="shareTitle">
+      <div class="section-heading">
+        <h2 id="shareTitle" data-t="shareScene">分享场景链接</h2>
+        <button id="closeShare" data-t="close">关闭</button>
+      </div>
+      <p data-t="shareHint">
+        链接包含人物、姿势、大小和镜头。打开即可继续编辑。
+      </p>
+      <label for="shareUrl" data-t="sceneLink">场景链接</label
+      ><textarea id="shareUrl" readonly rows="4"></textarea>
+      <button id="copyShare" class="primary" data-t="copyLink">复制链接</button>
+    </dialog>
     <script type="module" src="app.js"></script>
   </body>
 </html>

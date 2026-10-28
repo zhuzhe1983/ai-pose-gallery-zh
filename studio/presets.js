@@ -355,48 +355,57 @@ export function jointAxes(key) {
     return axes(
       ["bend", "tilt", "turn"],
       [
-        [-55, 70],
-        [-40, 40],
-        [-80, 80],
+        [-35, 65],
+        [-30, 30],
+        [-60, 60],
       ],
     );
   if (key === "head")
     return axes(
       ["nod", "tilt", "turn"],
       [
-        [-65, 65],
-        [-50, 50],
-        [-90, 90],
+        [-45, 55],
+        [-35, 35],
+        [-80, 80],
       ],
     );
   if (key.endsWith("_arm"))
     return axes(
       ["raise", "straddle", "turn"],
       [
-        [-70, 180],
-        [-30, 160],
-        [-110, 110],
+        [-60, 180],
+        [-15, 90],
+        [-90, 90],
       ],
     );
   if (key.endsWith("_leg"))
     return axes(
       ["raise", "straddle", "turn"],
       [
-        [-70, 160],
-        [-30, 100],
+        [-30, 145],
+        [-15, 70],
         [-80, 80],
       ],
     );
   if (key.endsWith("_knee") || key.endsWith("_elbow"))
-    return axes(["bend"], [[0, 155]]);
-  return axes(
-    ["bend", "tilt", "turn"],
-    [
-      [-90, 90],
-      [-60, 60],
-      [-90, 90],
-    ],
-  );
+    return axes(["bend"], [[0, 150]]);
+  return key.endsWith("_ankle")
+    ? axes(
+        ["bend", "tilt", "turn"],
+        [
+          [-45, 60],
+          [-25, 25],
+          [-35, 35],
+        ],
+      )
+    : axes(
+        ["bend", "tilt", "turn"],
+        [
+          [-80, 80],
+          [-30, 30],
+          [-90, 90],
+        ],
+      );
 }
 
 // Stable Euler conventions: changing one slider preserves the other two angles.
@@ -447,7 +456,12 @@ export function writeAngles(model, key, values) {
   if (r.order !== c.order) r.reorder(c.order);
   for (const [p, value] of Object.entries(values)) {
     const [axis, factor] = c.axes[p];
-    r[axis] = (value * Math.PI) / 180 / factor;
+    if (!Number.isFinite(value)) throw new Error("Invalid joint angle");
+    const limit = jointAxes(key).find((a) => a.property === p);
+    r[axis] =
+      (Math.max(limit.min, Math.min(limit.max, value)) * Math.PI) /
+      180 /
+      factor;
   }
   if (key === "head") model.neck.quaternion.copy(model.head.quaternion);
 }
@@ -461,4 +475,40 @@ export function applyValues(model, values) {
   }
   for (const [key, angles] of Object.entries(grouped))
     writeAngles(model, key, angles);
+}
+
+// Shared by the gizmo, imports, presets and API. Root body orientation is free;
+// individual anatomical joints obey the same documented artistic limits.
+export function constrainJoint(model, key) {
+  const values = readAngles(model, key);
+  if (key.endsWith("_knee") || key.endsWith("_elbow"))
+    model[key].rotation.set(0, 0, 0, "XYZ");
+  writeAngles(model, key, values);
+}
+export function constrainFingers(model) {
+  // The public hand control is one curl per hand. Canonical fixed-order thumb
+  // rotations avoid Euler ambiguity at ±90° during URL/JSON round-trips.
+  for (const side of ["l", "r"]) {
+    const curl = Math.max(0, Math.min(100, model[`${side}_fingers`].bend));
+    const sign = side === "l" ? -1 : 1;
+    for (let i = 0; i < 5; i++) {
+      const root = model[`${side}_finger_${i}`],
+        bend = ((i === 0 ? curl / 2 : curl) * Math.PI) / 180;
+      if (i === 0)
+        root.rotation.set(
+          (sign * 20 * Math.PI) / 180,
+          (-sign * Math.PI) / 2,
+          Math.min((45 * Math.PI) / 180, bend),
+          "YXZ",
+        );
+      else root.rotation.set(0, 0, bend, "XYZ");
+      root.mid.rotation.set(0, 0, bend, "XYZ");
+      root.tip.rotation.set(0, 0, bend, "XYZ");
+    }
+  }
+}
+export function constrainFigure(model) {
+  model.pelvis.rotation.set(0, 0, 0);
+  for (const key of JOINTS) constrainJoint(model, key);
+  constrainFingers(model);
 }

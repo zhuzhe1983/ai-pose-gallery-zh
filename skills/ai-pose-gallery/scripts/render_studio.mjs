@@ -8,11 +8,18 @@ const args = process.argv.slice(2),
 for (let i = 0; i < args.length; i += 2) {
   const key = args[i];
   if (
-    !["--job", "--output", "--scene-out", "--preview", "--url"].includes(key) ||
+    ![
+      "--job",
+      "--output",
+      "--scene-out",
+      "--preview",
+      "--url",
+      "--share-out",
+    ].includes(key) ||
     !args[i + 1]
   )
     throw Error(
-      "Usage: render_studio.mjs --job job.json --output pose.png [--scene-out scene.json] [--preview studio.png] [--url URL]",
+      "Usage: render_studio.mjs --job job.json --output pose.png [--scene-out scene.json] [--preview studio.png] [--share-out scene.url.txt] [--url URL]",
     );
   options[key.slice(2)] = args[i + 1];
 }
@@ -22,9 +29,9 @@ const job = JSON.parse(await fs.readFile(options.job, "utf8"));
 if (
   !Array.isArray(job.figures) ||
   job.figures.length < 1 ||
-  job.figures.length > 2
+  job.figures.length > 6
 )
-  throw Error("job.figures must contain one or two figures");
+  throw Error("job.figures must contain one to six figures");
 let chromium;
 try {
   ({ chromium } = await import(
@@ -49,24 +56,27 @@ try {
     waitUntil: "domcontentloaded",
     timeout: 60000,
   });
-  await page.waitForFunction(() => window.poseStudio, { timeout: 60000 });
+  await page.waitForFunction(() => window.poseStudio, undefined, {
+    polling: 100,
+    timeout: 60000,
+  });
   await page.evaluate(() => poseStudio.ready);
   const result = await page.evaluate(async (job) => {
     const api = window.poseStudio;
     api.reset({ sex: job.figures[0].sex || "female" });
-    if (job.figures.length === 2)
-      api.addFigure({ sex: job.figures[1].sex || "male" });
+    for (let i = 1; i < job.figures.length; i++)
+      api.addFigure({ sex: job.figures[i].sex || "female" });
     if (job.preset) await api.loadPreset(job.preset);
     for (let i = 0; i < job.figures.length; i++) {
       const f = job.figures[i],
-        id = i === 0 ? "A" : "B";
+        id = "ABCDEF"[i];
       if (f.preset) await api.loadPreset(f.preset, { actorId: id });
       for (const [part, angles] of Object.entries(f.joints || {}))
         api.setJoint(id, part, angles);
       for (const [side, curl] of Object.entries(f.hands || {}))
         api.setHand(id, side, curl);
       const changes = {};
-      for (const key of ["sex", "height", "position", "yaw", "ground"])
+      for (const key of ["sex", "height", "scale", "position", "yaw", "ground"])
         if (f[key] !== undefined) changes[key] = f[key];
       api.setFigure(id, changes);
     }
@@ -84,12 +94,14 @@ try {
       image,
       scene: api.exportScene(),
       backend: document.getElementById("backend").dataset.backend,
+      shareUrl: await api.getShareURL(),
     };
   }, job);
   for (const destination of [
     options.output,
     options["scene-out"],
     options.preview,
+    options["share-out"],
   ].filter(Boolean))
     await fs.mkdir(path.dirname(path.resolve(destination)), {
       recursive: true,
@@ -103,6 +115,8 @@ try {
       options["scene-out"],
       JSON.stringify(result.scene, null, 2) + "\n",
     );
+  if (options["share-out"])
+    await fs.writeFile(options["share-out"], result.shareUrl + "\n");
   if (options.preview)
     await page.screenshot({ path: options.preview, fullPage: true });
   if (errors.length) throw Error(errors.join("\n"));
@@ -114,12 +128,16 @@ try {
         height: result.image.height,
         backend: result.backend,
         figures: result.scene.figures.length,
+        share: options["share-out"] ? path.resolve(options["share-out"]) : null,
         scene: options["scene-out"] ? path.resolve(options["scene-out"]) : null,
       },
       null,
       2,
     ),
   );
+} catch (error) {
+  if (errors.length) throw new Error(errors.join("\n"), { cause: error });
+  throw error;
 } finally {
   await browser.close();
 }

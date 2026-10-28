@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 rm -rf dist
 mkdir -p dist
 
-cp -R index.html app.js _headers robots.txt sitemap.xml og-cover.jpg .nojekyll llms.txt skills studio data thumbs img dist/
+cp -R index.html app.js _headers robots.txt sitemap.xml og-cover.jpg .nojekyll llms.txt TODO.md skills studio data thumbs img dist/
 
 echo "dist ready:"
 du -sh dist

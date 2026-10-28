@@ -1,6 +1,6 @@
 ---
 name: ai-pose-gallery
-description: Find pose references or pose one/two male/female white figures in the gallery’s Mannequin.js WebGPU studio, export PNG references, then use them for AIGC artwork. Use for compact image URLs, character/joint control, camera angles, and pose-guided generation.
+description: Find pose references or pose one to six male/female white figures in the gallery’s Mannequin.js WebGPU studio, export PNG references, then use them for AIGC artwork. Use for compact image URLs, character/joint limits, URL scene sharing, camera angles, and pose-guided generation.
 ---
 
 # AI Pose Gallery
@@ -10,7 +10,7 @@ Base URL: `https://zhuzhe1983.github.io/ai-pose-gallery-zh/` (keep the repositor
 ## Choose a reference workflow
 
 - **Existing gallery pose:** use the compact URLs below; no browser rendering is needed.
-- **Custom or two-person pose:** open `studio/` and read [references/studio.md](references/studio.md). It covers adding male/female figures, joint controls, presets, cameras, scene save/load and clean PNG captures through `window.poseStudio`. A reusable headless helper is [scripts/render_studio.mjs](scripts/render_studio.mjs). Both files are available under `skills/ai-pose-gallery/` on the same site. This avoids loading the full image index or rediscovering the UI.
+- **Custom or multi-person pose:** open `studio/` and read [references/studio.md](references/studio.md). It covers adding/deleting up to six male/female figures, 80–120% scale, bounded joint controls, URL sharing, draft presets, cameras and clean PNG captures through `window.poseStudio`. A reusable headless helper is [scripts/render_studio.mjs](scripts/render_studio.mjs). Both files are available under `skills/ai-pose-gallery/` on the same site. This avoids loading the full image index or rediscovering the UI.
 - **AIGC artwork:** first obtain and visually inspect a gallery PNG or studio capture, then attach it to the image tool as described below.
 
 ## Direct image access

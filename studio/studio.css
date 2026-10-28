@@ -866,3 +866,63 @@ h2 {
     box-shadow: none;
   }
 }
+
+.actor-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px;
+  align-items: stretch;
+}
+.actor-delete {
+  padding: 5px 9px;
+  border-color: #e5cccc;
+  color: #9e4141;
+  font-size: 11px;
+  font-weight: 600;
+}
+.actor-delete:hover:not(:disabled) {
+  background: #fff0f0;
+  border-color: #c97777;
+  color: #9e4141;
+}
+.actor-button {
+  min-width: 0;
+}
+.actor-row .actor-button {
+  gap: 8px;
+}
+.share-button {
+  width: 100%;
+  margin-bottom: 8px;
+  color: var(--accent);
+  border-color: #bbbbef;
+  min-height: 38px;
+}
+.share-dialog {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  width: min(560px, calc(100vw - 30px));
+  color: var(--text);
+  box-shadow: 0 16px 80px #18234230;
+}
+.share-dialog::backdrop {
+  background: #14203c70;
+}
+.share-dialog p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.share-dialog textarea {
+  width: 100%;
+  margin: 8px 0 16px;
+  resize: vertical;
+  min-height: 90px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  font: 11px monospace;
+  overflow-wrap: anywhere;
+  background: var(--soft);
+}

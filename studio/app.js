@@ -12,8 +12,13 @@ import {
   applyValues,
   readAngles,
   writeAngles,
+  constrainJoint,
+  constrainFigure,
+  constrainFingers,
 } from "./presets.js";
 import { locales, translate } from "./i18n.js";
+import { FIGURE_IDS, MAX_FIGURES, SCALE_RANGE, BASE_HEIGHT } from "./config.js";
+import { shareURL, sceneFragment, decodeScene } from "./scene-url.js";
 
 const $ = (id) => document.getElementById(id),
   STORE = "pose-atlas-studio-v1",
@@ -45,7 +50,10 @@ let reference = null,
   historyIndex = -1,
   restoring = false,
   toastTimer,
-  libraryRequest = 0;
+  libraryRequest = 0,
+  urlTimer,
+  urlRevision = 0,
+  sharingReady = false;
 const cache = new Map(),
   sliders = new Map();
 const rad = THREE.MathUtils.degToRad,
@@ -122,23 +130,45 @@ function translatePage() {
 }
 function makeFigure(
   sex = "female",
-  height = sex === "male" ? 1.8 : 1.65,
-  id = figures.some((f) => f.id === "A") ? "B" : "A",
+  height = BASE_HEIGHT[sex],
+  id = FIGURE_IDS.find((id) => !figures.some((f) => f.id === id)),
+  scale = 1,
 ) {
   if (!["female", "male"].includes(sex)) throw Error("Invalid body type");
   finite(height, 1.2, 2.2, "height");
+  if (!id || figures.length >= MAX_FIGURES) throw Error("Six figures maximum");
+  finite(scale, SCALE_RANGE.min, SCALE_RANGE.max, "scale");
   const model = createFigure(sex, height);
-  const f = { id, sex, height, model };
+  model.scale.multiplyScalar(scale);
+  groundFigure(model);
+  const f = { id, sex, height, scale, model };
   figures.push(f);
   return f;
 }
 function addFigure(options = {}) {
-  if (figures.length >= 2) throw Error("Two figures maximum");
-  const f = makeFigure(options.sex, options.height);
-  if (figures.length === 2) {
-    figures[0].model.position.x = -0.42;
-    f.model.position.x = 0.42;
-  }
+  if (figures.length >= MAX_FIGURES) throw Error("Six figures maximum");
+  const f = makeFigure(options.sex, options.height, undefined, options.scale);
+  const placements = [
+    [0, 0],
+    [0.8, 0],
+    [-0.8, 0],
+    [1.6, 0],
+    [-1.6, 0],
+    [0, -0.9],
+    [0.8, -0.9],
+    [-0.8, -0.9],
+  ];
+  const location = placements.find(([x, z]) =>
+    figures.every(
+      (other) =>
+        other === f ||
+        Math.hypot(other.model.position.x - x, other.model.position.z - z) >
+          0.65,
+    ),
+  );
+  const [x, z] = location || [0, 1];
+  f.model.position.x = x;
+  f.model.position.z = z;
   active = f.id;
   refresh();
   frameAll();
@@ -151,7 +181,7 @@ function removeFigure(id) {
   gizmo.detach();
   disposeFigure(f.model);
   figures = figures.filter((x) => x !== f);
-  active = figures[0].id;
+  if (active === id) active = figures[0].id;
   refresh();
   commit();
 }
@@ -166,19 +196,27 @@ function setFigure(id, changes = {}) {
   if (changes.sex !== undefined && !["female", "male"].includes(changes.sex))
     throw Error("Invalid body type");
   if (changes.height !== undefined) finite(changes.height, 1.2, 2.2, "height");
+  if (changes.scale !== undefined)
+    finite(changes.scale, SCALE_RANGE.min, SCALE_RANGE.max, "scale");
   if (changes.position !== undefined) vector(changes.position, 3, -10, 10);
   if (changes.yaw !== undefined) finite(changes.yaw, -180, 180, "yaw");
   if (changes.sex && changes.sex !== f.sex) {
     const old = f.model,
       state = figureState(f);
     f.sex = changes.sex;
+    f.height = changes.height ?? BASE_HEIGHT[f.sex];
     f.model = createFigure(f.sex, f.height);
+    f.model.scale.multiplyScalar(f.scale);
     restoreFigure(f, { ...state, sex: f.sex });
     disposeFigure(old);
   }
   if (changes.height !== undefined) {
     f.model.scale.multiplyScalar(changes.height / f.height);
     f.height = changes.height;
+  }
+  if (changes.scale !== undefined) {
+    f.model.scale.multiplyScalar(changes.scale / f.scale);
+    f.scale = changes.scale;
   }
   if (changes.yaw !== undefined) f.model.rotation.y = rad(changes.yaw);
   if (changes.position) f.model.position.fromArray(changes.position);
@@ -212,6 +250,7 @@ function setHand(id, side, curl, { record = true } = {}) {
   if (!["l", "r"].includes(side)) throw Error("Invalid hand");
   finite(curl, 0, 100, "curl");
   figure(id).model[`${side}_fingers`].bend = curl;
+  constrainFingers(figure(id).model);
   refreshValues();
   if (record) commit();
 }
@@ -219,6 +258,7 @@ function neutralFigure(id) {
   const f = figure(id);
   applyValues(f.model, NEUTRAL);
   f.model.l_fingers.bend = f.model.r_fingers.bend = 10;
+  constrainFingers(f.model);
   groundFigure(f.model);
   refresh();
   commit();
@@ -228,6 +268,7 @@ function figureState(f) {
     id: f.id,
     sex: f.sex,
     height: f.height,
+    scale: f.scale,
     position: f.model.position.toArray(),
     rotation: f.model.quaternion.toArray(),
     joints: Object.fromEntries(
@@ -240,7 +281,7 @@ function figureState(f) {
 }
 function getState() {
   return {
-    schema: "pose-atlas/studio@1",
+    schema: "pose-atlas/studio@2",
     figures: figures.map(figureState),
     selected: active,
     joint,
@@ -258,10 +299,10 @@ function getState() {
 function validateState(s) {
   if (
     !s ||
-    s.schema !== "pose-atlas/studio@1" ||
+    !["pose-atlas/studio@1", "pose-atlas/studio@2"].includes(s.schema) ||
     !Array.isArray(s.figures) ||
     s.figures.length < 1 ||
-    s.figures.length > 2
+    s.figures.length > MAX_FIGURES
   )
     throw Error("Invalid scene");
   const keys = Object.keys(bones(current().model)),
@@ -272,13 +313,14 @@ function validateState(s) {
   };
   for (const f of s.figures) {
     if (
-      !["A", "B"].includes(f.id) ||
+      !FIGURE_IDS.includes(f.id) ||
       ids.has(f.id) ||
       !["female", "male"].includes(f.sex)
     )
       throw Error("Invalid figure");
     ids.add(f.id);
     finite(f.height, 1.2, 2.2);
+    finite(f.scale ?? 1, SCALE_RANGE.min, SCALE_RANGE.max, "scale");
     vector(f.position, 3, -10, 10);
     quaternion(f.rotation);
     if (!f.joints || Object.keys(f.joints).length !== keys.length)
@@ -303,13 +345,17 @@ function validateState(s) {
       !["f", "d", "s", "hi", "lo"].includes(s.reference.view))
   )
     throw Error("Invalid reference");
-  return structuredClone(s);
+  const validated = structuredClone(s);
+  validated.schema = "pose-atlas/studio@2";
+  validated.figures.forEach((f) => (f.scale ??= 1));
+  return validated;
 }
 function restoreFigure(f, s) {
   f.model.position.fromArray(s.position);
   f.model.quaternion.fromArray(s.rotation);
   for (const [k, j] of Object.entries(bones(f.model)))
     j.quaternion.fromArray(s.joints[k]);
+  constrainFigure(f.model);
   f.model.updateMatrixWorld(true);
 }
 function restoreState(raw) {
@@ -320,7 +366,7 @@ function restoreState(raw) {
     const old = figures;
     figures = [];
     for (const state of s.figures) {
-      const f = makeFigure(state.sex, state.height, state.id);
+      const f = makeFigure(state.sex, state.height, state.id, state.scale);
       restoreFigure(f, state);
     }
     old.forEach((f) => disposeFigure(f.model));
@@ -377,6 +423,7 @@ function commit() {
   }
   persist();
   updateHistory();
+  scheduleURL();
 }
 function updateHistory() {
   $("undo").disabled = historyIndex <= 0;
@@ -387,6 +434,7 @@ function undo() {
     restoreState(JSON.parse(history[--historyIndex]));
     persist();
     updateHistory();
+    scheduleURL();
   }
   return getState();
 }
@@ -395,6 +443,7 @@ function redo() {
     restoreState(JSON.parse(history[++historyIndex]));
     persist();
     updateHistory();
+    scheduleURL();
   }
   return getState();
 }
@@ -486,7 +535,7 @@ function refreshValues() {
 }
 function refresh() {
   if (!figures.length) return;
-  $("actorCount").textContent = `${figures.length} / 2`;
+  $("actorCount").textContent = `${figures.length} / ${MAX_FIGURES}`;
   $("actors").replaceChildren();
   for (const f of figures) {
     const button = document.createElement("button");
@@ -500,13 +549,25 @@ function refresh() {
     name.textContent = t(f.sex);
     const sub = document.createElement("span");
     sub.className = "actor-sub";
-    sub.textContent = `${f.height.toFixed(2)} m`;
+    sub.textContent = `${(f.height * f.scale).toFixed(2)} m · ${Math.round(f.scale * 100)}%`;
     name.append(sub);
     button.append(badge, name);
     button.onclick = () => selectFigure(f.id);
-    $("actors").append(button);
+    const row = document.createElement("div");
+    row.className = "actor-row";
+    const remove = document.createElement("button");
+    remove.className = "actor-delete";
+    remove.dataset.deleteActor = f.id;
+    remove.textContent = t("deleteFigure");
+    remove.setAttribute("aria-label", `${t("deleteFigure")} ${f.id}`);
+    remove.title = figures.length === 1 ? t("keepOne") : t("deleteFigure");
+    remove.disabled = figures.length === 1;
+    remove.onclick = () => removeFigure(f.id);
+    row.append(button, remove);
+    $("actors").append(row);
   }
-  $("addFemale").disabled = $("addMale").disabled = figures.length === 2;
+  $("addFemale").disabled = $("addMale").disabled =
+    figures.length === MAX_FIGURES;
   $("removeActor").disabled = figures.length === 1;
   $("joint").replaceChildren(...JOINTS.map((key) => new Option(t(key), key)));
   $("joint").value = joint;
@@ -530,17 +591,23 @@ function refresh() {
   const f = current();
   slider(
     $("figureControls"),
-    "height",
-    t("height"),
-    1.2,
-    2.2,
-    0.01,
-    () => f.height,
+    "scale",
+    t("scale"),
+    80,
+    120,
+    1,
+    () => f.scale * 100,
     (v) => {
-      f.model.scale.multiplyScalar(v / f.height);
-      f.height = v;
+      f.model.scale.multiplyScalar(v / 100 / f.scale);
+      f.scale = v / 100;
       if ($("floorLock").checked) groundFigure(f.model);
+      const sub = $("actors").querySelector(
+        `[data-actor="${f.id}"] .actor-sub`,
+      );
+      if (sub)
+        sub.textContent = `${(f.height * f.scale).toFixed(2)} m · ${Math.round(f.scale * 100)}%`;
     },
+    "%",
   );
   for (const [axis, label] of [
     ["x", "positionX"],
@@ -699,7 +766,7 @@ function renderLibrary() {
     if (preset) {
       const badge = document.createElement("span");
       badge.className = "badge";
-      badge.textContent = "3D";
+      badge.textContent = t("draftBadge");
       button.append(badge);
     }
     button.onclick = guarded(async () => {
@@ -772,6 +839,7 @@ async function loadPreset(stem, { actorId = active, view } = {}) {
     const f = targets[i];
     applyValues(f.model, NEUTRAL);
     f.model.l_fingers.bend = f.model.r_fingers.bend = 10;
+    constrainFingers(f.model);
     applyValues(f.model, p.values);
     if (p.position) f.model.position.fromArray(p.position);
     f.model.rotation.set(0, p.yaw || 0, 0);
@@ -863,7 +931,63 @@ async function capture({
     $("exportPng").disabled = false;
   }
 }
+async function getShareURL() {
+  return shareURL(getState());
+}
+function scheduleURL() {
+  if (!sharingReady) return;
+  clearTimeout(urlTimer);
+  const revision = ++urlRevision;
+  urlTimer = setTimeout(async () => {
+    try {
+      const url = await getShareURL();
+      if (revision === urlRevision) window.history.replaceState(null, "", url);
+    } catch {
+      notify("shareFailed", true);
+    }
+  }, 250);
+}
+async function openShare() {
+  try {
+    const url = await getShareURL();
+    window.history.replaceState(null, "", url);
+    $("shareUrl").value = url;
+    $("shareDialog").showModal();
+    $("shareUrl").select();
+  } catch {
+    notify("shareFailed", true);
+  }
+}
+async function loadShareURL(url) {
+  const encoded = sceneFragment(url);
+  if (!encoded) throw Error("Missing scene state");
+  restoreState(await decodeScene(encoded));
+  commit();
+  return getState();
+}
 function bindUI() {
+  $("shareScene").onclick = openShare;
+  $("closeShare").onclick = () => $("shareDialog").close();
+  $("copyShare").onclick = async () => {
+    try {
+      await navigator.clipboard.writeText($("shareUrl").value);
+      notify("linkCopied");
+    } catch {
+      $("shareUrl").select();
+      notify("copyManually");
+    }
+  };
+  $("shareDialog").addEventListener("click", (e) => {
+    if (e.target === $("shareDialog")) $("shareDialog").close();
+  });
+  window.addEventListener("hashchange", async () => {
+    if (!sharingReady) return;
+    try {
+      await loadShareURL(location.href);
+    } catch {
+      notify("invalidShare", true);
+    }
+  });
   $("addFemale").onclick = () => addFigure({ sex: "female" });
   $("addMale").onclick = () => addFigure({ sex: "male" });
   $("removeActor").onclick = () => removeFigure(active);
@@ -948,6 +1072,7 @@ function bindUI() {
     const url = new URL(location);
     url.searchParams.set("lang", lang);
     window.history.replaceState(null, "", url);
+    scheduleURL();
     translatePage();
     refresh();
     renderCollections();
@@ -1028,12 +1153,10 @@ function bindUI() {
     if (!figures.length) return;
     const f = current();
     if (moveMode) {
+      f.model.position.clampScalar(-10, 10);
       if ($("floorLock").checked) groundFigure(f.model);
     } else {
-      const j = f.model[joint];
-      if (joint.endsWith("_knee") || joint.endsWith("_elbow"))
-        j.rotation.set(0, 0, Math.max(0, Math.min(rad(155), j.rotation.z)));
-      if (joint === "head") f.model.neck.quaternion.copy(j.quaternion);
+      constrainJoint(f.model, joint);
       if ($("floorLock").checked) groundFigure(f.model);
     }
     refreshValues();
@@ -1099,7 +1222,7 @@ async function init() {
   orbit.enableDamping = true;
   orbit.dampingFactor = 0.1;
   orbit.minDistance = 0.6;
-  orbit.maxDistance = 15;
+  orbit.maxDistance = 30;
   orbit.maxPolarAngle = Math.PI * 0.85;
   gizmo = new TransformControls(camera, canvas);
   gizmo.setSize(0.72);
@@ -1112,6 +1235,10 @@ async function init() {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     if (figures.length) frameAll();
+    if (sharingReady) {
+      persist();
+      scheduleURL();
+    }
     if (reference && innerWidth <= 540) {
       $("reference").hidden = true;
       $("showReference").hidden = false;
@@ -1128,8 +1255,18 @@ async function init() {
   catalog = await response.json();
   renderCollections();
   await loadLibrary();
+  let shared = false;
+  const encoded = sceneFragment();
+  if (encoded) {
+    try {
+      restoreState(await decodeScene(encoded));
+      shared = true;
+    } catch {
+      notify("invalidShare", true);
+    }
+  }
   const saved = safeRead();
-  if (saved) {
+  if (saved && !shared) {
     try {
       restoreState(saved);
     } catch {
@@ -1137,7 +1274,7 @@ async function init() {
     }
   }
   const queryPose = params.get("pose");
-  if (queryPose) {
+  if (queryPose && !shared) {
     const match = queryPose.match(
       /^([a-z0-9-]+_[a-z0-9-]+_[a-z0-9-]+)_(f|d|s|hi|lo)$/,
     );
@@ -1157,9 +1294,10 @@ async function init() {
         notify("fetchFailed", true);
       }
     }
-  } else if (!saved) {
-    await loadPreset("solo_stand_contrapposto-hip");
+  } else if (!saved && !shared) {
+    setCamera("d");
   }
+  sharingReady = true;
   commit();
   renderer.setAnimationLoop(() => {
     if (!capturing && !document.hidden) {
@@ -1172,7 +1310,10 @@ async function init() {
   return true;
 }
 const api = {
-  version: 1,
+  version: 2,
+  getShareURL,
+  loadShareURL,
+  getJointLimits: jointAxes,
   ready: null,
   getState,
   getJoint,
@@ -1190,6 +1331,7 @@ const api = {
       id,
       figures: p.actors.length,
       view: p.view,
+      status: "draft-needs-review",
     })),
   setCamera,
   frame: () => {
