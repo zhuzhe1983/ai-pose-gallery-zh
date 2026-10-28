@@ -79,9 +79,10 @@ def resolve_prior(rig, pose_id, prior=None, manual_hints=None):
     values = rig.defaults.copy()
     for i, control in enumerate(rig.controls):
         value = source.get(names[i], values[i])
-        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or not control["min"] <= value <= control["max"]:
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or not control["min"]-1e-8 <= value <= control["max"]+1e-8:
             raise ValueError(f"Prior/manual angle outside limits: {names[i]}")
-        values[i] = value
+        # Degree/Euler round-trips can export 150.00000000000003 at a 150° limit.
+        values[i] = np.clip(value,control["min"],control["max"])
     return values, names
 
 

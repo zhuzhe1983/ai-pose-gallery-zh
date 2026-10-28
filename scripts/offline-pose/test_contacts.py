@@ -41,6 +41,12 @@ class ContactTests(unittest.TestCase):
         self.assertFalse(c.assess(self.rig.defaults)['passed'])
         self.assertEqual(c.residual(self.rig.defaults).size,0)
 
+    def test_exact_joint_limit_survives_degree_roundtrip(self):
+        v,n=resolve_prior(self.rig,'solo_kneel_hands-thighs',prior={'l_knee.bend':150.00000000000003})
+        self.assertEqual(v[n.index('l_knee.bend')],150)
+        with self.assertRaises(ValueError):
+            resolve_prior(self.rig,'solo_kneel_hands-thighs',prior={'l_knee.bend':150.01})
+
     def test_upper_crop_never_uses_hallucinated_lower_body(self):
         names=[p['name'] for p in self.rig.data['points']]
         record={'schema':'pose-keypoints/1','body_region':'upper','coordinate_system':'original_image_pixels_x_right_y_down',

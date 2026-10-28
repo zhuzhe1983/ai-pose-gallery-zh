@@ -74,6 +74,8 @@ def main():
     parser.add_argument('--run',required=True);parser.add_argument('--only',nargs='*');parser.add_argument('--max-evaluations',type=int,default=220)
     parser.add_argument('--url',default='http://127.0.0.1:8767/studio/');parser.add_argument('--threads',type=int,default=4)
     args=parser.parse_args()
+    if not 1 <= args.max_evaluations <= 3000 or args.threads < 1:parser.error('Invalid evaluation/thread budget')
+    if any(not Path(p).is_file() for p in [args.adapter,args.model,args.rig]):parser.error('Adapter, model and rig must be existing local files')
     if not args.run.replace('-','').replace('_','').isalnum():parser.error('Run ID must use ASCII letters/digits/-/_')
     os.chdir(ROOT)
     base=ROOT/'output/offline-pose';base.mkdir(parents=True,exist_ok=True)
@@ -90,8 +92,9 @@ def main():
     groups.sort(key=lambda g:(g['id']!='solo_kneel_hands-thighs',g['id'] not in rig.data['presets'],g['id']))
     manifest={'schema':'pose-atlas/offline-run@1','run':args.run,'rig_sha256':sha256(Path(args.rig)),
               'model_sha256':sha256(Path(args.model)),'adapter_sha256':sha256(Path(args.adapter)),
-              'max_evaluations':args.max_evaluations,'poses':groups,'scope':'drafts only; duo blocked; upper-body has no inferred lower body'}
-    manifest['pipeline_sha256']=hashlib.sha256(b''.join(p.read_bytes() for p in sorted((ROOT/'scripts/offline-pose').glob('*.py')))).hexdigest()
+              'max_evaluations':args.max_evaluations,'threads':args.threads,'poses':groups,'scope':'drafts only; duo blocked; upper-body has no inferred lower body'}
+    sources=sorted([*(ROOT/'scripts/offline-pose').glob('*.py'),*(ROOT/'scripts/offline-pose').glob('*.mjs'),*(ROOT/'studio').glob('*.js')])
+    manifest['pipeline_sha256']=hashlib.sha256(b''.join(p.relative_to(ROOT).as_posix().encode()+b'\0'+p.read_bytes() for p in sources)).hexdigest()
     mf=run/'manifest.json'
     if mf.exists() and json.loads(mf.read_text())!=manifest:parser.exit(2,'Run inputs changed: choose a new --run ID to preserve previous results\n')
     write_json(mf,manifest)
@@ -121,7 +124,8 @@ def main():
     try:
         adapter=load_adapter(Path(args.adapter).resolve())
         model=adapter.load_model(Path(args.model).resolve(),args.threads)
-        review=json.loads((ROOT/'output/sketch-pose-offline/review.json').read_text())
+        review_path=ROOT/'output/sketch-pose-offline/review.json'
+        review=json.loads(review_path.read_text()) if review_path.exists() else {}
         reviews={Path(r['image']).stem:r for r in review.get('results',[])}
         detectdir=ROOT/'output/sketch-pose-offline'/args.run;detectdir.mkdir(parents=True,exist_ok=True)
         for number,group in enumerate(groups,1):
