@@ -10,6 +10,9 @@ for (let i = 0; i < args.length; i += 2) {
   if (
     ![
       "--job",
+      "--scene",
+      "--width",
+      "--height",
       "--output",
       "--scene-out",
       "--preview",
@@ -21,13 +24,28 @@ for (let i = 0; i < args.length; i += 2) {
     !args[i + 1]
   )
     throw Error(
-      "Usage: render_studio.mjs --job job.json --output pose.png [--image local-photo.jpg] [--detection-out landmarks.json] [--scene-out scene.json] [--preview studio.png] [--share-out scene.url.txt] [--url URL]",
+      "Usage: render_studio.mjs (--job job.json | --scene scene.json) --output pose.png [--width 900 --height 1200] [--image local-photo.jpg] [--detection-out landmarks.json] [--scene-out scene.json] [--preview studio.png] [--share-out scene.url.txt] [--url URL]",
     );
   options[key.slice(2)] = args[i + 1];
 }
-if (!options.job || !options.output)
-  throw Error("--job and --output are required");
-const job = JSON.parse(await fs.readFile(options.job, "utf8"));
+if (Boolean(options.job) === Boolean(options.scene) || !options.output)
+  throw Error("Exactly one of --job / --scene, and --output, are required");
+if (options.scene && (options.image || options["detection-out"]))
+  throw Error("--scene cannot be combined with photo detection options");
+for (const key of ["width", "height"])
+  if (
+    options[key] &&
+    (!/^\d+$/.test(options[key]) || +options[key] < 256 || +options[key] > 4096)
+  )
+    throw Error(`${key} must be an integer from 256 to 4096`);
+const job = options.job
+  ? JSON.parse(await fs.readFile(options.job, "utf8"))
+  : {};
+const inputScene = options.scene
+  ? JSON.parse(await fs.readFile(options.scene, "utf8"))
+  : null;
+if (options.width) job.width = Number(options.width);
+if (options.height) job.height = Number(options.height);
 let inputPhoto = null;
 if (options.image) {
   const type = {
@@ -45,9 +63,10 @@ if (options.image) {
   inputPhoto = { type, base64: bytes.toString("base64") };
 }
 if (
-  !Array.isArray(job.figures) ||
-  job.figures.length < 1 ||
-  job.figures.length > 6
+  !inputScene &&
+  (!Array.isArray(job.figures) ||
+    job.figures.length < 1 ||
+    job.figures.length > 6)
 )
   throw Error("job.figures must contain one to six figures");
 let chromium;
@@ -80,54 +99,58 @@ try {
   });
   await page.evaluate(() => poseStudio.ready);
   const result = await page.evaluate(
-    async ({ job, inputPhoto }) => {
+    async ({ job, inputPhoto, inputScene }) => {
       const api = window.poseStudio;
-      api.reset({ sex: job.figures[0].sex || "female" });
-      for (let i = 1; i < job.figures.length; i++)
-        api.addFigure({ sex: job.figures[i].sex || "female" });
       let photoResult = null;
-      if (inputPhoto || job.imageUrl) {
-        const source = inputPhoto
-          ? new Blob(
-              [
-                Uint8Array.from(atob(inputPhoto.base64), (c) =>
-                  c.charCodeAt(0),
-                ),
-              ],
-              { type: inputPhoto.type },
-            )
-          : job.imageUrl;
-        photoResult = await api.poseFromImage(source, {
-          sex: job.figures[0].sex || "female",
-        });
-      }
-      if (job.preset) await api.loadPreset(job.preset);
-      for (let i = 0; i < job.figures.length; i++) {
-        const f = job.figures[i],
-          id = "ABCDEF"[i];
-        if (f.preset) await api.loadPreset(f.preset, { actorId: id });
-        for (const [part, angles] of Object.entries(f.joints || {}))
-          api.setJoint(id, part, angles);
-        for (const [side, curl] of Object.entries(f.hands || {}))
-          api.setHand(id, side, curl);
-        const changes = {};
-        for (const key of [
-          "sex",
-          "height",
-          "scale",
-          "position",
-          "yaw",
-          "ground",
-          "outfit",
-        ])
-          if (f[key] !== undefined) changes[key] = f[key];
-        api.setFigure(id, changes);
-      }
-      api.setCamera(job.camera || (photoResult ? "f" : "d"));
-      if (job.cameraPosition) {
-        const state = api.exportScene();
-        state.camera = job.cameraPosition;
-        api.importScene(state);
+      if (inputScene) {
+        api.importScene(inputScene);
+      } else {
+        api.reset({ sex: job.figures[0].sex || "female" });
+        for (let i = 1; i < job.figures.length; i++)
+          api.addFigure({ sex: job.figures[i].sex || "female" });
+        if (inputPhoto || job.imageUrl) {
+          const source = inputPhoto
+            ? new Blob(
+                [
+                  Uint8Array.from(atob(inputPhoto.base64), (c) =>
+                    c.charCodeAt(0),
+                  ),
+                ],
+                { type: inputPhoto.type },
+              )
+            : job.imageUrl;
+          photoResult = await api.poseFromImage(source, {
+            sex: job.figures[0].sex || "female",
+          });
+        }
+        if (job.preset) await api.loadPreset(job.preset);
+        for (let i = 0; i < job.figures.length; i++) {
+          const f = job.figures[i],
+            id = "ABCDEF"[i];
+          if (f.preset) await api.loadPreset(f.preset, { actorId: id });
+          for (const [part, angles] of Object.entries(f.joints || {}))
+            api.setJoint(id, part, angles);
+          for (const [side, curl] of Object.entries(f.hands || {}))
+            api.setHand(id, side, curl);
+          const changes = {};
+          for (const key of [
+            "sex",
+            "height",
+            "scale",
+            "position",
+            "yaw",
+            "ground",
+            "outfit",
+          ])
+            if (f[key] !== undefined) changes[key] = f[key];
+          api.setFigure(id, changes);
+        }
+        api.setCamera(job.camera || (photoResult ? "f" : "d"));
+        if (job.cameraPosition) {
+          const state = api.exportScene();
+          state.camera = job.cameraPosition;
+          api.importScene(state);
+        }
       }
       const image = await api.capture({
         width: job.width || 1600,
@@ -141,7 +164,7 @@ try {
         photoResult,
       };
     },
-    { job, inputPhoto },
+    { job, inputPhoto, inputScene },
   );
   for (const destination of [
     options.output,

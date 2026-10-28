@@ -2,6 +2,7 @@
 // CC0 MakeHuman geometry and painted weights, bound to the editor's angle rig.
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { attachDualQuaternionSkinning } from "./dual-quaternion.js";
 import { NEUTRAL, applyValues, constrainFingers } from "./presets.js";
 
 const cache = new Map();
@@ -29,6 +30,9 @@ for (const side of ["l", "r"]) {
     });
   });
 }
+const controlKeys = Object.keys(nativeNames);
+nativeNames.clavicle_l = "clavicle_l";
+nativeNames.clavicle_r = "clavicle_r";
 const keys = Object.keys(nativeNames);
 const nativeToControl = Object.fromEntries(
   Object.entries(nativeNames).map(([k, n]) => [n, k]),
@@ -37,8 +41,8 @@ Object.assign(nativeToControl, {
   Root: "body",
   spine_02: "torso",
   spine_03: "torso",
-  clavicle_l: "torso",
-  clavicle_r: "torso",
+  clavicle_l: "clavicle_l",
+  clavicle_r: "clavicle_r",
   ball_l: "l_ankle",
   ball_r: "r_ankle",
 });
@@ -156,12 +160,48 @@ export function attachHuman(model, joints) {
   constrainFingers(model);
   // Set each anatomical pivot in parent order, preserving the public angle axes.
   model.updateMatrixWorld(true);
-  for (const key of keys) {
+  for (const key of controlKeys) {
     const joint = joints[key];
     joint.position.copy(joint.parent.worldToLocal(asset.joints[key].clone()));
     joint.updateMatrixWorld(true);
   }
-  const material = new THREE.MeshPhysicalMaterial({
+  // Preserve the source clavicle weights instead of merging them into the chest.
+  // These display-only helper bones distribute shoulder rotation without changing
+  // the public joint positions or the editor's angle/scene protocol.
+  const skinJoints = { ...joints },
+    shoulders = [];
+  const torsoBind = model.torso.getWorldQuaternion(new THREE.Quaternion());
+  for (const side of ["l", "r"]) {
+    const key = `clavicle_${side}`,
+      helper = new THREE.Bone();
+    helper.name = key;
+    model.torso.add(helper);
+    helper.position.copy(model.torso.worldToLocal(asset.joints[key].clone()));
+    helper.updateMatrixWorld(true);
+    skinJoints[key] = helper;
+    shoulders.push({
+      helper,
+      arm: joints[`${side}_arm`],
+      armBindInverse: joints[`${side}_arm`]
+        .getWorldQuaternion(new THREE.Quaternion())
+        .invert(),
+    });
+  }
+  const torsoInverse = new THREE.Quaternion(),
+    armRotation = new THREE.Quaternion();
+  const updateShoulders = () => {
+    model.torso.getWorldQuaternion(torsoInverse).invert();
+    for (const { helper, arm, armBindInverse } of shoulders) {
+      arm.getWorldQuaternion(armRotation);
+      armRotation
+        .premultiply(torsoInverse)
+        .multiply(armBindInverse)
+        .multiply(torsoBind);
+      helper.quaternion.identity().slerp(armRotation, 0.3);
+      helper.updateMatrixWorld(true);
+    }
+  };
+  const material = new THREE.MeshPhysicalNodeMaterial({
     color: 0xe8e2d5,
     roughness: 0.58,
     metalness: 0,
@@ -170,7 +210,7 @@ export function attachHuman(model, joints) {
     sheenRoughness: 0.8,
   });
   const surface = new THREE.SkinnedMesh(asset.geometry, material);
-  const skeleton = new THREE.Skeleton(keys.map((key) => joints[key]));
+  const skeleton = new THREE.Skeleton(keys.map((key) => skinJoints[key]));
   model.add(surface);
   surface.bind(skeleton, model.matrixWorld);
   surface.castShadow = surface.receiveShadow = true;
@@ -180,14 +220,16 @@ export function attachHuman(model, joints) {
     suit: true,
     joint: "torso",
     jointKeys: keys,
+    updateShoulders,
   };
+  attachDualQuaternionSkinning(surface);
   const raycast = surface.raycast;
   surface.raycast = function (...args) {
     humanBounds(model);
     return raycast.apply(this, args);
   };
   model.userData.human = true;
-  model.userData.mesh = "makehuman-v1";
+  model.userData.mesh = "makehuman-v2";
   applyValues(model, NEUTRAL);
   model.l_fingers.bend = model.r_fingers.bend = 10;
   constrainFingers(model);
@@ -207,6 +249,7 @@ export function humanBounds(model) {
   const skin = model.children.find((o) => o.userData.human);
   if (!skin) return null;
   model.updateMatrixWorld(true);
+  skin.userData.updateShoulders();
   const pose = skin.skeleton.bones
     .map((bone) =>
       [
@@ -218,6 +261,7 @@ export function humanBounds(model) {
     .join(";");
   if (skin.userData.boundsPose !== pose) {
     skin.skeleton.update();
+    skin.userData.updateSkinning();
     skin.computeBoundingBox();
     skin.boundingSphere ||= new THREE.Sphere();
     skin.boundingBox.getBoundingSphere(skin.boundingSphere);

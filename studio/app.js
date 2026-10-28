@@ -1007,7 +1007,6 @@ async function showReference(stem, view) {
   return { stem, view: reference.view, hasPreset: Boolean(PRESETS[stem]) };
 }
 function renderReference(forceOpen = false) {
-  $("detectReference").disabled = !reference;
   const collapsed = Boolean(reference) && innerWidth <= 540 && !forceOpen;
   $("reference").hidden = !reference || collapsed;
   $("showReference").hidden = !collapsed;
@@ -1043,7 +1042,8 @@ async function loadPreset(stem, { actorId = active, view } = {}) {
   preset.actors.forEach((p, i) => {
     const f = targets[i];
     applyValues(f.model, NEUTRAL);
-    f.model.l_fingers.bend = f.model.r_fingers.bend = 10;
+    f.model.l_fingers.bend = p.hands?.l ?? 10;
+    f.model.r_fingers.bend = p.hands?.r ?? 10;
     constrainFingers(f.model);
     applyValues(f.model, p.values);
     if (p.position) f.model.position.fromArray(p.position);
@@ -1396,8 +1396,9 @@ function bindUI() {
           hit.object.userData.jointKeys[
             [...weights].sort((a, b) => b[1] - a[1])[0][0]
           ];
-        joint =
-          key === "pelvis"
+        joint = key.startsWith("clavicle_")
+          ? `${key.slice(-1)}_arm`
+          : key === "pelvis"
             ? "body"
             : key === "neck"
               ? "head"
@@ -1435,7 +1436,7 @@ async function init() {
   translatePage();
   try {
     await preloadHumans();
-    document.body.dataset.figureMesh = "makehuman-v1";
+    document.body.dataset.figureMesh = "makehuman-v2";
   } catch (error) {
     console.warn("Human assets unavailable; using procedural figures", error);
     document.body.dataset.figureMesh = "procedural";
@@ -1575,8 +1576,6 @@ async function init() {
   photoUI = setupPosePhotoUI({
     t,
     applyDetectedPose,
-    referenceURL: () =>
-      reference ? `../img/${reference.stem}_${reference.view}.png` : null,
   });
   commit();
   renderer.setAnimationLoop(() => {

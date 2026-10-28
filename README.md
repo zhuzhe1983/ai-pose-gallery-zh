@@ -267,3 +267,21 @@ npx wrangler pages deploy dist --project-name ai-pose-gallery-zh
 - 本仓库仅为个人学习、汉化与静态站点实践存档，**不对图片主张任何权利**，也不构成对原作品的商业使用授权
 - 若原作者认为本仓库侵犯其权益，请通过 Issue 联系，将立即删除相关内容
 - `scripts/` 与 `index.html` 的代码以 MIT 协议开源（见 [LICENSE](LICENSE)），该协议**不覆盖** `img/`、`thumbs/` 与 `data/` 中的图片和原始数据
+
+## 本轮 3D 校对与离线线稿工具
+
+照片由浏览器本机识别；固定图库线稿由维护者离线处理，已经移除“识别当前参考图”。
+[离线工具](scripts/offline-pose/README.md) 可将复核后的 2D 点拟合为工作台 JSON 草稿并渲染对照，
+当前仅试跑 Sketch2Pose 的 2D 前段，不是完整 Sketch2Pose 或全量准确重建。
+
+人偶使用双四元数蒙皮与锁骨辅助旋转，缓解极端姿势的体积塌陷；已修正头顶比心和举臂伸展预设。
+其余预设仍需逐图修正，不能把 24 个草稿当成准确转换。参见 [渲染对照报告](docs/preset-review.md)。
+
+可选浏览器回归检查（先启动本地 8767 静态服务，并安装 Playwright）：
+
+```sh
+node scripts/verify-human-render.mjs
+node scripts/verify-human-render.mjs --webgpu
+```
+
+检查六人、缩放、体积保持、拾取、贴地、旧场景迁移、比心手部高度及截图；浏览器在检查后自动关闭。

@@ -108,7 +108,7 @@
         </section>
         <section class="panel-section photo-section">
           <div class="section-heading">
-            <h2 data-t="photoPose">图片转姿势</h2>
+            <h2 data-t="photoPose">照片转姿势</h2>
             <span class="local-badge" data-t="onDevice">本机运行</span>
           </div>
           <button id="uploadPose" class="primary" data-t="uploadPose">
@@ -120,9 +120,6 @@
             accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/bmp"
             hidden
           />
-          <button id="detectReference" data-t="detectReference" disabled>
-            识别当前参考图
-          </button>
           <button
             id="reviewPhoto"
             class="text-button"
@@ -345,7 +342,14 @@
               <option value="ivory" data-t="outfitIvory">象牙白人偶</option>
             </select></label
           >
-          <p class="hint" id="humanModelStatus" role="status" data-t="humanModel">真人比例 · 连续蒙皮</p>
+          <p
+            class="hint"
+            id="humanModelStatus"
+            role="status"
+            data-t="humanModel"
+          >
+            真人比例 · 连续蒙皮
+          </p>
           <div class="sliders" id="figureControls"></div>
           <div class="button-pair">
             <button id="moveMode" aria-pressed="false" data-t="moveFigure">

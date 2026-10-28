@@ -50,6 +50,7 @@ for (const file of [
   "suit.js",
   "figure.js",
   "human.js",
+  "dual-quaternion.js",
 ])
   execFileSync(process.execPath, ["--check", "studio/" + file]);
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);

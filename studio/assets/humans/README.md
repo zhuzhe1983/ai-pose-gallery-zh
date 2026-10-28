@@ -17,6 +17,10 @@ included. Browser geometry is shared between instances of the same body type.
 
 The browser remaps the supplied weights to the existing angle controls in
 `studio/human.js`; spine segments share the torso control and toes share ankles.
+Runtime revision `makehuman-v2` uses dual-quaternion skinning and preserves the
+source clavicle weights with display-only shoulder helpers. GPU deformation and
+CPU picking/bounds use the same dual-quaternion blend. This reduces large-angle
+volume collapse; it does not remove all bulging or provide collision constraints.
 It keeps the existing named joints, limits, photo fitting and URL scene API.
 The default material is `ivory`; `white` changes its finish. If assets fail to
 load, the editor reports the simplified procedural fallback.

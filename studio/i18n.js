@@ -27,17 +27,12 @@ const rows = {
     "Select a body part, then drag a colored ring.",
     "部位を選択し、色付きのリングをドラッグします。",
   ],
-  photoPose: ["图片转姿势", "Pose from image", "画像からポーズ"],
+  photoPose: ["照片转姿势", "Pose from photo", "写真からポーズ"],
   onDevice: ["本机运行", "On device", "端末内処理"],
   uploadPose: [
     "选择照片 · 识别并同步",
     "Choose photo · detect & sync",
     "写真を選択・検出して反映",
-  ],
-  detectReference: [
-    "识别当前参考图",
-    "Detect current reference",
-    "現在の参考画像を検出",
   ],
   reviewPhoto: [
     "查看识别结果 / 修正关键点",

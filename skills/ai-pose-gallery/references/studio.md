@@ -38,7 +38,7 @@ const url = await p.getShareURL(); // self-contained share link; no upload
 
 Save the returned base64 bytes to a `.png` file using the automation environment's file-writing API. Do not print the full data URL into the conversation. Alternatively, `capture({download:true, filename:'pose.png'})` triggers a browser download. Capture serially, and await each call. Sizes: integer 256–4096 per axis. Captures use the current camera position with the requested aspect ratio; inspect the framing when changing aspect ratio. The UI export uses 1600 × 1600; the API allows portrait or landscape captures.
 
-Figure state includes `mesh: "makehuman-v1"` (or `"procedural-v1"` fallback). Await `ready` before all operations. Legacy shared scenes still load; floor-locked scenes without a matching mesh revision are grounded to the new surface. Saved joint angles are preserved, but old model silhouettes/contact points are not identical.
+Figure state includes `mesh: "makehuman-v2"` (or `"procedural-v1"` fallback). Await `ready` before all operations. Legacy shared scenes still load; floor-locked scenes without a matching mesh revision are grounded to the new surface. Saved joint angles are preserved, but old model silhouettes/contact points are not identical.
 
 API version: **3**. Methods (all synchronous except `ready`, `loadPreset`, `showReference`, `capture`, `getShareURL`, `loadShareURL` and the photo methods below):
 
@@ -147,4 +147,16 @@ All 288 gallery groups are tracked in `data/pose-3d-status.json`; 24 have unveri
 
 ## Line-art recognition status
 
-The display mesh and image detector are independent. Changing the mannequin does not improve image detection. MediaPipe still powers photo detection; the five sampled gallery line drawings produced no usable people. Sketch2Pose and bizarre-pose-estimator are research candidates, not installed backends. As checked on 2026-10-29, Sketch2PoseNet's public repository still says “Coming Soon” and provides no runnable implementation or weights. Do not promise automatic line-art reconstruction. See the repository’s [research note](https://github.com/zhuzhe1983/ai-pose-gallery-zh/blob/main/docs/line-art-pose-research.md).
+The display mesh and image detector are independent. Changing the mannequin does not improve image detection. MediaPipe still powers photo detection; the five sampled gallery line drawings produced no usable people. Sketch2Pose’s 2D ONNX front end has been tested offline on 10 gallery images; it is not a browser backend or full 3D reconstruction. Fixed gallery drawings are intended for offline preparation and review, while user photos stay in the browser. The current-reference recognition UI has been removed. As checked on 2026-10-29, Sketch2PoseNet's public repository still says “Coming Soon” and provides no runnable implementation or weights. Do not promise automatic line-art reconstruction. See the repository’s [research note](https://github.com/zhuzhe1983/ai-pose-gallery-zh/blob/main/docs/line-art-pose-research.md).
+
+## Render an existing scene JSON
+
+The headless helper also accepts a saved or offline-fitted scene. Use exactly one of `--job` or `--scene`; `--scene` preserves its camera and figure transforms and cannot be combined with photo detection options.
+
+```sh
+node scripts/render_studio.mjs --scene pose.scene.json --output pose.png --width 900 --height 1200
+```
+
+Compare the clean render with the actual reference from the same view, including hands, contact points, silhouette and framing. Check other available views before claiming a match. The corrected overhead-heart and raised-arms presets are still drafts; other old presets can have substantial hand/foot/contact errors. The model now uses dual-quaternion skinning with shoulder helpers to reduce large-angle collapse. Picking and grounding use the same deformation; collisions and corrective shapes are still absent.
+
+Maintainers preparing fixed line art can use the repository's [offline pipeline](https://github.com/zhuzhe1983/ai-pose-gallery-zh/tree/main/scripts/offline-pose). Downloaded model weights and upstream inference code stay local; reviewed lightweight scene data can be published separately. Do not present unreviewed fits as accurate reconstructions.

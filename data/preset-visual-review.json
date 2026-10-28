@@ -1,0 +1,362 @@
+{
+  "schema": "pose-atlas/preset-visual-audit@1",
+  "date": "2026-10-29",
+  "status": "draft-needs-review",
+  "reviewer": "agent visual inspection; not precise human annotation",
+  "scope": "24 existing hand-authored presets, one source/preset.view pair each; two adjusted arm poses additionally checked in f/d/s. This is not accurate 3D reconstruction or a quantitative accuracy test.",
+  "severity_definition": {
+    "major": "动作、左右关系、接触或取景存在明显偏差，需要重做或显著调整。",
+    "minor": "主动作可辨认，但角度、手型、比例或接触细节仍需校对；不表示准确重建。"
+  },
+  "evidence_directory": "docs/pose-review/",
+  "render_settings": {
+    "width": 900,
+    "height": 1200,
+    "backend": "webgl2",
+    "mesh": "makehuman-v2",
+    "sourceSha256": {
+      "studio/human.js": "0758d3fed5c60c1443df1c81a67078ee53aff5c1338467c163cd240e20fd7a5d",
+      "studio/presets.js": "de60d020ffbe02c2dd97533e3bcaa62dd5aa951a876e804d2676dd13b120170d",
+      "studio/app.js": "1a34f170d7b1c9a65e840c58377e0bb2af83dd08d0bdb0e93e66d5264a1a4651",
+      "studio/dual-quaternion.js": "347a738d15ccb5e9be9f2003203a25a815683f5bacc657ee12128fe4ae1bcdb6"
+    },
+    "single_browser_session": true
+  },
+  "summary": {
+    "reviewed": 24,
+    "major": 20,
+    "minor": 4,
+    "accurately_reconstructed": 0
+  },
+  "presets": [
+    {
+      "preset": "solo_stand_contrapposto-hip",
+      "view": "d",
+      "source": "img/solo_stand_contrapposto-hip_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "扶髋的手侧与参考相反；手落在髋下而非腰侧。",
+        "重心、髋部倾斜和双腿一伸一曲的关系未匹配。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-1.jpg"
+    },
+    {
+      "preset": "solo_stand_hands-hips",
+      "view": "f",
+      "source": "img/solo_stand_hands-hips_f.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双手落在上大腿/髋下，未形成参考的叉腰接触。",
+        "双肘偏低，脚尖方向和站距未匹配。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-1.jpg"
+    },
+    {
+      "preset": "solo_stand_arms-up-stretch",
+      "view": "f",
+      "source": "img/solo_stand_arms-up-stretch_f.png",
+      "status": "draft-needs-review",
+      "severity": "minor",
+      "issues_zh": [
+        "本轮已把双臂收窄并接近伸直，主动作可辨认。",
+        "手指仍张开，未形成参考的并指直掌；头颈后仰、腰背弧线和比例尚未精确匹配。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-1.jpg",
+      "adjusted_this_pass": true,
+      "additional_views_checked": [
+        "f",
+        "d",
+        "s"
+      ]
+    },
+    {
+      "preset": "solo_stand_look-bk",
+      "view": "d",
+      "source": "img/solo_stand_look-bk_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "头、胸和骨盆的朝向关系与参考不一致。",
+        "参考的一侧屈膝、另一侧承重及髋部偏移未重现。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-1.jpg"
+    },
+    {
+      "preset": "solo_stand_hands-hair",
+      "view": "f",
+      "source": "img/solo_stand_hands-hair_f.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双手停在下巴/颈前，未放在头顶或后脑。",
+        "双肘高度和外展不足，动作语义与参考不一致。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-1.jpg"
+    },
+    {
+      "preset": "solo_sit_lean-bk-kn-up",
+      "view": "d",
+      "source": "img/solo_sit_lean-bk-kn-up_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "一条腿明显悬举，另一条腿接近竖直，与参考一膝抬起、另一腿向前放置不同。",
+        "上方手未落在膝盖，支撑手和臀部着地关系未解决。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-1.jpg"
+    },
+    {
+      "preset": "solo_sit_hands-bk-chest-up",
+      "view": "f",
+      "source": "img/solo_sit_hands-bk-chest-up_f.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双脚抬在空中、膝部上收，参考为双腿向前放置。",
+        "双掌后撑和臀部落地的接触关系未重现。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-2.jpg"
+    },
+    {
+      "preset": "solo_sit_kn-up-chin",
+      "view": "d",
+      "source": "img/solo_sit_kn-up-chin_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "手靠近脸但未形成手托下巴、肘靠膝的接触。",
+        "抬膝和另一条腿的位置、坐地支撑关系与参考不一致。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-2.jpg"
+    },
+    {
+      "preset": "solo_sit_kn-up-hands-hd",
+      "view": "f",
+      "source": "img/solo_sit_kn-up-hands-hd_f.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双手在颈前，未置于后脑。",
+        "双膝一高一低、脚部散开，参考为双膝并拢抬起。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-2.jpg"
+    },
+    {
+      "preset": "solo_kneel_hands-thighs",
+      "view": "d",
+      "source": "img/solo_kneel_hands-thighs_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双手悬在大腿两侧，未贴放在大腿上。",
+        "小腿/脚部收放和身体俯仰未匹配，需核对膝、胫与地面接触。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-2.jpg"
+    },
+    {
+      "preset": "solo_kneel_arms-up",
+      "view": "f",
+      "source": "img/solo_kneel_arms-up_f.png",
+      "status": "draft-needs-review",
+      "severity": "minor",
+      "issues_zh": [
+        "跪姿举臂的大方向与参考接近。",
+        "手臂间距、并指手型、脚踝折叠及小腿贴地关系仍需校正。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-2.jpg"
+    },
+    {
+      "preset": "solo_kneel_one-kn-hand-kn",
+      "view": "d",
+      "source": "img/solo_kneel_one-kn-hand-kn_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "手停在腹部，未落到抬起的膝上。",
+        "单膝跪地、前脚落地及躯干前倾的组合未匹配。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-2.jpg"
+    },
+    {
+      "preset": "solo_squat_hands-kns",
+      "view": "d",
+      "source": "img/solo_squat_hands-kns_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双脚/脚跟悬起，未形成参考的稳定深蹲。",
+        "髋膝方向和双掌扶膝接触不对。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-3.jpg"
+    },
+    {
+      "preset": "solo_lie_supine-arms-up",
+      "view": "hi",
+      "source": "img/solo_lie_supine-arms-up_hi.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双臂伸直举过头，参考为双肘弯曲、手在头两侧。",
+        "腿部间距、俯视镜头和身体落地关系未匹配。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-3.jpg"
+    },
+    {
+      "preset": "solo_lie_side-chin",
+      "view": "d",
+      "source": "img/solo_lie_side-chin_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "人物头部贴近画面右边并发生裁切，镜头取景不合参考。",
+        "双腿接近伸直且张开，未收拢弯曲；手托头与另一手扶髋接触不对。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-3.jpg"
+    },
+    {
+      "preset": "solo_lie_prone-arm-pillow",
+      "view": "hi",
+      "source": "img/solo_lie_prone-arm-pillow_hi.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双前臂和双手未在头下组成枕臂接触。",
+        "腿部间距及镜头俯视方向不合参考，需校正躯干/肢体落地。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-3.jpg"
+    },
+    {
+      "preset": "solo_bend_hands-kns",
+      "view": "d",
+      "source": "img/solo_bend_hands-kns_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "身体整体向前倾倒、腿随根节点倾斜，参考主要是在髋部折叠。",
+        "双掌没有扶膝，脚部支撑与头颈方向不对。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-3.jpg"
+    },
+    {
+      "preset": "solo_twist_stand-arms-out",
+      "view": "d",
+      "source": "img/solo_twist_stand-arms-out_d.png",
+      "status": "draft-needs-review",
+      "severity": "minor",
+      "issues_zh": [
+        "站立展开双臂的主动作可辨认。",
+        "肩线、胸骨盆扭转、手掌朝向和重心偏移与参考仍有差异。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-3.jpg"
+    },
+    {
+      "preset": "solo_side-sit_w-sit-hands-fw",
+      "view": "hi",
+      "source": "img/solo_side-sit_w-sit-hands-fw_hi.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双臂/手陷在身体附近，未向前伸展并撑地。",
+        "W 坐的髋膝脚相对位置及镜头俯角与参考不匹配。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-4.jpg"
+    },
+    {
+      "preset": "sexy_sit_w-sit-hands-fw",
+      "view": "hi",
+      "source": "img/sexy_sit_w-sit-hands-fw_hi.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双臂/手陷在躯干附近，未在身体前方并拢撑地。",
+        "腿部 W 形和膝部位置不一致，俯视镜头过陡。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-4.jpg"
+    },
+    {
+      "preset": "upper_cute_salute",
+      "view": "f",
+      "source": "img/upper_cute_salute_f.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "抬起的手在下巴前，未放到额侧敬礼。",
+        "另一手没有叉腰；肘部高度和掌向均不匹配。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-4.jpg"
+    },
+    {
+      "preset": "upper_cute_heart-over-hd",
+      "view": "f",
+      "source": "img/upper_cute_heart-over-hd_f.png",
+      "status": "draft-needs-review",
+      "severity": "minor",
+      "issues_zh": [
+        "本轮已把额前手势改为头顶双手相接，三个视角均检查。",
+        "指尖存在轻微相交，手背较平，肘宽/高度及上臂比例仍不同；上半身取景尚未单独匹配。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-4.jpg",
+      "adjusted_this_pass": true,
+      "additional_views_checked": [
+        "f",
+        "d",
+        "s"
+      ]
+    },
+    {
+      "preset": "upper_cute_palms-together",
+      "view": "f",
+      "source": "img/upper_cute_palms-together_f.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "双手在胸前横向重叠，未形成参考的竖直合掌。",
+        "手部高度、头倾和上半身取景与参考不同。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-4.jpg"
+    },
+    {
+      "preset": "duo_stand-close_whisper-cheek",
+      "view": "d",
+      "source": "img/duo_stand-close_whisper-cheek_d.png",
+      "status": "draft-needs-review",
+      "severity": "major",
+      "issues_zh": [
+        "两人相对站位、朝向和头部距离未形成参考的贴近耳语。",
+        "手触脸、手扶腰等接触缺失，前方人物手臂伸出方向不对。"
+      ],
+      "review_basis": "rendered-reference-visual-comparison",
+      "contact_sheet": "docs/pose-review/contact-sheet-4.jpg"
+    }
+  ],
+  "post_capture_change": {
+    "file": "studio/app.js",
+    "change": "Clavicle picking now selects the corresponding arm control; no geometry, angle, material or camera change.",
+    "final_sha256": "5f9aca649d165543d006e8acd0bace1c5ccfa1608217cbe9da5daf8760ce7605"
+  }
+}

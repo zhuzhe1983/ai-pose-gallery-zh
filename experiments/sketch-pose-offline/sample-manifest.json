@@ -1,0 +1,15 @@
+{
+  "schema": "pose-batch/1",
+  "images": [
+    {"image": "../../img/solo_stand_contrapposto-hip_f.png", "category": "standing"},
+    {"image": "../../img/solo_stand_arms-up-stretch_f.png", "category": "raised-arms"},
+    {"image": "../../img/sexy_stand_rear-look-bk_f.png", "category": "back-standing"},
+    {"image": "../../img/solo_sit_lean-bk-kn-up_f.png", "category": "sitting"},
+    {"image": "../../img/solo_sit_hands-bk-chest-up_s.png", "category": "sitting-side"},
+    {"image": "../../img/solo_kneel_hands-thighs_f.png", "category": "kneeling"},
+    {"image": "../../img/solo_kneel_hands-thighs_s.png", "category": "kneeling-side"},
+    {"image": "../../img/solo_lie_supine-arms-up_f.png", "category": "supine"},
+    {"image": "../../img/solo_lie_prone-arm-pillow_d.png", "category": "prone"},
+    {"image": "../../img/solo_squat_look-bk_f.png", "category": "squatting"}
+  ]
+}

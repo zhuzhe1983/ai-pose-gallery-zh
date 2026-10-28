@@ -16,7 +16,7 @@ const COLORS = [
   "#007caa",
   "#9e309d",
 ];
-export function setupPosePhotoUI({ t, applyDetectedPose, referenceURL }) {
+export function setupPosePhotoUI({ t, applyDetectedPose }) {
   const $ = (id) => document.getElementById(id),
     dialog = $("posePhotoDialog"),
     canvas = $("posePhotoCanvas");
@@ -257,10 +257,6 @@ export function setupPosePhotoUI({ t, applyDetectedPose, referenceURL }) {
     const file = $("posePhotoFile").files[0];
     $("posePhotoFile").value = "";
     if (file) load(file);
-  };
-  $("detectReference").onclick = () => {
-    const url = referenceURL();
-    if (url) load(url);
   };
   $("reviewPhoto").onclick = () => dialog.showModal();
   $("photoRetry").onclick = recognize;

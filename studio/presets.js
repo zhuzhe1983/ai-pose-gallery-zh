@@ -36,7 +36,9 @@ const headHands = {
   ...both("arm", { raise: 72, straddle: 35, turn: -26 }),
   ...both("elbow", { bend: 147 }),
 };
-const one = (values) => [{ sex: "female", values }];
+const one = (values, hands) => [
+  { sex: "female", values, ...(hands ? { hands } : {}) },
+];
 
 export const PRESETS = {
   "solo_stand_contrapposto-hip": {
@@ -62,10 +64,14 @@ export const PRESETS = {
     view: "f",
   },
   "solo_stand_arms-up-stretch": {
-    actors: one({
-      ...both("arm", { raise: 175, straddle: 12 }),
-      ...both("elbow", { bend: 8 }),
-    }),
+    actors: one(
+      {
+        ...both("arm", { raise: 178, straddle: 5, turn: 0 }),
+        ...both("elbow", { bend: 2 }),
+        ...both("leg", { straddle: 3 }),
+      },
+      { l: 0, r: 0 },
+    ),
     view: "f",
   },
   "solo_stand_look-bk": {
@@ -254,11 +260,14 @@ export const PRESETS = {
     view: "f",
   },
   "upper_cute_heart-over-hd": {
-    actors: one({
-      ...both("arm", { raise: 120, straddle: 35, turn: -35 }),
-      ...both("elbow", { bend: 110 }),
-      ...both("wrist", { bend: 25 }),
-    }),
+    actors: one(
+      {
+        ...both("arm", { raise: 180, straddle: 30, turn: -90 }),
+        ...both("elbow", { bend: 70 }),
+        ...both("wrist", { bend: 25, tilt: 0, turn: 90 }),
+      },
+      { l: 0, r: 0 },
+    ),
     view: "f",
   },
   "upper_cute_palms-together": {
