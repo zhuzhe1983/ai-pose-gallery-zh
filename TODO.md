@@ -94,3 +94,13 @@ MediaPipe Pose Landmarker 的 Web API 支持静态图像模式与多人数量配
 
 - [ ] **头手脚朝向**：现有线稿 18 点不含面部、掌心/指尖和足底法线；单视图默认保留头和手腕先验、脚踝只有脚尖可用时近似拟合屈伸。需要补充可靠的方向标注或检测，并对所有视图检查手掌/手指、脚背/脚底与接触；见 `scripts/offline-pose/ORIENTATION.md`。
 - [ ] **共同姿势多视角拟合**：侧面朝左/朝右可能不同；应保留两种相机候选或人工指定，并记录多解歧义。已有单视图草稿侧面可能完全不对，不得以重投影小为准确证据。
+
+### Offline conversion after surface-contact correction
+
+- [x] Group all views into one resumable local job, preserve shared geometry, render comparisons and heartbeat progress.
+- [x] Measure toe/contact regions from the actual mesh and reproduce dual-quaternion deformation offline; recheck whole-mesh floor clearance after rendering.
+- [x] Correct the shared hands-on-thighs kneeling draft's palms and knee/shin/foot supports; retain unverified status and original-view comparison.
+- [ ] Review contact profiles for the remaining poses; infer which surfaces should touch before attempting contact optimization.
+- [ ] Add explicit toe articulation and per-finger surface constraints; whole-foot alignment is not a per-toe reconstruction.
+- [ ] Replace the single-person front end for duo images with person separation, cross-view identity matching and inter-person contact fitting.
+- [ ] Resolve high-residual or ambiguous cameras and stylized body-proportion mismatches; upper-body crops must not invent unseen legs.

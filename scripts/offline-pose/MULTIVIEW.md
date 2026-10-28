@@ -128,3 +128,9 @@ behavior, manual-axis preservation, invalid-input rejection, high-residual
 rejection and opposing-spine rejection despite matching projections.
 Synthetic tests validate implementation only; they are never counted
 as gallery recognition or reconstruction evidence.
+
+The batch runner now supports an explicit surface-contact profile and
+`fixed_pose=True` for a reviewed shared prior with camera-only framing. See
+[BATCH.md](BATCH.md) for actual dual-quaternion surface checks and the kneeling
+example. This does not infer unknown contact relationships. Upper-body records
+mask all lower-body observations and hold their unobserved lower-body joints.

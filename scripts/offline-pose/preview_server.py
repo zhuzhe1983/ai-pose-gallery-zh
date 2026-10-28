@@ -199,9 +199,9 @@ def scan_state(root=ROOT, now=None):
         item = items[key]
         item.update(status="needs_review", stage="landmarks", updated=stamp(path))
         item["artifacts"]["landmarks"] = asset_url(root, path)
-        overlay = root / OUTPUTS[0] / f"{key}.overlay.png"
-        if not overlay.is_file() and isinstance(record.get("overlay"), str):
-            overlay = path.parent / record["overlay"]
+        overlay = path.parent / record["overlay"] if isinstance(record.get("overlay"), str) else path.with_name(f"{key}.overlay.png")
+        if not overlay.is_file():
+            overlay = root / OUTPUTS[0] / f"{key}.overlay.png"
         item["artifacts"]["overlay"] = asset_url(root, overlay)
         item["landmarks"] = {"count": 18, "confidenceKind": "heatmap_peak_uncalibrated", "minPeak": min(p["confidence"] for p in record["points"]), "maxPeak": max(p["confidence"] for p in record["points"])}
 
@@ -325,6 +325,12 @@ def scan_state(root=ROOT, now=None):
     counts = {"images": len(gallery), "groups": len(groups), "verifiedGroups": verified, "detectedImages": count(lambda i: "landmarks" in i), "detectedGroups": group_count(lambda i: "landmarks" in i), "fitImages": count(lambda i: "fit" in i), "fitGroups": group_count(lambda i: "fit" in i), "groundedImages": count(lambda i: i.get("grounded")), "renderedFits": count(lambda i: i["artifacts"].get("render")), "controls": sum(i["control"] and "landmarks" in i for i in values), "running": sum(j["status"] == "running" for j in jobs), "failed": sum(j["status"] == "failed" for j in jobs), "stale": sum(j["status"] == "stale" for j in jobs), "manualPresets": len(presets)}
     for state in ("running", "failed", "stale"):
         counts[state + "Groups"] = len({items[j["image"]]["pose"] or j["image"] for j in jobs if j["status"] == state and j["image"] in items})
+    counts["queuedGroups"] = len({items[j["image"]]["pose"] for j in jobs if j["status"] == "queued"})
+    task_states = {}
+    for j in jobs:
+        task_states.setdefault(items[j["image"]]["pose"], []).append(j["status"])
+    counts["processedGroups"] = sum(all(s in {"failed", "needs_review", "draft"} for s in statuses) for statuses in task_states.values())
+    counts["taskGroups"] = len(task_states)
     values.sort(key=lambda i: (i["status"] == "not_started", not bool(i.get("grounded")), "fit" not in i, -i["updated"], i["id"]))
     for item in values:
         item["active"] = bool(item.get("landmarks") or item.get("fit") or item.get("grounded") or item.get("task"))

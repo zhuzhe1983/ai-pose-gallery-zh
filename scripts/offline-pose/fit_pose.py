@@ -37,6 +37,24 @@ class Rig:
             for driver in control['drivers']:
                 self.groups.setdefault(driver['order'], set()).add(driver['node'])
         self.groups = {order: np.array(sorted(ids)) for order, ids in self.groups.items()}
+        skin = data.get('skinSamples')
+        self.skin = None
+        if skin:
+            vertices = list(skin['vertices'])
+            self.skin = {
+                'ids': {int(v):i for i,v in enumerate(vertices)},
+                'positions': np.array([skin['vertices'][v]['position'] for v in vertices]),
+                'indices': np.array([skin['vertices'][v]['indices'] for v in vertices]),
+                'weights': np.array([skin['vertices'][v]['weights'] for v in vertices]),
+                'nodes': np.array([b['node'] for b in skin['bones']]),
+                'inverse': np.array([np.array(b['inverse']).reshape(4,4).T for b in skin['bones']]),
+                'bind': np.array(skin['bindMatrix']).reshape(4,4).T,
+            }
+            if any(self.skin['nodes'][i] < 0 and w > 0 for ids,weights in zip(self.skin['indices'],self.skin['weights']) for i,w in zip(ids,weights)):
+                raise ValueError('Contact skin samples reference a bone missing from the fitting rig')
+            self.surface_skin_rows=np.array([i for i,p in enumerate(data.get('surfacePoints',[])) if 'vertex' in p],dtype=int)
+            self.surface_skin_ids=np.array([self.skin['ids'][p['vertex']] for p in data.get('surfacePoints',[]) if 'vertex' in p],dtype=int)
+            self.surface_virtual=[(i,p) for i,p in enumerate(data.get('surfacePoints',[])) if 'vertex' not in p]
         for i, parent in enumerate(self.parents):
             if parent >= i or parent < -1:
                 raise ValueError('Rig nodes must be in parent-first order')
@@ -58,10 +76,37 @@ class Rig:
                 world[i] = world[parent] @ local[i]
         return world, rotation
 
-    def forward(self, values):
+    def forward(self, values, markers=None):
         world, _ = self.transforms(values)
-        return np.array([sum(term['weight'] * (world[term['node']] @ np.array([*term['offset'], 1]))[:3]
-                             for term in marker['terms']) for marker in self.data['points']])
+        selected = self.data['points'] if markers is None else markers
+        skin = self.skin_points(world) if self.skin and any('vertex' in p for p in selected) else None
+        if skin is not None and selected is self.data.get('surfacePoints'):
+            out=np.empty((len(selected),3));out[self.surface_skin_rows]=skin[self.surface_skin_ids]
+            for i,marker in self.surface_virtual:
+                out[i]=sum(t['weight']*(world[t['node']]@np.array([*t['offset'],1]))[:3] for t in marker['terms'])
+            return out
+        return np.array([skin[self.skin['ids'][marker['vertex']]] if skin is not None and 'vertex' in marker else
+                         sum(term['weight'] * (world[term['node']] @ np.array([*term['offset'], 1]))[:3]
+                             for term in marker['terms']) for marker in selected])
+
+    def skin_points(self, world):
+        """Same rigid dual-quaternion blending as studio/dual-quaternion.js."""
+        s = self.skin
+        matrices = np.linalg.inv(world[0]) @ world[np.maximum(s['nodes'],0)] @ s['inverse'] @ s['bind']
+        rotations = matrices[:,:3,:3]
+        rotations = rotations / np.linalg.norm(rotations,axis=1)[:,None,:]
+        q = Rotation.from_matrix(rotations).as_quat()
+        t = matrices[:,:3,3]
+        dual = .5*np.column_stack([t*q[:,3,None]+np.cross(t,q[:,:3]),-np.sum(t*q[:,:3],axis=1)])
+        quats, ds = q[s['indices']], dual[s['indices']]
+        sign = np.where(np.sum(quats*quats[:,0,None,:],axis=2)<0,-1,1)
+        w=s['weights']*sign
+        qr=np.sum(quats*w[:,:,None],axis=1);qd=np.sum(ds*w[:,:,None],axis=1)
+        length=np.maximum(np.linalg.norm(qr,axis=1),1e-8)[:,None];qr/=length;qd/=length
+        v=s['positions'];xyz=qr[:,:3]
+        out=v+2*np.cross(xyz,np.cross(xyz,v)+qr[:,3,None]*v)
+        out+=2*(qd[:,:3]*qr[:,3,None]-xyz*qd[:,3,None]+np.cross(xyz,qd[:,:3]))
+        return out@world[0,:3,:3].T+world[0,:3,3]
 
     def angles(self, values):
         return {f"{c['key']}.{c['property']}": float(v) for c, v in zip(self.controls, values)}
@@ -91,7 +136,8 @@ def project(points, camera, width, height):
 def observations(record, rig, excluded=()):
     if record.get('schema') != 'pose-keypoints/1' or record.get('coordinate_system') != 'original_image_pixels_x_right_y_down':
         raise ValueError('Expected pose-keypoints/1 original pixel coordinates')
-    if record.get('confidence_kind') != 'heatmap_peak_uncalibrated':
+    manual = record.get('confidence_kind') == 'manual_binary_visibility' and record.get('annotation_kind') == 'manual_visual_estimate_not_ground_truth'
+    if record.get('confidence_kind') != 'heatmap_peak_uncalibrated' and not manual:
         raise ValueError('Expected uncalibrated heatmap peaks; do not label them probabilities')
     width, height = float(record['width']), float(record['height'])
     if not all(math.isfinite(n) and n > 0 for n in [width, height]):
@@ -108,10 +154,16 @@ def observations(record, rig, excluded=()):
     values = np.array([[by_name[name]['x'], by_name[name]['y'], by_name[name]['confidence']] for name in expected],dtype=float)
     if not np.isfinite(values).all():
         raise ValueError('Nonfinite observations')
+    if manual and not np.isin(values[:,2],[0,1]).all():
+        raise ValueError('Manual visibility must be binary, not an invented confidence score')
     # A conservative heuristic, NOT a calibrated confidence/visibility estimate.
     valid = (values[:,2] >= .3) & (values[:,0] >= 0) & (values[:,0] <= width) & (values[:,1] >= 0) & (values[:,1] <= height)
     valid &= np.array([name not in excluded for name in expected])
-    if np.count_nonzero(valid) < 8 or np.count_nonzero(valid[[2,5,10,13]]) < 3:
+    upper = record.get('body_region') == 'upper'
+    if upper:
+        valid[8:] = False  # No inferred hips/legs outside an upper-body crop.
+    core_ok = np.count_nonzero(valid[[2,5,10,13]]) >= 3 or (manual and valid[1] and np.count_nonzero(valid[[2,5,10,13]]) >= 2)
+    if (upper and (np.count_nonzero(valid) < 6 or not all(valid[[1,2,5]]))) or (not upper and (np.count_nonzero(valid) < 8 or not core_ok)):
         raise ValueError('Too few usable points; no draft generated')
     weights = np.sqrt(np.clip((values[:,2]-.2)/.6,0,1)) * valid
     weights[[0,1,8,9,16,17]] *= .6 # approximate marker definitions / stylized proportions

@@ -137,14 +137,16 @@ export const PRESETS = {
   "solo_kneel_hands-thighs": {
     actors: one(
       {
-        // Keep the thighs nearly upright and let the shins run back/outward.
-        // These are still a draft; verify the hands and feet from both views.
-        ...both("leg", { raise: 5, straddle: 8, turn: -35 }),
-        ...both("knee", { bend: 95 }),
-        ...both("ankle", { bend: -45, tilt: 0, turn: 0 }),
-        ...both("arm", { raise: 5, straddle: 5, turn: -20 }),
-        ...both("elbow", { bend: 20 }),
-        ...both("wrist", { bend: 0, tilt: 0, turn: 0 }),
+        // Shared front/side draft, refined against real skinned contact samples.
+        // Palm-facing, knee/shin/toe support; still not an approved reconstruction.
+        ...both("leg", { raise: 18, straddle: 8, turn: -35 }),
+        ...both("knee", { bend: 98.27 }),
+        ...both("ankle", { bend: -44.92, tilt: -24.31, turn: 28.28 }),
+        ...both("arm", { raise: 5.45, straddle: 4.34, turn: -52.12 }),
+        ...both("elbow", { bend: 29.52 }),
+        ...both("wrist", { bend: 4.8, turn: -38.21 }),
+        "l_wrist.tilt": 26.56,
+        "r_wrist.tilt": -26.56,
       },
       { l: 0, r: 0 },
     ),

@@ -33,6 +33,7 @@ try {
     const THREE = await import("three"),
       { scene } = await import("./vendor/mannequin/scene.js");
     const { bones } = await import("./figure.js");
+    const { surfaceMarkers } = await import("./contact-markers.js");
     const {
       JOINTS,
       NEUTRAL,
@@ -154,11 +155,18 @@ try {
     const headOffset = model.head
       .worldToLocal(headBox.getCenter(new THREE.Vector3()))
       .toArray();
-    const toeOffset = (side) => {
-      const ankle = all[side + "_ankle"],
-        p = ankle.getWorldPosition(new THREE.Vector3());
-      p.add(new THREE.Vector3(0, -0.04, 0.14));
-      return ankle.worldToLocal(p).toArray();
+    const samples = surfaceMarkers(model);
+    const toeOffset = (side) => samples[`${side}_toe`].offset;
+    const surfacePoints = Object.entries(samples).map(([name, p]) => ({...marker(name, p.joint, p.offset), ...(Number.isInteger(p.vertex)?{vertex:p.vertex}:{})}));
+    const skinSamples = {
+      bindMatrix: skin.bindMatrix.toArray(),
+      bones: skin.skeleton.bones.map((bone,i)=>({node:objects.indexOf(bone), inverse:skin.skeleton.boneInverses[i].toArray()})),
+      vertices: Object.fromEntries([...new Set(surfacePoints.filter(p=>p.vertex!==undefined).map(p=>p.vertex))].map(i=>[i,{
+        position: new THREE.Vector3().fromBufferAttribute(skin.geometry.attributes.position,i).toArray(),
+        indices: Array.from({length:4},(_,c)=>skin.geometry.attributes.skinIndex.getComponent(i,c)),
+        weights: Array.from({length:4},(_,c)=>skin.geometry.attributes.skinWeight.getComponent(i,c)),
+        world: skin.getVertexPosition(i,new THREE.Vector3()).applyMatrix4(skin.matrixWorld).toArray(),
+      }])),
     };
     const points = [
       marker("head", "head", headOffset),
@@ -217,6 +225,8 @@ try {
       nodes,
       controls,
       points,
+      surfacePoints,
+      skinSamples,
       worldPoints,
       template,
       presets: Object.fromEntries(
@@ -238,7 +248,8 @@ try {
           }),
       ),
       notes: [
-        "Head uses skinned head bounds center; spine is a torso interpolation; toes use approximate markers.",
+        "Head uses skinned head bounds center; spine is a torso interpolation; toes and contact samples come from actual neutral skin.",
+        "Surface samples follow their dominant bone; blended-joint contacts need actual skinned-mesh validation.",
         "Single-view solutions are ambiguous and require manual review.",
       ],
     };

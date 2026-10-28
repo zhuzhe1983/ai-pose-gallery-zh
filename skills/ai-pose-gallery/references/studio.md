@@ -199,3 +199,15 @@ Maintainers preparing fixed line art can use the repository's [offline pipeline]
 ## Local conversion progress (maintainers)
 
 From a repository checkout, run `python3 scripts/offline-pose/preview_server.py`, then open `http://127.0.0.1:8767/preview/`. It polls actual local records every three seconds, showing source images, detected skeletons, fitted renders and same-origin scene imports. It is a loopback-only read-only service, not a hosted inference API. See `preview/README.md` for the atomic progress/heartbeat protocol. A running preview server does not mean conversion is running. Neither a ready scene nor a low reprojection error means verified. Full Sketch2Pose, full-gallery conversion and animation are still unfinished; animation is planned in TODO.md.
+
+### Offline batch contacts and progress
+
+The maintainer's checkout includes `scripts/offline-pose/run_batch.py`; read its
+`BATCH.md` before using it. One task shares a pose across all usable views, with
+separate cameras, screenshots and actual skinned-mesh floor checks. A 15-second
+heartbeat drives the local preview at `http://127.0.0.1:8767/preview/`. The batch
+never publishes or approves its output. Duo conversion remains unsupported by
+the local single-person line-art model; upper-body crops explicitly leave the
+lower body unobserved. The corrected hands-on-thighs kneeling draft has an explicit
+palm/knee/shin/foot contact profile. Other poses do not inherit that relationship;
+whole-figure grounding alone does not prove correct toes, contact or weight bearing.

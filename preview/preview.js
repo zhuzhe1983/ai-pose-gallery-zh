@@ -125,6 +125,7 @@ function render(force = false) {
   const c = state.counts;
   $('metrics').replaceChildren(metric(t('inventory'), c.images, `${c.groups} ${t('groups')}`), metric(t('detection'), c.detectedImages, `${c.detectedGroups} ${t('groups')} · ${c.controls} ${t('controls')}`), metric(t('fitting'), c.fitImages, `${c.fitGroups} ${t('groups')}`), metric(t('grounded'), c.groundedImages, t('groundedNote')), metric(t('verified'), c.verifiedGroups, t('verifiedNote'), c.groups));
   $('activityText').textContent = c.runningGroups ? `${t('jobs')}: ${c.runningGroups}` : t('noRunning');
+  if (c.taskGroups) $('activityText').textContent += ` · ${lang === 'zh' ? '已处理' : lang === 'ja' ? '処理済み' : 'Processed'} ${c.processedGroups} / ${c.taskGroups} · ${t('queued')} ${c.queuedGroups}`;
   if (c.failedGroups || c.staleGroups) $('activityText').textContent += ` · ${t('failures')}: ${c.failedGroups} · ${t('staleJobs')}: ${c.staleGroups}`;
   $('modelText').textContent = state.modelRevision ? `${t('currentMesh')}: ${state.modelRevision}` : '';
   const items = filteredGroups(), visible = items.slice(0, limit);

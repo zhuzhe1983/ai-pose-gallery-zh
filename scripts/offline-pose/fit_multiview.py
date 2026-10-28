@@ -19,6 +19,7 @@ from scipy.spatial.transform import Rotation
 
 from fit_pose import Rig, camera_vectors, observations, project
 from orientation_hints import load_orientation_hints, orientation_assessment
+from contacts import Contacts
 
 
 # (absolute azimuth, elevation, hard azimuth half-width, hard elevation half-width)
@@ -118,7 +119,7 @@ def camera_branches(views, camera_sides=None):
 
 def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
                   orientation_evidence=None, camera_sides=None, starts=2,
-                  max_evaluations=350, pose_weight=.004, camera_weight=.025):
+                  max_evaluations=350, pose_weight=.004, camera_weight=.025, contact_profile=None, fixed_pose=False):
     require_current_rig(rig)
     if not isinstance(records, (list, tuple)) or not 2 <= len(records) <= 5:
         raise ValueError("Supply two to five distinct views of one pose")
@@ -137,6 +138,7 @@ def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
     if not isinstance(exclusions, dict) or set(exclusions) - set(views):
         raise ValueError("Exclusions must be mapped to supplied view names")
     samples = []
+    upper_only = all(r.get("body_region") == "upper" for r in records)
     for record, view in zip(records, views):
         excluded = exclusions.get(view, [])
         if not isinstance(excluded, (list, tuple)):
@@ -145,6 +147,7 @@ def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
         samples.append({"record": record, "view": view, "observed": xy, "weights": weights,
                         "width": width, "height": height, "excluded": list(excluded)})
     values_prior, names = resolve_prior(rig, pose_id, prior, manual_hints)
+    contacts = Contacts(rig, contact_profile)
     hints = manual_hints or {}
     point_names = [p["name"] for p in rig.data["points"]]
     toe_observed = {}
@@ -158,17 +161,22 @@ def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
         reason = None
         if key == "body":
             reason = "manual_root_prior_removes_body_pelvis_duplicate_dof"
-        elif key == "head" or key.endswith("_wrist"):
+        elif key == "head" or (key.endswith("_wrist") and not contact_profile):
             reason = "endpoint_orientation_unobserved_preserve_prior"
-        elif key.endswith("_ankle") and (axis != "bend" or not toe_observed[key[0]]):
+        elif key.endswith("_ankle") and not contact_profile and (axis != "bend" or not toe_observed[key[0]]):
             reason = "ankle_roll_yaw_or_missing_multiview_toe_evidence"
         if names[i] in hints:
             reason = "recorded_manual_angle_not_automatically_inferred"
+        if fixed_pose:
+            reason = "explicit_shared_contact_refined_pose_camera_fit_only"
+        if upper_only and (key == "pelvis" or key.endswith(("_leg", "_knee", "_ankle"))):
+            reason = "upper_body_crop_lower_body_unobserved_preserve_prior"
         if reason:
             fixed[names[i]] = {"value": float(values_prior[i]), "reason": reason}
         else:
             active.append(i)
     prior_world = rig.forward(values_prior)
+    fixed_contact_residual = contacts.residual(values_prior) if fixed_pose else None
     joint_low = np.array([rig.controls[i]["min"] for i in active])
     joint_high = np.array([rig.controls[i]["max"] for i in active])
     sigma = np.array([45 if rig.controls[i]["key"].endswith(("_arm", "_leg")) else 30 for i in active])
@@ -204,6 +212,7 @@ def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
                 rows.append(.2 * np.maximum(.2 - depth, 0))
             rows.append(pose_weight * (values[active] - values_prior[active]) / sigma)
             rows.append((camera_weight * (current_cameras[:, :2] - cameras[:, :2]) / [8, 6]).ravel())
+            rows.append(fixed_contact_residual if fixed_pose else contacts.residual(values))
             return np.concatenate(rows)
 
         branch_best = None
@@ -228,6 +237,7 @@ def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
     world = rig.forward(best["values"])
     _, rotations = rig.transforms(best["values"])
     orientation = orientation_assessment(hints, orientation_evidence or {}, toe_observed)
+    contact_report = contacts.assess(best["values"])
     scenes, reports, rejection_reasons = {}, [], []
     for index, (sample, camera) in enumerate(zip(samples, best["cameras"])):
         xy, depth = project(world, camera, sample["width"], sample["height"])
@@ -285,14 +295,18 @@ def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
                                      "interpretation": "opposing spine rotations need visual review; not evidence of correct anatomy"})
     if counterrotations:
         rejection_reasons.append("opposing_spine_rotations_need_manual_review")
+    if contact_profile and not contact_report["passed"]:
+        rejection_reasons.append("surface_contact_constraints_not_satisfied")
     report = {
         "schema": "pose-atlas/multiview-fit@1", "pose": pose_id, "mesh": rig.data["mesh"],
         "status": "draft-rejected-needs-correction" if rejection_reasons else "draft-needs-review",
         "verified": False, "method": "original shared editor FK + bounded independent perspective cameras; not full Sketch2Pose",
+        "pose_mode": "fixed_shared_prior_camera_fit" if fixed_pose else "shared_joint_fit",
+        "body_region": "upper_only_lower_body_not_reconstructed" if upper_only else "full",
         "elapsed_ms": round((time.perf_counter() - started) * 1000), "angles": named_angles,
         "fixed_angles": fixed, "manual_hints": hints, "endpoint_orientation": orientation,
         "joint_limit_hits": limit_hits, "spine_counterrotations": counterrotations,
-        "contact_validation": "not_performed_no_contact_or_collision_solver",
+        "contact_validation": contact_report,
         "camera_branch": best["branch"], "camera_direction_ambiguous": direction_ambiguous,
         "camera_candidates": [{"branch": s["branch"], "cost": s["cost"], "converged": bool(s["solver"].success)} for s in solutions],
         "views": reports, "quality_gate": {"passed": not rejection_reasons, "reasons": rejection_reasons,
@@ -304,7 +318,7 @@ def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
                      "High cross-view residual can indicate inconsistent drawings, detector errors, incorrect view hints, or incompatible body proportions.",
                      "Head/wrist orientation is unresolved without manual evidence; prior angles are not observations.",
                      "Ankle bend uses approximate toe markers only when observed in at least two views; ankle roll/yaw remain prior-only unless manually supplied.",
-                     "No collision, ground contact, or hand-to-body contact solver. Render every supplied view and inspect before use.",
+                     "Surface contact constraints are applied only with an explicit profile; no full surface collision solver. Render and inspect every view.",
                      "Fixed bone lengths and incomplete torso landmarks can leave multiple spine/limb solutions."]}
     return scenes, report
 

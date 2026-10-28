@@ -1,0 +1,138 @@
+{
+  "schema": "pose-keypoints/1",
+  "image": "img/solo_kneel_hands-thighs_s.png",
+  "width": 900,
+  "height": 1200,
+  "coordinate_system": "original_image_pixels_x_right_y_down",
+  "confidence_kind": "manual_binary_visibility",
+  "annotation_kind": "manual_visual_estimate_not_ground_truth",
+  "note": "Approximate joint centers visually annotated from this original drawing; 1 means supplied, 0 means hidden/unused, not probability. Side-view visible chain assigned to left consistently with the +90 degree camera; hidden right chain excluded. Stylized hips/spine/toe endpoints remain ambiguous. Not accuracy ground truth.",
+  "points": [
+    {
+      "id": 0,
+      "name": "head",
+      "x": 350,
+      "y": 157,
+      "confidence": 1
+    },
+    {
+      "id": 1,
+      "name": "neck",
+      "x": 354,
+      "y": 278,
+      "confidence": 1
+    },
+    {
+      "id": 2,
+      "name": "right_shoulder",
+      "x": 0,
+      "y": 0,
+      "confidence": 0
+    },
+    {
+      "id": 3,
+      "name": "right_elbow",
+      "x": 0,
+      "y": 0,
+      "confidence": 0
+    },
+    {
+      "id": 4,
+      "name": "right_wrist",
+      "x": 0,
+      "y": 0,
+      "confidence": 0
+    },
+    {
+      "id": 5,
+      "name": "left_shoulder",
+      "x": 380,
+      "y": 344,
+      "confidence": 1
+    },
+    {
+      "id": 6,
+      "name": "left_elbow",
+      "x": 318,
+      "y": 548,
+      "confidence": 1
+    },
+    {
+      "id": 7,
+      "name": "left_wrist",
+      "x": 231,
+      "y": 718,
+      "confidence": 1
+    },
+    {
+      "id": 8,
+      "name": "spine",
+      "x": 352,
+      "y": 500,
+      "confidence": 1
+    },
+    {
+      "id": 9,
+      "name": "pelvis",
+      "x": 350,
+      "y": 685,
+      "confidence": 1
+    },
+    {
+      "id": 10,
+      "name": "right_hip",
+      "x": 0,
+      "y": 0,
+      "confidence": 0
+    },
+    {
+      "id": 11,
+      "name": "right_knee",
+      "x": 0,
+      "y": 0,
+      "confidence": 0
+    },
+    {
+      "id": 12,
+      "name": "right_ankle",
+      "x": 0,
+      "y": 0,
+      "confidence": 0
+    },
+    {
+      "id": 13,
+      "name": "left_hip",
+      "x": 329,
+      "y": 733,
+      "confidence": 1
+    },
+    {
+      "id": 14,
+      "name": "left_knee",
+      "x": 211,
+      "y": 1071,
+      "confidence": 1
+    },
+    {
+      "id": 15,
+      "name": "left_ankle",
+      "x": 551,
+      "y": 1080,
+      "confidence": 1
+    },
+    {
+      "id": 16,
+      "name": "left_toe",
+      "x": 730,
+      "y": 1112,
+      "confidence": 1
+    },
+    {
+      "id": 17,
+      "name": "right_toe",
+      "x": 0,
+      "y": 0,
+      "confidence": 0
+    }
+  ]
+}

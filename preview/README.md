@@ -132,3 +132,10 @@ python3 -m unittest discover -s scripts/offline-pose -p 'test_preview.py'
 python3 -m py_compile scripts/offline-pose/preview_server.py
 node --check preview/preview.js
 ```
+
+The maintained full-gallery worker is documented in
+[`scripts/offline-pose/BATCH.md`](../scripts/offline-pose/BATCH.md). It publishes
+15-second heartbeats, durable group receipts, original/render comparisons and
+actual skin-floor diagnostics. The API also returns `taskGroups`,
+`processedGroups` and `queuedGroups`: processed includes rejected/unsupported
+jobs, not only successful drafts, and never implies verification.
