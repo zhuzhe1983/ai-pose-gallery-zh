@@ -202,37 +202,50 @@ function buildGeometry(model) {
     const x = vertices.getX(i),
       y = vertices.getY(i),
       z = vertices.getZ(i);
-    const closest = segments
-      .map((s) => ({ s, d: s.distance(x, y, z) }))
-      .sort((a, b) => a.d - b.d)[0];
+    const candidates = segments.map((s) => ({
+      s,
+      distance: s.distance(x, y, z),
+    }));
     const bodyDistance = Math.min(
       ...primitives.filter((p) => p.key).map((p) => p.distance(x, y, z)),
     );
-    let map;
-    if (closest.d < bodyDistance + 0.35) {
-      const s = closest.s,
+    const minimum = Math.min(
+      bodyDistance,
+      ...candidates.map((c) => c.distance),
+    );
+    const influence = (distance) => Math.exp(-(distance - minimum) / 0.85);
+    const p = new THREE.Vector3(x, y, z)
+      .applyMatrix4(model.matrixWorld)
+      .applyMatrix4(model.torso.imageWrapper.matrixWorld.clone().invert());
+    const torsoWeight = smooth(-1.8, 2.8, p.y),
+      neckWeight = smooth(15.4, 18.4, p.y),
+      bodyWeight = influence(bodyDistance);
+    const map = {
+      pelvis: (1 - torsoWeight) * bodyWeight,
+      torso: torsoWeight * (1 - neckWeight) * bodyWeight,
+      neck: neckWeight * bodyWeight,
+    };
+    const add = (key, weight) => {
+      map[key] = (map[key] || 0) + weight;
+    };
+    // Blend the body and every nearby limb continuously. A winner-takes-all
+    // boundary produces abrupt weight jumps and torn-looking hip/shoulder folds.
+    for (const { s, distance } of candidates) {
+      const amount = influence(distance),
         t = s.project(x, y, z);
       if (t < 0.2) {
-        const weight = 0.5 + 0.5 * smooth(0, 0.2, t);
-        map = { [s.parent]: 1 - weight, [s.start]: weight };
+        const w = 0.5 + 0.5 * smooth(0, 0.2, t);
+        add(s.parent, amount * (1 - w));
+        add(s.start, amount * w);
       } else if (t > 0.8) {
-        const weight = 0.5 * smooth(0.8, 1, t);
-        map = { [s.start]: 1 - weight, [s.end]: weight };
-      } else map = { [s.start]: 1 };
-    } else {
-      const p = new THREE.Vector3(x, y, z)
-        .applyMatrix4(model.matrixWorld)
-        .applyMatrix4(model.torso.imageWrapper.matrixWorld.clone().invert());
-      const torsoWeight = smooth(-1.8, 2.8, p.y),
-        neckWeight = smooth(15.4, 18.4, p.y);
-      map = {
-        pelvis: 1 - torsoWeight,
-        torso: torsoWeight * (1 - neckWeight),
-        neck: neckWeight,
-      };
+        const w = 0.5 * smooth(0.8, 1, t);
+        add(s.start, amount * (1 - w));
+        add(s.end, amount * w);
+      } else add(s.start, amount);
     }
     const entries = Object.entries(map)
         .filter(([_k, w]) => w > 0)
+        .sort((a, b) => b[1] - a[1])
         .slice(0, 4),
       sum = entries.reduce((s, [_k, w]) => s + w, 0);
     for (let j = 0; j < 4; j++) {
