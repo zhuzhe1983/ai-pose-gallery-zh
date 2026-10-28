@@ -191,35 +191,41 @@
       </aside>
       <section class="stage" aria-label="3D 画布" data-aria="canvas">
         <div class="canvas-toolbar">
-          <div
-            class="camera-buttons"
-            role="group"
-            aria-label="相机视角"
-            data-aria="cameraViews"
-          >
-            <button data-camera="f" data-t="front">正面</button
-            ><button data-camera="d" data-t="diagonal">斜侧</button
-            ><button data-camera="s" data-t="side">侧面</button
-            ><button data-camera="hi" data-t="high">俯视</button
-            ><button data-camera="lo" data-t="low">仰视</button
-            ><button id="fitCamera" data-t="frame">居中</button>
+          <div class="canvas-controls">
+            <div
+              class="pose-mode-toolbar"
+              role="group"
+              data-aria="poseMode"
+              aria-label="操作方式"
+            >
+              <button id="canvasRotate" aria-pressed="true" data-t="rotateMode">
+                旋转关节 · E
+              </button>
+              <button
+                id="canvasMove"
+                aria-pressed="false"
+                data-t="moveModeLabel"
+              >
+                移动人物 · W
+              </button>
+            </div>
+            <div
+              class="camera-buttons"
+              role="group"
+              aria-label="相机视角"
+              data-aria="cameraViews"
+            >
+              <button data-camera="f" data-t="front">正面</button>
+              <button data-camera="d" data-t="diagonal">斜侧</button>
+              <button data-camera="s" data-t="side">侧面</button>
+              <button data-camera="hi" data-t="high">俯视</button>
+              <button data-camera="lo" data-t="low">仰视</button>
+              <button id="fitCamera" data-t="frame">居中</button>
+            </div>
           </div>
-          <span class="backend" id="backend" role="status">WebGPU…</span>
         </div>
-        <div
-          class="pose-mode-toolbar"
-          role="group"
-          data-aria="poseMode"
-          aria-label="操作方式"
-        >
-          <button id="canvasRotate" aria-pressed="true" data-t="rotateMode">
-            旋转关节 · E
-          </button>
-          <button id="canvasMove" aria-pressed="false" data-t="moveModeLabel">
-            移动人物 · W
-          </button>
-          <span id="modeHint"></span>
-        </div>
+        <span id="backend" hidden aria-hidden="true"></span>
+        <span id="modeHint" class="pose-mode-hint"></span>
         <canvas
           id="sceneCanvas"
           tabindex="0"

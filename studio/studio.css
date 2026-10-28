@@ -380,51 +380,43 @@ h2 {
   left: 16px;
   right: 16px;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
   pointer-events: none;
 }
 .canvas-toolbar > * {
   pointer-events: auto;
 }
-.camera-buttons {
+.canvas-controls {
   display: flex;
-  gap: 2px;
-  flex-wrap: wrap;
-  max-width: 370px;
+  align-items: stretch;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
   padding: 4px;
   background: #ffffffed;
   border: 1px solid #dfe3ec;
   border-radius: 11px;
   box-shadow: 0 3px 12px #26335206;
 }
-.camera-buttons button {
+.camera-buttons {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+.canvas-controls button {
+  flex: 0 0 auto;
+  white-space: nowrap;
   border: 0;
   padding: 5px 8px;
-  min-height: 30px;
+  min-height: 32px;
   font-size: 11px;
   background: transparent;
 }
 .camera-buttons button[aria-pressed="true"] {
   background: var(--accent-soft);
   color: var(--accent);
-}
-.backend {
-  font-size: 10px;
-  font-weight: 650;
-  white-space: nowrap;
-  background: #ffffffed;
-  border: 1px solid var(--line);
-  padding: 6px 8px;
-  border-radius: 99px;
-  color: #506276;
-  max-width: 110px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.backend[data-backend="webgpu"] {
-  color: #237a56;
 }
 .stage-bottom {
   position: absolute;
@@ -680,9 +672,6 @@ h2 {
     right: 10px;
     top: 10px;
   }
-  .camera-buttons {
-    max-width: 250px;
-  }
   .stage-bottom > span {
     max-width: 210px;
   }
@@ -728,9 +717,6 @@ h2 {
     top: 12px;
     left: 14px;
     right: 14px;
-  }
-  .camera-buttons {
-    max-width: none;
   }
   .reference {
     top: 65px;
@@ -794,18 +780,10 @@ h2 {
     right: 10px;
     gap: 5px;
   }
-  .camera-buttons {
-    max-width: 255px;
-  }
-  .camera-buttons button {
+  .canvas-controls button {
     padding: 5px 7px;
     min-height: 32px;
     font-size: 10px;
-  }
-  .backend {
-    font-size: 9px;
-    padding: 6px;
-    max-width: 76px;
   }
   .stage-bottom {
     left: 10px;
@@ -939,29 +917,25 @@ h2 {
   white-space: nowrap;
 }
 .pose-mode-toolbar {
-  position: absolute;
-  z-index: 3;
-  top: 72px;
-  left: 18px;
-  right: 18px;
   display: flex;
-  align-items: center;
-  gap: 5px;
-  pointer-events: none;
-  flex-wrap: wrap;
-}
-.pose-mode-toolbar button {
-  pointer-events: auto;
-  font-size: 11px;
-  box-shadow: 0 3px 12px #17202d08;
+  flex: 0 0 auto;
+  align-items: stretch;
+  gap: 2px;
+  margin-right: 6px;
+  padding-right: 6px;
+  border-right: 1px solid var(--line);
 }
 .pose-mode-toolbar button[aria-pressed="true"] {
   background: var(--accent);
-  border-color: var(--accent);
   color: white;
 }
-.pose-mode-toolbar span {
-  max-width: 100%;
+.pose-mode-hint {
+  position: absolute;
+  z-index: 2;
+  top: 66px;
+  left: 16px;
+  max-width: calc(100% - 32px);
+  pointer-events: none;
   font-size: 10px;
   color: #4c5565;
   background: #ffffffdc;
@@ -1050,24 +1024,11 @@ h2 {
   width: auto;
 }
 @media (max-width: 900px) {
-  .pose-mode-toolbar {
-    top: 64px;
-    left: 12px;
-    right: 12px;
-  }
-  .pose-mode-toolbar span {
+  .pose-mode-hint {
     display: none;
   }
 }
 @media (max-width: 540px) {
-  .pose-mode-toolbar {
-    top: 58px;
-    left: 10px;
-  }
-  .pose-mode-toolbar button {
-    min-height: 32px;
-    padding: 4px 8px;
-  }
   .photo-dialog {
     padding: 15px;
   }
