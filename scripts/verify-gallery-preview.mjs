@@ -47,7 +47,16 @@ try {
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Header fits mobile');
   await page.screenshot({path:'output/gallery-review/experimental-mobile.png'});
   await page.setViewportSize({width:1440,height:1000});
+  await page.locator('#searchInput').fill('solo_stand_contrapposto-hip');
+  await page.waitForFunction(() => document.querySelector('.main-image')?.getAttribute('src').includes('solo_stand_contrapposto-hip'));
+  let releasePreview;
+  const delayedPreview = new Promise(resolve => { releasePreview = resolve; });
+  await page.route('**/gallery-preview.js', async route => { await delayedPreview; await route.continue(); });
   await toggle.check();
+  await page.locator('.pose-card').first().hover();
+  releasePreview();
+  await page.waitForFunction(() => document.querySelector('.pose-3d-overlay.loaded:not([hidden])'), undefined, {timeout:60000});
+  await page.unroute('**/gallery-preview.js');
   await page.reload();
   await page.locator('.pose-card:not(.skeleton)').first().waitFor();
   await page.waitForFunction(() => document.querySelector('.pose-3d-overlay'));

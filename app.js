@@ -36,7 +36,14 @@ function load3DPreview() {
   if (!previewReady) previewReady = import('./gallery-preview.js').then(preview => {
     hasPose3D = preview.hasPose3D;
     preview3D = preview.createGalleryPreview({lang: LANG, t});
-    if (experimental3D && !$('#viewer').hidden) showViewer();
+    if (!experimental3D) return;
+    if (!$('#viewer').hidden) showViewer();
+    else {
+      // A pointer may enter a tile while the opt-in module is still downloading.
+      const card = grid.querySelector('.pose-card[data-index]:hover');
+      const item = card && currentList[Number(card.dataset.index)]?.item;
+      if (item) preview3D.show(card.querySelector('.card-image'), item);
+    }
   }).catch(error => {
     previewReady = null;
     console.warn('3D preview unavailable', error);
