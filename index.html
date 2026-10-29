@@ -364,13 +364,22 @@ main{padding:22px 0 54px}
 .viewer-mode button[aria-pressed="true"]{background:#eeeeff;color:#5149bb}
 .mode-3d .viewer-nav{display:none}
 .mode-3d .viewer-image{visibility:hidden}
-.pose-3d-overlay{position:fixed;z-index:40;overflow:hidden;border-radius:5px;background:#eef0f4;pointer-events:none}
+.pose-3d-overlay{position:fixed;z-index:20;overflow:hidden;border-radius:5px;background:#eef0f4;pointer-events:none}
+.pose-3d-overlay.pending:not(.interactive){background:transparent}
 .pose-3d-overlay.interactive{z-index:101;pointer-events:auto}
 .pose-3d-frame{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none}
 .pose-3d-overlay.interactive .pose-3d-frame{pointer-events:auto}
 .pose-3d-status{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;font-size:12px;color:#5c6475;background:#eef0f4e8;pointer-events:none}
-.pose-3d-overlay.loaded .pose-3d-status{inset:auto 8px 8px 8px;padding:5px 8px;border-radius:8px;background:#ffffffd9;display:block;font-size:11px}
+.pose-3d-overlay.loaded .pose-3d-status,.pose-3d-overlay.pending:not(.interactive) .pose-3d-status{inset:auto 8px 8px 8px;padding:5px 8px;border-radius:8px;background:#ffffffd9;display:block;font-size:11px}
 .studio-link[aria-disabled="true"]{opacity:.65;cursor:default}
+.experiment-row{display:flex;justify-content:flex-end;padding-top:4px;padding-bottom:4px}
+.experiment-toggle{display:inline-flex;align-items:center;gap:10px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text-2);font-size:12px;cursor:pointer}
+.experiment-toggle input{appearance:none;-webkit-appearance:none;position:relative;flex:0 0 auto;width:34px;height:20px;margin:0;border:0;border-radius:20px;background:#c0c6d2;cursor:pointer;transition:background .15s;outline-offset:4px}
+.experiment-toggle input::before{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #17203325;transition:transform .15s}
+.experiment-toggle input:checked{background:var(--accent)}
+.experiment-toggle input:checked::before{transform:translateX(14px)}
+.experiment-toggle input:focus-visible{outline:2px solid var(--accent)}
+.experiment-toggle input:disabled{opacity:.5;cursor:wait}
 </style>
 </head>
 <body>
@@ -381,7 +390,7 @@ main{padding:22px 0 54px}
       <span class="brand-copy"><strong>POSE Atlas</strong><span>Reference Library</span></span>
     </a>
     <nav class="top-actions" aria-label="帮助与来源" data-i18n-aria-label="helpSources">
-      <a class="action-btn nav-tab" id="studioNav" href="studio/" data-i18n="studio">3D 摆姿</a>
+      <a class="action-btn nav-tab" id="studioNav" href="studio/" data-i18n="studio" hidden>3D 摆姿</a>
       <a class="action-btn nav-tab" href="skills/ai-pose-gallery/SKILL.md" target="_blank" rel="noopener noreferrer">Skill ↗</a>
       <button class="action-btn" type="button" data-info="guide" aria-label="使用指南" data-i18n-aria-label="guide"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 0 1 4.6 1c0 1.8-2.3 2-2.3 3.6M12 17h.01"/></svg><span class="action-text" data-i18n="guide">使用指南</span></button>
       <button class="action-btn" type="button" data-info="notice" aria-label="注意事项" data-i18n-aria-label="notice"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5m0 3h.01"/></svg><span class="action-text" data-i18n="notice">注意事项</span></button>
@@ -390,6 +399,9 @@ main{padding:22px 0 54px}
       <a class="action-btn author" href="https://x.com/anhao_ai" target="_blank" rel="noopener noreferrer" aria-label="访问我们的 X 主页" data-i18n-aria-label="authorX"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span class="action-text">@anhao_ai</span></a>
       <label class="language-control"><span class="sr-only" data-i18n="language">界面语言</span><select id="languageSelect" aria-label="界面语言" data-i18n-aria-label="language"><option value="zh">中文</option><option value="en">English</option><option value="ja">日本語</option></select></label>
     </nav>
+  </div>
+  <div class="shell experiment-row">
+    <label class="experiment-toggle"><input id="experimental3dToggle" type="checkbox" role="switch" disabled><span data-i18n="experimental3d">实验性 3D 模型（不完善）</span></label>
   </div>
   <div class="shell hero">
     <div>
@@ -472,7 +484,7 @@ main{padding:22px 0 54px}
   <section class="viewer-panel">
     <button class="viewer-close" id="viewerClose" type="button" aria-label="关闭大图" data-i18n-aria-label="closeViewer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     <div class="viewer-stage" id="viewerStage">
-      <div class="viewer-mode"><button id="viewerImageMode" type="button" aria-pressed="true" data-i18n="referenceImage">参考图</button><button id="viewer3dMode" type="button" aria-pressed="false" data-i18n="preview3d">3D 预览</button></div>
+      <div class="viewer-mode" hidden><button id="viewerImageMode" type="button" aria-pressed="true" data-i18n="referenceImage">参考图</button><button id="viewer3dMode" type="button" aria-pressed="false" data-i18n="preview3d">3D 预览</button></div>
       <img class="viewer-image" id="viewerImage" alt="" draggable="false">
       <span class="image-status" id="imageStatus" hidden data-i18n="loadingImage">正在加载原图…</span>
       <button class="viewer-nav prev" id="anglePrev" type="button" aria-label="上一个角度" data-i18n-aria-label="prevAngle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m15 5-7 7 7 7"/></svg></button>
@@ -492,7 +504,7 @@ main{padding:22px 0 54px}
         <a class="download-btn" id="downloadImage" href="#" download><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12m-5-5 5 5 5-5M4 20h16"/></svg><span data-i18n="download">下载原尺寸 PNG</span></a>
         <a class="open-btn" id="openImage" href="#" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 4h6v6m0-6-9 9M19 14v6H4V5h6"/></svg><span data-i18n="openImage">新窗口打开</span></a>
       </div>
-      <a class="open-btn studio-link" id="studioPose" href="studio/" target="_blank" rel="noopener noreferrer" data-i18n="openStudio">新增到 3D 工作台</a>
+      <a class="open-btn studio-link" id="studioPose" href="studio/" target="_blank" rel="noopener noreferrer" data-i18n="openStudio" hidden>新增到 3D 工作台</a>
       <dl class="metadata" id="viewerMeta"></dl>
       <div class="keyboard-help" data-i18n-html="keyboard"><kbd>←</kbd> <kbd>→</kbd> 切换角度　<kbd>↑</kbd> <kbd>↓</kbd> 切换姿势<br><kbd>Esc</kbd> 关闭 · 手机可左右滑动切换角度</div>
     </aside>

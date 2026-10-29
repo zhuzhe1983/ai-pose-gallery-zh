@@ -9,6 +9,8 @@ Base URL: `https://zhuzhe1983.github.io/ai-pose-gallery-zh/` (keep the repositor
 
 ## Choose a reference workflow
 
+Gallery 3D is opt-in: enable the header switch **Experimental 3D models (incomplete)** (`实验性 3D 模型（不完善）` / `実験的な 3D モデル（未完成）`). It defaults off, remembers the browser preference, and controls hover previews, viewer 3D mode and studio links. Direct `studio/` URLs and the API remain available. All views of a pose share one figure configuration; only the camera changes. Treat all current presets as incomplete drafts and inspect hands, support contacts and skin deformation.
+
 - **Existing gallery pose:** use the compact URLs below; no browser rendering is needed.
 - **Custom or multi-person pose:** open `studio/` and read [references/studio.md](references/studio.md). It covers adding/deleting up to six male/female figures, 80–120% scale, bounded joint controls, URL sharing, draft presets, cameras and clean PNG captures through `window.poseStudio`. A reusable headless helper is [scripts/render_studio.mjs](scripts/render_studio.mjs). Both files are available under `skills/ai-pose-gallery/` on the same site. This avoids loading the full image index or rediscovering the UI.
 - **Photo to editable pose:** open `studio/`, choose a local photo, and let the browser detect and sync up to six people (adding missing figures). Read [references/studio.md](references/studio.md#photo-to-pose-on-device) for the API, confidence handling, cancellation and headless `--image` helper. Photos stay on the device; inspect and refine the approximate result before generating artwork. The “detect current reference” UI is removed. Fixed gallery line art uses a separate offline preparation workflow; it is not reliably recognized by the browser photo model.

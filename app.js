@@ -28,6 +28,42 @@ let renderedCount = 0;
 const groupMap = new Map();
 const viewerState = { index: 0, item: null, token: 0, returnFocus: null, mode: "image" };
 let preview3D, hasPose3D = () => false;
+const EXPERIMENTAL_3D_KEY = 'pose-experimental-3d';
+let experimental3D = false, previewReady;
+try { experimental3D = localStorage.getItem(EXPERIMENTAL_3D_KEY) === '1'; } catch {}
+
+function load3DPreview() {
+  if (!previewReady) previewReady = import('./gallery-preview.js').then(preview => {
+    hasPose3D = preview.hasPose3D;
+    preview3D = preview.createGalleryPreview({lang: LANG, t});
+    if (experimental3D && !$('#viewer').hidden) showViewer();
+  }).catch(error => {
+    previewReady = null;
+    console.warn('3D preview unavailable', error);
+  });
+  return previewReady;
+}
+
+function syncExperimental3D() {
+  $('#experimental3dToggle').checked = experimental3D;
+  $('#studioNav').hidden = !experimental3D;
+  $('#studioPose').hidden = !experimental3D;
+  $('.viewer-mode').hidden = !experimental3D;
+  if (experimental3D) load3DPreview();
+  else viewerState.mode = 'image';
+  updateViewerMode();
+}
+
+$('#experimental3dToggle').addEventListener('change', event => {
+  experimental3D = event.target.checked;
+  try { localStorage.setItem(EXPERIMENTAL_3D_KEY, experimental3D ? '1' : '0'); } catch {}
+  syncExperimental3D();
+});
+window.addEventListener('storage', event => {
+  if (event.key !== EXPERIMENTAL_3D_KEY && event.key !== null) return;
+  experimental3D = event.key !== null && event.newValue === '1';
+  syncExperimental3D();
+});
 
 function groupKey(item) { return `${item.体系}|${item.姿势编号 || item.id}`; }
 
@@ -181,7 +217,7 @@ function updateCardPreview(card, entry) {
   image.src = item.缩略图;
   image.alt = `${entry.group.name} · ${item.角度}`;
   card.querySelector('.angle-tag').textContent = item.角度;
-  if (card.matches(':hover') && $('#viewer').hidden) preview3D?.show(card.querySelector('.card-image'), item);
+  if (experimental3D && card.matches(':hover') && $('#viewer').hidden) preview3D?.show(card.querySelector('.card-image'), item);
   card.setAttribute('aria-label', t('viewLabel', {name: entry.group.name, angle: item.角度}));
   card.querySelectorAll('.angle-thumb').forEach(button => button.classList.toggle('on', button.dataset.angle === item.角度));
 }
@@ -360,7 +396,7 @@ function showViewer() {
 }
 
 function updateViewerMode() {
-  const on = viewerState.mode === '3d';
+  const on = experimental3D && viewerState.mode === '3d';
   $('#viewerStage').classList.toggle('mode-3d', on);
   $('#viewerImageMode').setAttribute('aria-pressed', String(!on));
   $('#viewer3dMode').setAttribute('aria-pressed', String(on));
@@ -368,12 +404,12 @@ function updateViewerMode() {
   else preview3D?.hide();
 }
 $('#viewerImageMode').onclick = () => { viewerState.mode = 'image'; updateViewerMode(); };
-$('#viewer3dMode').onclick = () => { viewerState.mode = '3d'; updateViewerMode(); };
+$('#viewer3dMode').onclick = () => { if (experimental3D) { viewerState.mode = '3d'; updateViewerMode(); } };
 $('#studioPose').addEventListener('click', event => {
-  if (!hasPose3D(viewerState.item.id)) event.preventDefault();
+  if (!experimental3D || !hasPose3D(viewerState.item.id)) event.preventDefault();
 });
 grid.addEventListener('pointerover', event => {
-  if (event.pointerType === 'touch' || !$('#viewer').hidden) return;
+  if (!experimental3D || event.pointerType === 'touch' || !$('#viewer').hidden) return;
   const card = event.target.closest('.pose-card[data-index]');
   if (!card || card.contains(event.relatedTarget)) return;
   const item = currentList[Number(card.dataset.index)]?.item;
@@ -506,10 +542,9 @@ async function readJSON(path) {
     const translations = await readJSON('data/ui.json');
     UI = translations[LANG];
     applyLanguage();
-    const preview = await import('./gallery-preview.js');
-    hasPose3D = preview.hasPose3D;
-    preview3D = preview.createGalleryPreview({lang: LANG, t});
     prepareData(await readJSON(`data/pose-${LANG}.json`));
+    syncExperimental3D();
+    $('#experimental3dToggle').disabled = false;
   } catch (error) {
     console.error(error);
     $('#resultCount').textContent = t('loadError');

@@ -41,6 +41,16 @@ The original `items` API remains available; `groups` is the grouped task view.
 
 ## Counts and evidence
 
+Local visual reviews use [these criteria](REVIEW.md). The `localReview` API field
+and review filters are separate from public verified status. Records in
+`output/offline-pose/local-review.json` bind source images, scenes and renders to
+SHA-256 hashes; changed files invalidate the review. Numeric fit gates are
+advisory and never approve or reject a pose on their own. A visible error can end
+review early; `visualViews` lists only inspected views, not implied full coverage.
+`GET /api/local-approved` returns only current, complete approvals, with one
+figure set per pose and a camera map for its views. `local-approved.json` is a
+saved snapshot, not an automatically updated approval source. Nothing is published.
+
 - Gallery inventory and formal group status come from `data/pose-3d-status.json`
   and existing source images. Images and pose groups have separate counts.
 - Valid 18-point inference records are deduplicated by source image. The blank

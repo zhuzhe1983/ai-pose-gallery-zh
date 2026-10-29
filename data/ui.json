@@ -90,7 +90,8 @@
     "referenceImage": "参考图",
     "preview3d": "3D 预览",
     "loading3d": "正在准备 3D 预览…",
-    "pending3d": "3D 姿势待转换",
+    "pending3d": "此姿势尚无可用的 3D 预设",
+    "experimental3d": "实验性 3D 模型（不完善）",
     "draft3d": "3D 草稿 · 尚未完成还原核验",
     "preview3dError": "3D 预览暂不可用，请稍后重试"
   },
@@ -185,7 +186,8 @@
     "referenceImage": "Reference image",
     "preview3d": "3D preview",
     "loading3d": "Preparing 3D preview…",
-    "pending3d": "3D pose awaiting conversion",
+    "pending3d": "No 3D preset is available for this pose yet",
+    "experimental3d": "Experimental 3D models (incomplete)",
     "draft3d": "3D draft · reconstruction unverified",
     "preview3dError": "3D preview unavailable. Try again later."
   },
@@ -280,7 +282,8 @@
     "referenceImage": "参考画像",
     "preview3d": "3D プレビュー",
     "loading3d": "3D プレビューを準備中…",
-    "pending3d": "3D ポーズは変換待ちです",
+    "pending3d": "このポーズの 3D プリセットはまだありません",
+    "experimental3d": "実験的な 3D モデル（未完成）",
     "draft3d": "3D 下書き・再現精度は未検証",
     "preview3dError": "3D プレビューを表示できません。再度お試しください。"
   }

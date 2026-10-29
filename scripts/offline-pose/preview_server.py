@@ -11,6 +11,8 @@ from pathlib import Path
 import re
 import shutil
 import time
+
+from local_review import load_reviews, approved_dataset
 from urllib.parse import quote, unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -49,7 +51,7 @@ def safe_path(root, url_path):
     elif relative.startswith("output/sketch-pose-offline/"):
         allowed = suffix in {".json", ".png", ".jpg", ".svg", ".md"}
     elif relative.startswith("output/offline-pose/"):
-        allowed = suffix in {".png", ".jpg", ".svg", ".md"} or path.name.endswith((".scene.json", ".fit.json", ".multiview.json")) or path.name in {"status.json", "preset-visual-audit.json"}
+        allowed = suffix in {".png", ".jpg", ".svg", ".md"} or path.name.endswith((".scene.json", ".fit.json", ".multiview.json")) or path.name in {"status.json", "preset-visual-audit.json", "local-review.json", "local-approved.json"}
     elif relative in {"index.html", "app.js", "gallery-preview.js"}:
         allowed = True
     if not allowed or any(p in {"venv", ".venv", "__pycache__", "node_modules"} for p in parts):
@@ -349,7 +351,10 @@ def scan_state(root=ROOT, now=None):
         group["active"] = any(item["active"] for item in group["views"])
         group["sceneCount"] = sum(bool(item["artifacts"].get("scene")) for item in group["views"])
         group["sceneConsistency"] = compare_view_scenes(root, group["views"], warnings)
-    return {"schema": "pose-atlas/local-preview@1", "scannedAt": datetime.fromtimestamp(now, timezone.utc).isoformat(), "mode": "read-only-loopback", "modelRevision": model_revision, "algorithm": "Sketch2Pose ONNX 2D front end + original constrained editor fitting; not full Sketch2Pose", "counts": counts, "progressFilePresent": status_path.is_file(), "jobs": jobs, "items": values, "groups": pose_groups, "presetAudit": presets, "warnings": warnings}
+    local_reviews, review_summary = load_reviews(root, pose_groups)
+    for group in pose_groups:
+        group["localReview"] = local_reviews.get(group["id"])
+    return {"localReview": review_summary, "schema": "pose-atlas/local-preview@1", "scannedAt": datetime.fromtimestamp(now, timezone.utc).isoformat(), "mode": "read-only-loopback", "modelRevision": model_revision, "algorithm": "Sketch2Pose ONNX 2D front end + original constrained editor fitting; not full Sketch2Pose", "counts": counts, "progressFilePresent": status_path.is_file(), "jobs": jobs, "items": values, "groups": pose_groups, "presetAudit": presets, "warnings": warnings}
 
 
 def valid_scene(path, warnings):
@@ -466,8 +471,11 @@ class PreviewHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", "0")
             self.end_headers()
             return
-        if route == "/api/preview-state":
-            payload = json.dumps(scan_state(self.root), ensure_ascii=False, allow_nan=False).encode()
+        if route in {"/api/preview-state", "/api/local-approved"}:
+            state = scan_state(self.root)
+            if route == "/api/local-approved":
+                state = approved_dataset(self.root, state["groups"], {g["id"]: g["localReview"] for g in state["groups"] if g["localReview"]})
+            payload = json.dumps(state, ensure_ascii=False, allow_nan=False).encode()
             self.send_headers(200, "application/json; charset=utf-8", len(payload))
             if not head_only:
                 self.wfile.write(payload)

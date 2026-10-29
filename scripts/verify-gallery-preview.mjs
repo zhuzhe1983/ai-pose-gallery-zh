@@ -27,7 +27,33 @@ try {
   });
   await page.goto(base);
   await page.locator(".pose-card:not(.skeleton)").first().waitFor();
+  const toggle = page.getByRole('switch');
+  assert.equal(await toggle.isChecked(), false, 'Experimental 3D defaults off');
+  assert.equal(await page.locator('#studioNav').isVisible(), false);
+  await page.locator('.pose-card').first().hover();
+  await page.waitForTimeout(300);
+  assert.equal(await page.locator('.pose-3d-overlay').count(), 0, 'Off does not load the preview module');
   assert.equal(await page.locator("iframe").count(), 0, "Lazy renderer");
+  await page.locator('.pose-card').first().click();
+  assert.equal(await page.locator('#viewer3dMode').isVisible(), false);
+  assert.equal(await page.locator('#studioPose').isVisible(), false);
+  assert.equal(await page.locator('#viewerImage').isVisible(), true);
+  await page.locator('#viewerClose').click();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await fs.mkdir('output/gallery-review', {recursive: true});
+  await page.screenshot({path:'output/gallery-review/experimental-off.png'});
+  await page.setViewportSize({width:390,height:844});
+  assert.equal(await toggle.isVisible(), true);
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Header fits mobile');
+  await page.screenshot({path:'output/gallery-review/experimental-mobile.png'});
+  await page.setViewportSize({width:1440,height:1000});
+  await toggle.check();
+  await page.reload();
+  await page.locator('.pose-card:not(.skeleton)').first().waitFor();
+  await page.waitForFunction(() => document.querySelector('.pose-3d-overlay'));
+  assert.equal(await toggle.isChecked(), true, 'Opt-in persists after reload');
+  assert.equal(await page.locator('#studioNav').isVisible(), true);
+  await page.screenshot({path:'output/gallery-review/experimental-on.png'});
   await page.locator("#searchInput").fill("solo_stand");
   await page.waitForFunction(() =>
     document
@@ -45,6 +71,43 @@ try {
   );
   console.log("First 3D preview loaded");
   assert.equal(await page.locator("iframe").count(), 1);
+  const previewFrame = page.frames().find((f) => f.url().includes("embed=preview"));
+  const figuresBeforeView = await previewFrame.evaluate(() => poseStudio.getState().figures);
+  const cameraBeforeView = await previewFrame.evaluate(() => poseStudio.getState().camera);
+  await cards.first().locator('.angle-thumb').nth(1).hover();
+  await page.waitForFunction(() => document.querySelector('.pose-3d-overlay.loaded:not([hidden])'));
+  await previewFrame.waitForFunction((before) => JSON.stringify(poseStudio.getState().camera) !== before, JSON.stringify(cameraBeforeView));
+  assert.deepEqual(await previewFrame.evaluate(() => poseStudio.getState().figures), figuresBeforeView,
+    'Changing the reference angle changes only the camera, never the figure');
+  await page.evaluate(() => {
+    const target = document.querySelector('.pose-card .card-image').getBoundingClientRect();
+    const filters = document.querySelector('.controls').getBoundingClientRect();
+    window.scrollBy(0, target.top - filters.height + 80);
+  });
+  // Keep the pointer on the exposed part of the first tile after scrolling;
+  // leaving it on a thumbnail can legitimately activate the next row instead.
+  const hoverPoint = await page.evaluate(() => {
+    const target = document.querySelector('.pose-card .card-image').getBoundingClientRect();
+    const bottom = document.querySelector('.controls').getBoundingClientRect().bottom;
+    return { x: target.x + target.width / 2, y: Math.max(bottom + 20, target.y + 20) };
+  });
+  await page.mouse.move(hoverPoint.x, hoverPoint.y);
+  await page.waitForFunction(() => {
+    const overlay = document.querySelector('.pose-3d-overlay');
+    return !overlay.hidden && parseFloat(getComputedStyle(overlay).clipPath.slice(6)) > 0;
+  });
+  const clipping = await page.evaluate(() => {
+    const overlay = document.querySelector('.pose-3d-overlay');
+    const filters = document.querySelector('.controls');
+    const top = overlay.getBoundingClientRect().top;
+    const cut = parseFloat(getComputedStyle(overlay).clipPath.slice(6));
+    return { visibleTop: top + cut, filterBottom: filters.getBoundingClientRect().bottom,
+      layer: Number(getComputedStyle(overlay).zIndex), filterLayer: Number(getComputedStyle(filters).zIndex) };
+  });
+  assert.ok(clipping.visibleTop >= clipping.filterBottom - 1, 'Preview clips below sticky filters');
+  assert.ok(clipping.layer < clipping.filterLayer, 'Sticky filters remain above preview');
+  await fs.mkdir('output/gallery-review', { recursive: true });
+  await page.screenshot({ path: 'output/gallery-review/hover-clipped.png' });
   await cards.nth(1).hover();
   await page.waitForFunction(() =>
     document.querySelector(".pose-3d-overlay.loaded:not([hidden])"),
@@ -73,6 +136,21 @@ try {
     previewCamera.position.every(Number.isFinite),
     "Shared preview camera survives hide/show",
   );
+  const settings = await context.newPage();
+  await settings.goto(base);
+  await settings.locator('.pose-card:not(.skeleton)').first().waitFor();
+  await settings.getByRole('switch').uncheck();
+  await page.waitForFunction(() => document.querySelector('.pose-3d-overlay').hidden);
+  assert.equal(await page.locator('#viewerImage').isVisible(), true, 'Disable restores an open viewer to its image');
+  assert.equal(await page.locator('#viewer3dMode').isVisible(), false);
+  assert.equal(await page.locator('#studioPose').isVisible(), false);
+  await settings.reload();
+  await settings.locator('.pose-card:not(.skeleton)').first().waitFor();
+  assert.equal(await settings.getByRole('switch').isChecked(), false, 'Opt-out persists after reload');
+  assert.equal(await settings.locator('.pose-3d-overlay').count(), 0);
+  await settings.getByRole('switch').check();
+  await page.waitForFunction(() => !document.querySelector('#viewer3dMode').closest('.viewer-mode').hidden);
+  await settings.close();
   await page.locator("#viewerImageMode").click();
   assert.equal(await page.locator(".pose-3d-overlay").isHidden(), true);
   for (const [width, height] of [
@@ -161,6 +239,12 @@ try {
       ?.getAttribute("src")
       .includes("sexy_stand_s-curve-hip-out"),
   );
+  await page.locator('.pose-card').first().hover();
+  await page.waitForFunction(() => document.querySelector('.pose-3d-overlay.pending:not([hidden])'));
+  assert.equal(await page.locator('.pose-3d-overlay').evaluate(el => getComputedStyle(el).backgroundColor), 'rgba(0, 0, 0, 0)',
+    'Missing group retains its source image');
+  assert.ok(await page.locator('.main-image').first().isVisible());
+  await page.screenshot({ path: 'output/gallery-review/pending-hover.png' });
   await page.locator(".pose-card").first().click();
   await page.locator("#viewer3dMode").click();
   await page.waitForFunction(() =>
@@ -171,7 +255,7 @@ try {
     "true",
     "Missing pose not falsely loaded",
   );
-  assert.match(await page.locator(".pose-3d-status").textContent(), /待转换/);
+  assert.match(await page.locator(".pose-3d-status").textContent(), /此姿势尚无/);
   await fs.mkdir("output/gallery-review", { recursive: true });
   await page.screenshot({ path: "output/gallery-review/pending.png" });
   for (const lang of ["en", "ja"]) {
@@ -193,6 +277,7 @@ try {
       capacity: "atomic",
       pending: "explicit",
       languages: 3,
+      experimental3D: 'default off; preference persists; cross-tab shutdown restores image',
     }),
   );
 } catch (error) {

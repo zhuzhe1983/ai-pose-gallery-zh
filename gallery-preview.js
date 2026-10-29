@@ -4,8 +4,7 @@ import { PRESETS } from "./studio/presets.js";
 export const hasPose3D = (id) =>
   Boolean(PRESETS[id.replace(/_(f|d|s|hi|lo)$/, "")]);
 export function createGalleryPreview({ lang, t }) {
-  let host,
-    iframe,
+  let iframe,
     ready,
     target,
     modal = false,
@@ -27,8 +26,12 @@ export function createGalleryPreview({ lang, t }) {
       return;
     }
     const r = target.getBoundingClientRect(),
-      top = modal ? 52 : 0;
-    if (!modal && (r.bottom <= 0 || r.top >= innerHeight)) {
+      top = modal ? 52 : 0,
+      controlsBottom = modal ? 0 : Math.max(
+        0,
+        document.querySelector('.controls')?.getBoundingClientRect().bottom || 0,
+      );
+    if (!modal && (r.bottom <= controlsBottom || r.top >= innerHeight)) {
       hide();
       return;
     }
@@ -37,6 +40,9 @@ export function createGalleryPreview({ lang, t }) {
       top: `${r.top + top}px`,
       width: `${r.width}px`,
       height: `${Math.max(1, r.height - top)}px`,
+      // The shared fixed layer must respect the sticky filters above the cards.
+      // Clip without resizing the iframe, so scrolling does not reframe the pose.
+      clipPath: `inset(${modal ? 0 : Math.max(0, controlsBottom - r.top)}px 0 0 0)`,
     });
     frame = requestAnimationFrame(position);
   }
@@ -97,6 +103,7 @@ export function createGalleryPreview({ lang, t }) {
       target.classList.add("has-3d-preview");
       overlay.hidden = false;
       overlay.classList.toggle("interactive", modal);
+      overlay.classList.toggle("pending", !hasPose3D(item.id));
       if (iframe) iframe.style.visibility = "hidden";
       status.hidden = false;
       status.textContent = t(hasPose3D(item.id) ? "loading3d" : "pending3d");
