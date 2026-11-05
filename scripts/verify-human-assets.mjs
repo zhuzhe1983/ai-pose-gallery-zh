@@ -2,7 +2,8 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-const root = new URL('../studio/assets/humans/', import.meta.url);
+for (const folder of ['humans', 'articulated']) {
+const root = new URL(`../studio/assets/${folder}/`, import.meta.url);
 const manifest = JSON.parse(fs.readFileSync(new URL('manifest.json', root)));
 for (const [name, expected] of Object.entries(manifest.assets)) {
   const bytes = fs.readFileSync(new URL(name, root));
@@ -37,5 +38,6 @@ for (const [name, expected] of Object.entries(manifest.assets)) {
       assert.ok(Math.abs(total - 1) < 1e-5, `${name}: unnormalized vertex ${v}`);
     }
   }
+}
 }
 console.log('Human assets: CC0 manifest checksums, required bones and all skin weights verified.');

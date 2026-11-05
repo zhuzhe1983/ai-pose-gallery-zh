@@ -113,3 +113,10 @@ MediaPipe Pose Landmarker 的 Web API 支持静态图像模式与多人数量配
 - [ ] Add explicit toe articulation and per-finger surface constraints; whole-foot alignment is not a per-toe reconstruction.
 - [ ] Replace the single-person front end for duo images with person separation, cross-view identity matching and inter-person contact fitting.
 - [ ] Resolve high-residual or ambiguous cameras and stylized body-proportion mismatches; upper-body crops must not invent unseen legs.
+
+## WaveSpeed 扩展与可动人偶（2026-11-06）
+
+- [x] 融合 9 组地面坐姿、三视角白模与线稿，保留来源和中英日名称。
+- [ ] 为 `ws_sit_*` 的 9 组姿势建立一组一骨架的可编辑版本，逐组核对多视角、手掌、脚尖和支撑接触；图片不算已经完成的 3D 转换。
+- [ ] 可动人偶继续增加极端屈膝、肩部抬臂、髋部大幅外展的壳体避让；目前不含物理碰撞约束。
+- [x] 231 组原参考转换结果以 `experimental-unapproved` 发布；正式审核通过数仍为 0。开关只控制这些参考模型的预览和添加入口，工作台始终可用。

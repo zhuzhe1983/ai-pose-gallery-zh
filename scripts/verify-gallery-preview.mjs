@@ -13,6 +13,7 @@ const base = process.env.POSE_GALLERY_URL || "http://127.0.0.1:8767/";
 try {
   const context = await browser.newContext({
       viewport: { width: 1440, height: 1000 },
+      reducedMotion: 'reduce',
     }),
     page = await context.newPage(),
     errors = [];
@@ -29,7 +30,7 @@ try {
   await page.locator(".pose-card:not(.skeleton)").first().waitFor();
   const toggle = page.getByRole('switch');
   assert.equal(await toggle.isChecked(), false, 'Experimental 3D defaults off');
-  assert.equal(await page.locator('#studioNav').isVisible(), false);
+  assert.equal(await page.locator('#studioNav').isVisible(), true, 'Studio stays available with experiments off');
   await page.locator('.pose-card').first().hover();
   await page.waitForTimeout(300);
   assert.equal(await page.locator('.pose-3d-overlay').count(), 0, 'Off does not load the preview module');
@@ -71,6 +72,8 @@ try {
       .includes("solo_stand"),
   );
   console.log("Filtered cards ready");
+  await page.waitForFunction(() => document.querySelectorAll('.pose-card').length > 1 &&
+    document.querySelector('.main-image')?.getAttribute('src').includes('solo_stand'));
   const cards = page.locator(".pose-card");
   await cards.first().hover();
   await page.waitForFunction(
@@ -81,6 +84,9 @@ try {
   console.log("First 3D preview loaded");
   assert.equal(await page.locator("iframe").count(), 1);
   const previewFrame = page.frames().find((f) => f.url().includes("embed=preview"));
+  assert.equal(await previewFrame.evaluate(() => poseStudio.listPresets().filter(p => p.status === 'experimental-unapproved').length), 231);
+  await page.waitForFunction(() => document.querySelector('.pose-3d-overlay.loaded')?.dataset.pose ===
+    document.querySelector('.main-image')?.getAttribute('src').split('/').pop().replace('.jpg',''));
   const figuresBeforeView = await previewFrame.evaluate(() => poseStudio.getState().figures);
   const cameraBeforeView = await previewFrame.evaluate(() => poseStudio.getState().camera);
   await cards.first().locator('.angle-thumb').nth(1).hover();
@@ -241,12 +247,12 @@ try {
   assert.ok(full, "Capacity rejection leaves scene intact");
   await studio.close();
   await page.locator("#viewerClose").click();
-  await page.locator("#searchInput").fill("sexy_stand_s-curve-hip-out");
+  await page.locator("#searchInput").fill("ws_sit_cross");
   await page.waitForFunction(() =>
     document
       .querySelector(".main-image")
       ?.getAttribute("src")
-      .includes("sexy_stand_s-curve-hip-out"),
+      .includes("ws_sit_cross"),
   );
   await page.locator('.pose-card').first().hover();
   await page.waitForFunction(() => document.querySelector('.pose-3d-overlay.pending:not([hidden])'));
@@ -255,6 +261,9 @@ try {
   assert.ok(await page.locator('.main-image').first().isVisible());
   await page.screenshot({ path: 'output/gallery-review/pending-hover.png' });
   await page.locator(".pose-card").first().click();
+  assert.equal(await page.locator('#openLineArt').isVisible(), true);
+  assert.match(await page.locator('#openLineArt').getAttribute('href'), /data\/wavespeed\/line\/ws_sit_cross_[fds]\.png$/);
+  assert.match(await page.locator('#referenceSource').getAttribute('href'), /^https:\/\/wavespeed.ai\//);
   await page.locator("#viewer3dMode").click();
   await page.waitForFunction(() =>
     document.querySelector(".pose-3d-overlay:not([hidden])"),
@@ -301,9 +310,13 @@ try {
             ready: document.body?.dataset.ready,
             fatal: document.getElementById("fatalMessage")?.textContent,
             preview: document.querySelector(".pose-3d-status")?.textContent,
+            previewId: document.querySelector('.pose-3d-overlay')?.dataset.pose,
+            firstImage: document.querySelector('.main-image')?.getAttribute('src'),
+            hovered: document.querySelector('.pose-card:hover')?.getAttribute('aria-label'),
           }))
           .catch(() => ({ url: page.url() })),
       );
+      await page.screenshot({path: 'output/gallery-review/failure.png'}).catch(() => {});
     }
   throw error;
 } finally {

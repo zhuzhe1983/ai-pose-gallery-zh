@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // A single lazy renderer is shared by every gallery tile and the image viewer.
 import { PRESETS } from "./studio/presets.js";
+import { EXPERIMENTAL_POSES } from "./studio/experimental-catalog.js";
 export const hasPose3D = (id) =>
-  Boolean(PRESETS[id.replace(/_(f|d|s|hi|lo)$/, "")]);
+  Boolean(EXPERIMENTAL_POSES[id.replace(/_(f|d|s|hi|lo)$/, "")] || PRESETS[id.replace(/_(f|d|s|hi|lo)$/, "")]);
 export function createGalleryPreview({ lang, t }) {
   let iframe,
     ready,
@@ -51,7 +52,7 @@ export function createGalleryPreview({ lang, t }) {
     iframe = document.createElement("iframe");
     iframe.title = t("preview3d");
     iframe.tabIndex = -1;
-    iframe.src = `studio/?embed=preview&lang=${lang}`;
+    iframe.src = `studio/?embed=preview&experimental=1&lang=${lang}`;
     iframe.className = "pose-3d-frame";
     iframe.style.visibility = "hidden";
     overlay.prepend(iframe);
@@ -126,6 +127,7 @@ export function createGalleryPreview({ lang, t }) {
             iframe.style.visibility = "visible";
             iframe.tabIndex = modal ? 0 : -1;
             status.textContent = t("draft3d");
+            overlay.dataset.pose = item.id;
             overlay.classList.add("loaded");
           } catch (error) {
             if (own === token) status.textContent = t("preview3dError");

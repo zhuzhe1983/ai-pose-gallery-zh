@@ -1,0 +1,195 @@
+{
+  "source": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor",
+  "checked": "2026-11-06",
+  "poses": [
+    {
+      "id": "ws_sit_cross",
+      "source_id": "sitting-floor-cross-legged",
+      "name": {
+        "zh": "盘腿坐",
+        "en": "Cross-legged basic",
+        "ja": "あぐら"
+      },
+      "images": {
+        "3d": [
+          "c8467002-0e17-401c-8547-486de3bd4f37.webp",
+          "5358157b-fb91-4044-b9a5-29665060eaf6.webp",
+          "046e4ab7-b3e8-445f-b609-dcc7579b0dbd.webp"
+        ],
+        "line": [
+          "2aaf6ada-9f4f-4b5d-97de-7e695309b2a2.webp",
+          "380d8105-fdee-49a6-b13b-4ac60a42053d.webp",
+          "157000cb-688c-473e-93f9-40acf1ade6e8.webp"
+        ]
+      }
+    },
+    {
+      "id": "ws_sit_hug-kn",
+      "source_id": "sitting-floor-knees-hugged",
+      "name": {
+        "zh": "抱膝坐",
+        "en": "Knees hugged to chest",
+        "ja": "膝を抱えて座る"
+      },
+      "images": {
+        "3d": [
+          "5c914c8f-6a39-4070-a4f9-1f843cd32288.webp",
+          "48b7b5fd-056f-460e-b6bc-bf9130ecb4f8.webp",
+          "1c537975-de13-41eb-bcbc-dabc1be8404f.webp"
+        ],
+        "line": [
+          "f700a134-64de-4e5f-a6d8-bf703bc0e2cc.webp",
+          "e1307b36-6057-420f-b90c-3e6e3894ebc6.webp",
+          "d691f2f2-9463-4313-86fa-72a86cac9bf6.webp"
+        ]
+      }
+    },
+    {
+      "id": "ws_sit_side",
+      "source_id": "sitting-floor-side-sit",
+      "name": {
+        "zh": "侧坐",
+        "en": "Side sit",
+        "ja": "横座り"
+      },
+      "images": {
+        "3d": [
+          "f433b37b-410d-4eae-944c-18b013a51233.webp",
+          "f72514da-be1b-4ac6-bfe0-18c33eac31a0.webp",
+          "f5fd8a88-93e1-4e22-864f-dff1872cfca7.webp"
+        ],
+        "line": [
+          "976acdad-a883-41dc-842a-d574267f4688.webp",
+          "878625b5-c5f7-4b88-ac90-5407be5c1e6b.webp",
+          "3db49360-2aa4-4c74-8739-9d319d4f40fe.webp"
+        ]
+      }
+    },
+    {
+      "id": "ws_sit_hands-bk",
+      "source_id": "sitting-floor-leaning-back-on-hands",
+      "name": {
+        "zh": "双手后撑坐",
+        "en": "Leaning back on hands",
+        "ja": "両手を後ろについて座る"
+      },
+      "images": {
+        "3d": [
+          "a8ed9dea-1397-4e6a-9c10-fcd2e6c408c2.webp",
+          "c6af1f56-245e-4001-b380-e207013679c2.webp",
+          "1ab63bd2-9c5c-4e11-ad7c-d23619381bf5.webp"
+        ],
+        "line": [
+          "077825b8-be22-4a14-b93a-b83a393e80bb.webp",
+          "48bed89d-8cc0-47c4-b73d-f8c45146bed7.webp",
+          "2f09e652-37e6-4ddb-a87b-83e1394d8d4e.webp"
+        ]
+      }
+    },
+    {
+      "id": "ws_sit_kn-up",
+      "source_id": "sitting-floor-one-knee-up",
+      "name": {
+        "zh": "单膝抬起坐",
+        "en": "One knee up",
+        "ja": "片膝を立てて座る"
+      },
+      "images": {
+        "3d": [
+          "00e17ce1-6132-4648-b7e7-35110777fa9c.webp",
+          "0696264a-b5cc-4c15-8dc6-b081cc094cde.webp",
+          "7f4e63a8-a6fb-4dda-82c5-dde361c9621e.webp"
+        ],
+        "line": [
+          "2088a66c-4e40-4161-918c-5f7979797ed0.webp",
+          "59cd3107-2c36-45cf-a869-c6af63ff004d.webp",
+          "fe902d87-fa78-4d30-a1b3-eb336ac95bb9.webp"
+        ]
+      }
+    },
+    {
+      "id": "ws_sit_legs-v",
+      "source_id": "sitting-floor-legs-v",
+      "name": {
+        "zh": "双腿 V 形坐",
+        "en": "Legs in a V",
+        "ja": "脚を V 字に開いて座る"
+      },
+      "images": {
+        "3d": [
+          "bc6e2ff4-458d-4170-a6c5-a5fe1a7bc2af.webp",
+          "b5452221-0869-4772-be21-c24ee9ac3285.webp",
+          "17442086-450a-4331-b9cb-49a4bec49036.webp"
+        ],
+        "line": [
+          "8dcd35da-8eb5-4f3a-994f-bb8fd54725f4.webp",
+          "b91d546c-328d-47fa-9377-00ae3cf817ca.webp",
+          "d24e79ff-74dc-4cf1-9893-d86657bd4e30.webp"
+        ]
+      }
+    },
+    {
+      "id": "ws_sit_elbow-lean",
+      "source_id": "sitting-floor-legs-out-on-elbow",
+      "name": {
+        "zh": "单肘侧撑坐",
+        "en": "Legs out on one elbow",
+        "ja": "片肘で支えて座る"
+      },
+      "images": {
+        "3d": [
+          "30c9c129-a7e4-47a6-a25a-84daee44cbd4.webp",
+          "cd931149-74f6-4f03-95e6-096f7ab6dbc0.webp",
+          "c044363b-309d-4b81-ad92-b3c2df222fc3.webp"
+        ],
+        "line": [
+          "d66842d6-dced-4261-899b-92fc459889c7.webp",
+          "a93eddc9-1075-40c4-a501-cbe52c46af0f.webp",
+          "ca62d79e-afb5-4ecc-99c1-b3c7a97b6417.webp"
+        ]
+      }
+    },
+    {
+      "id": "ws_sit_butterfly",
+      "source_id": "sitting-floor-butterfly",
+      "name": {
+        "zh": "蝴蝶式坐姿",
+        "en": "Butterfly stretch",
+        "ja": "バタフライ座り"
+      },
+      "images": {
+        "3d": [
+          "fa5bc7f4-e899-4311-9a24-bdf695ecc98a.webp",
+          "24fda383-e777-459c-8a18-677824fa42b7.webp",
+          "3285b952-5673-49d5-9dd9-a12072fd87f6.webp"
+        ],
+        "line": [
+          "9f3715f1-9ffd-4563-b46c-339d3b0a72a1.webp",
+          "6cc9b439-0842-41dc-b3b8-71538f6a3899.webp",
+          "68e7c044-34e2-430e-93ba-ea4bba600975.webp"
+        ]
+      }
+    },
+    {
+      "id": "ws_sit_twist",
+      "source_id": "sitting-floor-seated-twist",
+      "name": {
+        "zh": "坐姿扭身",
+        "en": "Seated twist",
+        "ja": "座って体をひねる"
+      },
+      "images": {
+        "3d": [
+          "055c75e4-678d-4e7f-af38-af0275fa8070.webp",
+          "940f684f-6c54-4486-9133-e2289f3830ba.webp",
+          "b53a5163-5540-4f95-a250-bfae5dd3f1a2.webp"
+        ],
+        "line": [
+          "8a120321-555b-4594-9c14-baa77ae04170.webp",
+          "d74000e2-f285-4e90-b030-9fa5e312b052.webp",
+          "a679ccca-ee88-4643-a4cb-a1639d9e4842.webp"
+        ]
+      }
+    }
+  ]
+}

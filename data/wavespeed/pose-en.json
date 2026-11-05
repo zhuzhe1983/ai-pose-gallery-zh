@@ -1,0 +1,461 @@
+[
+  {
+    "id": "ws_sit_cross_f",
+    "source_id": "sitting-floor-cross-legged_f",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS01",
+    "分类": "Floor sitting",
+    "姿势名称": "Cross-legged basic",
+    "角度": "Front",
+    "原图": "data/wavespeed/img/ws_sit_cross_f.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_cross_f.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_cross_f.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_cross_f sitting-floor-cross-legged 盘腿坐 Cross-legged basic あぐら More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_cross_d",
+    "source_id": "sitting-floor-cross-legged_d",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS01",
+    "分类": "Floor sitting",
+    "姿势名称": "Cross-legged basic",
+    "角度": "Diagonal",
+    "原图": "data/wavespeed/img/ws_sit_cross_d.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_cross_d.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_cross_d.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_cross_d sitting-floor-cross-legged 盘腿坐 Cross-legged basic あぐら More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_cross_s",
+    "source_id": "sitting-floor-cross-legged_s",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS01",
+    "分类": "Floor sitting",
+    "姿势名称": "Cross-legged basic",
+    "角度": "Side",
+    "原图": "data/wavespeed/img/ws_sit_cross_s.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_cross_s.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_cross_s.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_cross_s sitting-floor-cross-legged 盘腿坐 Cross-legged basic あぐら More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_hug-kn_f",
+    "source_id": "sitting-floor-knees-hugged_f",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS02",
+    "分类": "Floor sitting",
+    "姿势名称": "Knees hugged to chest",
+    "角度": "Front",
+    "原图": "data/wavespeed/img/ws_sit_hug-kn_f.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_hug-kn_f.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_hug-kn_f.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_hug-kn_f sitting-floor-knees-hugged 抱膝坐 Knees hugged to chest 膝を抱えて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_hug-kn_d",
+    "source_id": "sitting-floor-knees-hugged_d",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS02",
+    "分类": "Floor sitting",
+    "姿势名称": "Knees hugged to chest",
+    "角度": "Diagonal",
+    "原图": "data/wavespeed/img/ws_sit_hug-kn_d.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_hug-kn_d.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_hug-kn_d.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_hug-kn_d sitting-floor-knees-hugged 抱膝坐 Knees hugged to chest 膝を抱えて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_hug-kn_s",
+    "source_id": "sitting-floor-knees-hugged_s",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS02",
+    "分类": "Floor sitting",
+    "姿势名称": "Knees hugged to chest",
+    "角度": "Side",
+    "原图": "data/wavespeed/img/ws_sit_hug-kn_s.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_hug-kn_s.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_hug-kn_s.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_hug-kn_s sitting-floor-knees-hugged 抱膝坐 Knees hugged to chest 膝を抱えて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_side_f",
+    "source_id": "sitting-floor-side-sit_f",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS03",
+    "分类": "Floor sitting",
+    "姿势名称": "Side sit",
+    "角度": "Front",
+    "原图": "data/wavespeed/img/ws_sit_side_f.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_side_f.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_side_f.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_side_f sitting-floor-side-sit 侧坐 Side sit 横座り More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_side_d",
+    "source_id": "sitting-floor-side-sit_d",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS03",
+    "分类": "Floor sitting",
+    "姿势名称": "Side sit",
+    "角度": "Diagonal",
+    "原图": "data/wavespeed/img/ws_sit_side_d.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_side_d.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_side_d.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_side_d sitting-floor-side-sit 侧坐 Side sit 横座り More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_side_s",
+    "source_id": "sitting-floor-side-sit_s",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS03",
+    "分类": "Floor sitting",
+    "姿势名称": "Side sit",
+    "角度": "Side",
+    "原图": "data/wavespeed/img/ws_sit_side_s.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_side_s.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_side_s.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_side_s sitting-floor-side-sit 侧坐 Side sit 横座り More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_hands-bk_f",
+    "source_id": "sitting-floor-leaning-back-on-hands_f",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS04",
+    "分类": "Floor sitting",
+    "姿势名称": "Leaning back on hands",
+    "角度": "Front",
+    "原图": "data/wavespeed/img/ws_sit_hands-bk_f.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_hands-bk_f.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_hands-bk_f.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_hands-bk_f sitting-floor-leaning-back-on-hands 双手后撑坐 Leaning back on hands 両手を後ろについて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_hands-bk_d",
+    "source_id": "sitting-floor-leaning-back-on-hands_d",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS04",
+    "分类": "Floor sitting",
+    "姿势名称": "Leaning back on hands",
+    "角度": "Diagonal",
+    "原图": "data/wavespeed/img/ws_sit_hands-bk_d.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_hands-bk_d.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_hands-bk_d.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_hands-bk_d sitting-floor-leaning-back-on-hands 双手后撑坐 Leaning back on hands 両手を後ろについて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_hands-bk_s",
+    "source_id": "sitting-floor-leaning-back-on-hands_s",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS04",
+    "分类": "Floor sitting",
+    "姿势名称": "Leaning back on hands",
+    "角度": "Side",
+    "原图": "data/wavespeed/img/ws_sit_hands-bk_s.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_hands-bk_s.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_hands-bk_s.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_hands-bk_s sitting-floor-leaning-back-on-hands 双手后撑坐 Leaning back on hands 両手を後ろについて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_kn-up_f",
+    "source_id": "sitting-floor-one-knee-up_f",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS05",
+    "分类": "Floor sitting",
+    "姿势名称": "One knee up",
+    "角度": "Front",
+    "原图": "data/wavespeed/img/ws_sit_kn-up_f.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_kn-up_f.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_kn-up_f.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_kn-up_f sitting-floor-one-knee-up 单膝抬起坐 One knee up 片膝を立てて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_kn-up_d",
+    "source_id": "sitting-floor-one-knee-up_d",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS05",
+    "分类": "Floor sitting",
+    "姿势名称": "One knee up",
+    "角度": "Diagonal",
+    "原图": "data/wavespeed/img/ws_sit_kn-up_d.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_kn-up_d.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_kn-up_d.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_kn-up_d sitting-floor-one-knee-up 单膝抬起坐 One knee up 片膝を立てて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_kn-up_s",
+    "source_id": "sitting-floor-one-knee-up_s",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS05",
+    "分类": "Floor sitting",
+    "姿势名称": "One knee up",
+    "角度": "Side",
+    "原图": "data/wavespeed/img/ws_sit_kn-up_s.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_kn-up_s.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_kn-up_s.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_kn-up_s sitting-floor-one-knee-up 单膝抬起坐 One knee up 片膝を立てて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_legs-v_f",
+    "source_id": "sitting-floor-legs-v_f",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS06",
+    "分类": "Floor sitting",
+    "姿势名称": "Legs in a V",
+    "角度": "Front",
+    "原图": "data/wavespeed/img/ws_sit_legs-v_f.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_legs-v_f.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_legs-v_f.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_legs-v_f sitting-floor-legs-v 双腿 V 形坐 Legs in a V 脚を V 字に開いて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_legs-v_d",
+    "source_id": "sitting-floor-legs-v_d",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS06",
+    "分类": "Floor sitting",
+    "姿势名称": "Legs in a V",
+    "角度": "Diagonal",
+    "原图": "data/wavespeed/img/ws_sit_legs-v_d.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_legs-v_d.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_legs-v_d.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_legs-v_d sitting-floor-legs-v 双腿 V 形坐 Legs in a V 脚を V 字に開いて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_legs-v_s",
+    "source_id": "sitting-floor-legs-v_s",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS06",
+    "分类": "Floor sitting",
+    "姿势名称": "Legs in a V",
+    "角度": "Side",
+    "原图": "data/wavespeed/img/ws_sit_legs-v_s.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_legs-v_s.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_legs-v_s.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_legs-v_s sitting-floor-legs-v 双腿 V 形坐 Legs in a V 脚を V 字に開いて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_elbow-lean_f",
+    "source_id": "sitting-floor-legs-out-on-elbow_f",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS07",
+    "分类": "Floor sitting",
+    "姿势名称": "Legs out on one elbow",
+    "角度": "Front",
+    "原图": "data/wavespeed/img/ws_sit_elbow-lean_f.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_elbow-lean_f.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_elbow-lean_f.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_elbow-lean_f sitting-floor-legs-out-on-elbow 单肘侧撑坐 Legs out on one elbow 片肘で支えて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_elbow-lean_d",
+    "source_id": "sitting-floor-legs-out-on-elbow_d",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS07",
+    "分类": "Floor sitting",
+    "姿势名称": "Legs out on one elbow",
+    "角度": "Diagonal",
+    "原图": "data/wavespeed/img/ws_sit_elbow-lean_d.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_elbow-lean_d.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_elbow-lean_d.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_elbow-lean_d sitting-floor-legs-out-on-elbow 单肘侧撑坐 Legs out on one elbow 片肘で支えて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_elbow-lean_s",
+    "source_id": "sitting-floor-legs-out-on-elbow_s",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS07",
+    "分类": "Floor sitting",
+    "姿势名称": "Legs out on one elbow",
+    "角度": "Side",
+    "原图": "data/wavespeed/img/ws_sit_elbow-lean_s.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_elbow-lean_s.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_elbow-lean_s.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_elbow-lean_s sitting-floor-legs-out-on-elbow 单肘侧撑坐 Legs out on one elbow 片肘で支えて座る More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_butterfly_f",
+    "source_id": "sitting-floor-butterfly_f",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS08",
+    "分类": "Floor sitting",
+    "姿势名称": "Butterfly stretch",
+    "角度": "Front",
+    "原图": "data/wavespeed/img/ws_sit_butterfly_f.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_butterfly_f.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_butterfly_f.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_butterfly_f sitting-floor-butterfly 蝴蝶式坐姿 Butterfly stretch バタフライ座り More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_butterfly_d",
+    "source_id": "sitting-floor-butterfly_d",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS08",
+    "分类": "Floor sitting",
+    "姿势名称": "Butterfly stretch",
+    "角度": "Diagonal",
+    "原图": "data/wavespeed/img/ws_sit_butterfly_d.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_butterfly_d.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_butterfly_d.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_butterfly_d sitting-floor-butterfly 蝴蝶式坐姿 Butterfly stretch バタフライ座り More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_butterfly_s",
+    "source_id": "sitting-floor-butterfly_s",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS08",
+    "分类": "Floor sitting",
+    "姿势名称": "Butterfly stretch",
+    "角度": "Side",
+    "原图": "data/wavespeed/img/ws_sit_butterfly_s.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_butterfly_s.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_butterfly_s.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_butterfly_s sitting-floor-butterfly 蝴蝶式坐姿 Butterfly stretch バタフライ座り More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_twist_f",
+    "source_id": "sitting-floor-seated-twist_f",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS09",
+    "分类": "Floor sitting",
+    "姿势名称": "Seated twist",
+    "角度": "Front",
+    "原图": "data/wavespeed/img/ws_sit_twist_f.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_twist_f.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_twist_f.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_twist_f sitting-floor-seated-twist 坐姿扭身 Seated twist 座って体をひねる More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_twist_d",
+    "source_id": "sitting-floor-seated-twist_d",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS09",
+    "分类": "Floor sitting",
+    "姿势名称": "Seated twist",
+    "角度": "Diagonal",
+    "原图": "data/wavespeed/img/ws_sit_twist_d.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_twist_d.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_twist_d.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_twist_d sitting-floor-seated-twist 坐姿扭身 Seated twist 座って体をひねる More poses · WaveSpeed Floor sitting"
+  },
+  {
+    "id": "ws_sit_twist_s",
+    "source_id": "sitting-floor-seated-twist_s",
+    "体系": "More poses · WaveSpeed",
+    "姿势编号": "WS09",
+    "分类": "Floor sitting",
+    "姿势名称": "Seated twist",
+    "角度": "Side",
+    "原图": "data/wavespeed/img/ws_sit_twist_s.png",
+    "缩略图": "data/wavespeed/thumbs/ws_sit_twist_s.jpg",
+    "lineArt": "data/wavespeed/line/ws_sit_twist_s.png",
+    "source": {
+      "name": "WaveSpeed AI",
+      "url": "https://wavespeed.ai/free-tools/ai-pose-gallery/sitting-floor"
+    },
+    "检索": "ws_sit_twist_s sitting-floor-seated-twist 坐姿扭身 Seated twist 座って体をひねる More poses · WaveSpeed Floor sitting"
+  }
+]

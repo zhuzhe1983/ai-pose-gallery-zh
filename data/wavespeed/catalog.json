@@ -1,0 +1,24 @@
+{
+  "systems": {
+    "ws": {
+      "name": {
+        "zh": "扩展姿势 · WaveSpeed",
+        "en": "More poses · WaveSpeed",
+        "ja": "追加ポーズ · WaveSpeed"
+      },
+      "image_template": "data/wavespeed/img/{stem}.png",
+      "thumbnail_template": "data/wavespeed/thumbs/{stem}.jpg",
+      "categories": {
+        "sit": {
+          "name": {
+            "zh": "地面坐姿",
+            "en": "Floor sitting",
+            "ja": "床に座る"
+          },
+          "index": "data/wavespeed/sit.json",
+          "pose_count": 9
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,119 @@
+[
+  {
+    "pose": "cross",
+    "name": {
+      "zh": "盘腿坐",
+      "en": "Cross-legged basic",
+      "ja": "あぐら"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hug-kn",
+    "name": {
+      "zh": "抱膝坐",
+      "en": "Knees hugged to chest",
+      "ja": "膝を抱えて座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side",
+    "name": {
+      "zh": "侧坐",
+      "en": "Side sit",
+      "ja": "横座り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-bk",
+    "name": {
+      "zh": "双手后撑坐",
+      "en": "Leaning back on hands",
+      "ja": "両手を後ろについて座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kn-up",
+    "name": {
+      "zh": "单膝抬起坐",
+      "en": "One knee up",
+      "ja": "片膝を立てて座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "legs-v",
+    "name": {
+      "zh": "双腿 V 形坐",
+      "en": "Legs in a V",
+      "ja": "脚を V 字に開いて座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "elbow-lean",
+    "name": {
+      "zh": "单肘侧撑坐",
+      "en": "Legs out on one elbow",
+      "ja": "片肘で支えて座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "butterfly",
+    "name": {
+      "zh": "蝴蝶式坐姿",
+      "en": "Butterfly stretch",
+      "ja": "バタフライ座り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "twist",
+    "name": {
+      "zh": "坐姿扭身",
+      "en": "Seated twist",
+      "ja": "座って体をひねる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

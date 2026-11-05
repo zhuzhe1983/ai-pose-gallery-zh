@@ -44,6 +44,8 @@ def safe_path(root, url_path):
         allowed = suffix in {".html", ".js", ".mjs", ".css", ".json", ".glb", ".wasm", ".task", ".png", ".jpg", ".svg", ".woff2", ".md", ".txt"} or path.name == "LICENSE"
     elif relative.startswith(("img/", "thumbs/")):
         allowed = suffix in {".png", ".jpg", ".webp"}
+    elif relative.startswith('data/wavespeed/'):
+        allowed = suffix in {'.json', '.png', '.jpg', '.webp', '.md'}
     elif relative.startswith("data/"):
         allowed = suffix == ".json"
     elif relative.startswith(("docs/pose-review/", "docs/pose-review-v3/")):
@@ -142,6 +144,13 @@ def scan_state(root=ROOT, now=None):
     except OSError:
         pass
     titles = {}
+    extra_sources = {}
+    extra_path = root / 'data/wavespeed/pose-zh.json'
+    if extra_path.is_file():
+        for row in read_json(extra_path, warnings) or []:
+            extra_sources[row['id']] = row['原图']
+        for row in read_json(root / 'data/wavespeed/sit.json', warnings) or []:
+            titles['ws_sit_' + row['pose']] = row['name']
     for path in (root / "data/catalog").glob("*/*.json"):
         catalog = read_json(path, warnings)
         if isinstance(catalog, list):
@@ -159,7 +168,7 @@ def scan_state(root=ROOT, now=None):
             if view not in VIEWS:
                 continue
             key = f"{group['id']}_{view}"
-            source = asset_url(root, root / "img" / f"{key}.png")
+            source = asset_url(root, root / extra_sources.get(key, f'img/{key}.png'))
             if not source:
                 continue
             items[key] = {"id": key, "pose": group["id"], "view": view, "title": titles.get(group["id"], {}), "source": source, "status": "not_started", "stage": "not_started", "control": False, "artifacts": {}, "updated": 0}

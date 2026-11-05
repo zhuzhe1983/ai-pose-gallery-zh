@@ -6,6 +6,7 @@ import { solveDragIK } from "./drag-ik.js";
 import { captureChest, stabilizeChest } from "./pelvis-stabilize.js";
 import { mirrorJoint } from "./mirror.js";
 import { preloadHumans } from "./human.js";
+import { EXPERIMENTAL_POSES, experimentalPose } from './experimental.js';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
 import { scene } from "./vendor/mannequin/scene.js";
@@ -45,6 +46,13 @@ const $ = (id) => document.getElementById(id),
   FLOOR = -0.7;
 const params = new URLSearchParams(location.search);
 const previewMode = params.get("embed") === "preview";
+const useExperimental = () => {
+  if (previewMode || params.get('experimental') === '1') return true;
+  try { return localStorage.getItem('pose-experimental-3d') === '1'; } catch { return false; }
+};
+const hasExperimental = stem => useExperimental() && Object.hasOwn(EXPERIMENTAL_POSES, stem);
+const hasPreset = stem => hasExperimental(stem) || Boolean(PRESETS[stem]);
+let referenceCameras = null;
 let previewActive = false;
 if (previewMode) document.body.dataset.embed = "preview";
 let lang = params.get("lang");
@@ -1189,7 +1197,7 @@ function renderLibrary() {
   let count = 0;
   for (const row of rows) {
     const stem = `${system}_${category}_${row.pose}`,
-      preset = Boolean(PRESETS[stem]);
+      preset = hasPreset(stem);
     if (
       query &&
       !`${stem} ${Object.values(row.name).join(" ")}`
@@ -1206,7 +1214,7 @@ function renderLibrary() {
     const img = document.createElement("img");
     img.loading = "lazy";
     img.alt = "";
-    img.src = `../thumbs/${stem}_${row.views.includes("f") ? "f" : row.views[0]}.jpg`;
+    img.src = referenceAsset(stem, row.views.includes("f") ? "f" : row.views[0], true);
     const name = document.createElement("span");
     name.className = "name";
     name.textContent = localName(row.name);
@@ -1248,7 +1256,7 @@ async function showReference(stem, view) {
   reference = { stem, view: view || entry.views[0], entry };
   renderReference();
   renderLibrary();
-  return { stem, view: reference.view, hasPreset: Boolean(PRESETS[stem]) };
+  return { stem, view: reference.view, hasPreset: hasPreset(stem) };
 }
 function renderReference(forceOpen = false) {
   const collapsed = Boolean(reference) && innerWidth <= 540 && !forceOpen;
@@ -1272,18 +1280,23 @@ function renderReference(forceOpen = false) {
   );
   updateReferenceView();
   $("referenceState").textContent = t(
-    PRESETS[reference.stem] ? "approximation" : "referenceOnly",
+    hasPreset(reference.stem) ? "approximation" : "referenceOnly",
   );
 }
 function updateReferenceView() {
-  $("referenceImage").src = `../thumbs/${reference.stem}_${reference.view}.jpg`;
+  $("referenceImage").src = referenceAsset(reference.stem, reference.view, true);
   $("referenceImage").alt = localName(reference.entry.name);
-  $("referenceLink").href = `../img/${reference.stem}_${reference.view}.png`;
+  $("referenceLink").href = referenceAsset(reference.stem, reference.view);
   for (const button of $("referenceView").children)
     button.setAttribute(
       "aria-pressed",
       String(button.dataset.view === reference.view),
     );
+}
+function referenceAsset(stem, view, thumbnail = false) {
+  const system = catalog.systems[stem.split('_')[0]];
+  const template = system?.[thumbnail ? 'thumbnail_template' : 'image_template'];
+  return '../' + (template ? template.replace('{stem}', `${stem}_${view}`) : `${thumbnail ? 'thumbs' : 'img'}/${stem}_${view}.${thumbnail ? 'jpg' : 'png'}`);
 }
 function selectReferenceView(view) {
   if (
@@ -1294,9 +1307,46 @@ function selectReferenceView(view) {
   reference.view = view;
   // Keep the same buttons and focus while hovering; also keep mobile cards open.
   updateReferenceView();
-  setCamera(view);
+  setReferenceCamera(view);
+}
+function setReferenceCamera(view) {
+  const saved = referenceCameras?.stem === reference?.stem && referenceCameras.views[view];
+  if (!saved) return setCamera(view);
+  const direction = new THREE.Vector3().fromArray(saved.position).sub(new THREE.Vector3().fromArray(saved.target));
+  frameAll(direction.toArray());
+  commit();
+}
+async function applyExperimental(stem, { view, actorId = active, append = false } = {}) {
+  const data = await experimentalPose(stem);
+  const state = validateState(data.scene);
+  const count = state.figures.length;
+  const checkCapacity = () => {
+    if (figures.length + (append ? count : count - 1) > MAX_FIGURES) throw Error('appendFull');
+  };
+  checkCapacity();
+  if (!append) figure(actorId);
+  const shown = await showReference(stem, view || state.reference.view);
+  if (shown.cancelled) return append ? [] : getState();
+  checkCapacity();
+  const offset = append ? Math.max(...figures.map(f => figureBounds(f.model).max.x)) + .8 - Math.min(...state.figures.map(f => f.position[0])) : 0;
+  if (append && state.figures.some(f => f.position[0] + offset > 8)) throw Error('appendSpace');
+  const ids = [];
+  state.figures.forEach((s, i) => {
+    const f = !append && i === 0 ? figure(actorId) : makeFigure(s.sex, s.height, undefined, s.scale, s.outfit);
+    restoreFigure(f, s);
+    f.model.position.x += offset;
+    groundFigure(f.model);
+    ids.push(f.id);
+  });
+  referenceCameras = { stem, views: data.cameras };
+  active = ids[0]; moveMode = false; pullMode = false;
+  refresh();
+  setReferenceCamera(reference.view);
+  commit(); notify('approximation');
+  return append ? ids : getState();
 }
 async function appendPreset(stem, { view } = {}) {
+  if (hasExperimental(stem)) return applyExperimental(stem, {view, append: true});
   const preset = PRESETS[stem];
   if (!preset) throw Error("referenceOnly");
   if (figures.length + preset.actors.length > MAX_FIGURES)
@@ -1330,6 +1380,7 @@ async function appendPreset(stem, { view } = {}) {
   return ids;
 }
 async function loadPreset(stem, { actorId = active, view } = {}) {
+  if (hasExperimental(stem)) return applyExperimental(stem, {view, actorId});
   const preset = PRESETS[stem];
   if (!preset) throw Error("No 3D preset for this reference");
   figure(actorId);
@@ -1774,7 +1825,7 @@ async function init() {
   translatePage();
   try {
     await preloadHumans();
-    document.body.dataset.figureMesh = "makehuman-v3";
+    document.body.dataset.figureMesh = "articulated-v1";
   } catch (error) {
     console.warn("Human assets unavailable; using procedural figures", error);
     document.body.dataset.figureMesh = "procedural";
@@ -1869,6 +1920,9 @@ async function init() {
   const response = await fetch("../data/catalog.json");
   if (!response.ok) throw Error("Could not load catalog");
   catalog = await response.json();
+  const extraResponse = await fetch('../data/wavespeed/catalog.json');
+  if (!extraResponse.ok) throw Error('Could not load additional references');
+  Object.assign(catalog.systems, (await extraResponse.json()).systems);
   renderCollections();
   await loadLibrary();
   let shared = false;
@@ -1921,7 +1975,7 @@ async function init() {
         renderCategories();
         $("category").value = category;
         await loadLibrary();
-        if (PRESETS[match[1]]) await loadPreset(match[1], { view: match[2] });
+        if (hasPreset(match[1])) await loadPreset(match[1], { view: match[2] });
         else {
           await showReference(match[1], match[2]);
           notify("referenceOnly");
@@ -1991,7 +2045,11 @@ const api = {
   },
   previewPose: async (stem, view) => {
     if (!previewMode) throw Error("Preview-only API");
-    if (!PRESETS[stem]) throw Error("No 3D preset for this reference");
+    if (!hasPreset(stem)) throw Error("No 3D preset for this reference");
+    if (reference?.stem === stem) {
+      selectReferenceView(view);
+      return;
+    }
     reset();
     await loadPreset(stem, { view });
     helper.visible = false;
@@ -1999,13 +2057,15 @@ const api = {
     setHighlight(false);
   },
   showReference,
-  listPresets: () =>
-    Object.entries(PRESETS).map(([id, p]) => ({
+  listPresets: () => [
+    ...Object.entries(PRESETS).filter(([id]) => !hasExperimental(id)).map(([id, p]) => ({
       id,
       figures: p.actors.length,
       view: p.view,
       status: "draft-needs-review",
     })),
+    ...(useExperimental() ? Object.entries(EXPERIMENTAL_POSES).map(([id, p]) => ({id, figures: p.figures, view: p.view, status: 'experimental-unapproved'})) : []),
+  ],
   setCamera,
   frame: () => {
     frameAll();

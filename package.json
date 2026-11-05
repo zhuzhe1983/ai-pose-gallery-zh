@@ -6,7 +6,7 @@
   "scripts": {
     "vendor:studio": "node scripts/vendor-studio.mjs",
     "vendor:pose": "node scripts/vendor-pose.mjs",
-    "verify": "python3 scripts/verify.py && node --check app.js && node --check studio/app.js && node scripts/verify-studio.mjs && node scripts/verify-human-assets.mjs && node scripts/pose-coverage.mjs --check",
+    "verify": "python3 scripts/verify.py && node --check app.js && node --check studio/app.js && node scripts/verify-studio.mjs && node scripts/verify-human-assets.mjs && node scripts/pose-coverage.mjs --check && node scripts/verify-added-references.mjs",
     "build": "bash scripts/build.sh"
   },
   "devDependencies": {

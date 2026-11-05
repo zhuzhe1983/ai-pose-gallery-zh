@@ -11,7 +11,7 @@ import urllib.request
 from pathlib import Path
 
 BASE = "https://zhuzhe1983.github.io/ai-pose-gallery-zh/"
-SYSTEMS = ("solo", "sexy", "upper", "duo")
+SYSTEMS = ("solo", "sexy", "upper", "duo", "ws")
 VIEWS = ("f", "hi", "lo", "s", "d")
 
 
@@ -45,17 +45,21 @@ def main():
         else:
             sub.add_argument("--pose", required=True, help="Exact compact pose token from the catalog")
             sub.add_argument("--view", default="f", choices=VIEWS)
-            sub.add_argument("--thumb", action="store_true", help="300×400 JPEG instead of 900×1200 PNG")
+            formats = sub.add_mutually_exclusive_group()
+            formats.add_argument("--thumb", action="store_true", help="300×400 JPEG instead of 900×1200 PNG")
+            formats.add_argument("--line-art", action="store_true", help="WaveSpeed line-art PNG (ws collection only)")
             if name == "download":
                 sub.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "catalog":
         result = json.loads(read_url(make_url(args.base_url, "data/catalog.json")))
+        result['systems'].update(json.loads(read_url(make_url(args.base_url, 'data/wavespeed/catalog.json')))['systems'])
     else:
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", args.category):
             parser.error("category must be a catalog slug, e.g. sit")
         if args.command == "list":
             path = f"data/catalog/{args.system}/{args.category}.json"
+            if args.system == 'ws': path = f'data/wavespeed/{args.category}.json'
             result = json.loads(read_url(make_url(args.base_url, path)))
             if args.query:
                 terms = args.query.lower().split()
@@ -63,6 +67,9 @@ def main():
         else:
             stem = f"{args.system}_{args.category}_{pose_slug(args.pose)}_{args.view}"
             path = f"thumbs/{stem}.jpg" if args.thumb else f"img/{stem}.png"
+            if args.line_art and args.system != 'ws': parser.error('--line-art is available for ws only')
+            if args.system == 'ws':
+                path = 'data/wavespeed/' + (f'line/{stem}.png' if args.line_art else path)
             if len(Path(path).name) > 64:
                 parser.error("Filename exceeds the gallery limit of 64 ASCII characters")
             url = make_url(args.base_url, path)

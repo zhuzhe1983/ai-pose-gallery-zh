@@ -1,0 +1,16 @@
+{
+  "source": "../humans/manifest.json",
+  "license": "CC0-1.0",
+  "generator": "scripts/build-articulated-models.py",
+  "revision": "articulated-v1",
+  "assets": {
+    "female.glb": {
+      "bytes": 3630044,
+      "sha256": "0d2661cc8bbf1e6f11933dca3a1d11a97d45632365c7e3f6b28350c55ac9ac6c"
+    },
+    "male.glb": {
+      "bytes": 3622416,
+      "sha256": "2d8f40d6fbfbb1c46eaf5df28df839d560e7bdfab95c5aa0b587af678dfc503d"
+    }
+  }
+}

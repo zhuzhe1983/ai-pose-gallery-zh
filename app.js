@@ -53,7 +53,7 @@ function load3DPreview() {
 
 function syncExperimental3D() {
   $('#experimental3dToggle').checked = experimental3D;
-  $('#studioNav').hidden = !experimental3D;
+  $('#studioNav').hidden = false;
   $('#studioPose').hidden = !experimental3D;
   $('.viewer-mode').hidden = !experimental3D;
   if (experimental3D) load3DPreview();
@@ -199,6 +199,12 @@ function render(append = false) {
   more.textContent = t('moreRemaining', {count: format(total - renderedCount)});
   syncControls();
   renderActiveFilters();
+  if (!append && experimental3D) requestAnimationFrame(() => {
+    if (!experimental3D || !$('#viewer').hidden) return;
+    const card = grid.querySelector('.pose-card[data-index]:hover');
+    const item = card && currentList[Number(card.dataset.index)]?.item;
+    if (item) preview3D?.show(card.querySelector('.card-image'), item);
+  });
 }
 
 function resetView() {
@@ -395,8 +401,13 @@ function showViewer() {
   download.href = item.原图;
   download.setAttribute('download', `${item.id}.png`);
   $('#openImage').href = item.原图;
+  $('#openLineArt').hidden = !item.lineArt;
+  $('#openLineArt').href = item.lineArt || '#';
+  $('#referenceSource').hidden = !item.source;
+  $('#referenceSource').textContent = item.source ? `${t('sourceLabel')} · ${item.source.name}` : '';
+  $('#referenceSource').href = item.source?.url || '#';
   const available = hasPose3D(item.id);
-  $('#studioPose').href = `studio/?lang=${LANG}&appendPose=${encodeURIComponent(item.id)}`;
+  $('#studioPose').href = `studio/?lang=${LANG}&experimental=1&appendPose=${encodeURIComponent(item.id)}`;
   $('#studioPose').setAttribute('aria-disabled', String(!available));
   $('#studioPose').textContent = t(available ? 'openStudio' : 'pending3d');
   updateViewerMode();
@@ -549,7 +560,8 @@ async function readJSON(path) {
     const translations = await readJSON('data/ui.json');
     UI = translations[LANG];
     applyLanguage();
-    prepareData(await readJSON(`data/pose-${LANG}.json`));
+    const datasets = await Promise.all([readJSON(`data/pose-${LANG}.json`), readJSON(`data/wavespeed/pose-${LANG}.json`)]);
+    prepareData(datasets.flat());
     syncExperimental3D();
     $('#experimental3dToggle').disabled = false;
   } catch (error) {

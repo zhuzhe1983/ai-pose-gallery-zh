@@ -63,7 +63,7 @@ export async function preloadHumans() {
   const assets = await Promise.all(
     ["female", "male"].map(async (sex) => {
       const gltf = await loader.loadAsync(
-        new URL(`./assets/humans/${sex}.glb`, import.meta.url).href,
+        new URL(`./assets/articulated/${sex}.glb`, import.meta.url).href,
       );
       gltf.scene.updateMatrixWorld(true);
       const surfaces = [];
@@ -203,9 +203,10 @@ export function attachHuman(model, joints) {
   };
   const material = new THREE.MeshPhysicalNodeMaterial({
     color: 0xe8e2d5,
-    roughness: 0.58,
+    roughness: 0.34,
+    vertexColors: true,
     metalness: 0,
-    sheen: 0.25,
+    sheen: 0.08,
     sheenColor: new THREE.Color(0xfff8e8),
     sheenRoughness: 0.8,
   });
@@ -229,7 +230,7 @@ export function attachHuman(model, joints) {
     return raycast.apply(this, args);
   };
   model.userData.human = true;
-  model.userData.mesh = "makehuman-v3";
+  model.userData.mesh = "articulated-v1";
   applyValues(model, NEUTRAL);
   model.l_fingers.bend = model.r_fingers.bend = 10;
   constrainFingers(model);
@@ -241,7 +242,7 @@ export function setHumanMaterial(model, outfit) {
   const skin = model.children.find((o) => o.userData.human);
   if (!skin) return false;
   skin.material.color.setHex(outfit === "white" ? 0xf2f0ec : 0xe8e2d5);
-  skin.material.sheen = outfit === "white" ? 0.1 : 0.25;
+  skin.material.sheen = 0.08;
   return true;
 }
 
