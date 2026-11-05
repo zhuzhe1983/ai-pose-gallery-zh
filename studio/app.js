@@ -5,7 +5,7 @@ import { captureFeet, solveFeet } from "./foot-ik.js";
 import { solveDragIK } from "./drag-ik.js";
 import { captureChest, stabilizeChest } from "./pelvis-stabilize.js";
 import { mirrorJoint } from "./mirror.js";
-import { preloadHumans } from "./human.js";
+import { preloadHumans, setHumanShape } from "./human.js";
 import { EXPERIMENTAL_POSES, experimentalPose } from './experimental.js';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
@@ -171,17 +171,22 @@ function makeFigure(
   id = FIGURE_IDS.find((id) => !figures.some((f) => f.id === id)),
   scale = 1,
   outfit = "ivory",
+  bustSize = .75,
+  bustSag = 0,
 ) {
   if (!["female", "male"].includes(sex)) throw Error("Invalid body type");
   if (!["white", "ivory"].includes(outfit)) throw Error("Invalid outfit");
   finite(height, 1.2, 2.2, "height");
   if (!id || figures.length >= MAX_FIGURES) throw Error("Six figures maximum");
   finite(scale, SCALE_RANGE.min, SCALE_RANGE.max, "scale");
+  finite(bustSize, 0, 1, 'bustSize');
+  finite(bustSag, 0, 1, 'bustSag');
   const model = createFigure(sex, height);
+  setHumanShape(model, bustSize, bustSag);
   setOutfit(model, outfit);
   model.scale.multiplyScalar(scale);
   groundFigure(model);
-  const f = { id, sex, height, scale, outfit, model };
+  const f = { id, sex, height, scale, outfit, bustSize, bustSag, model };
   figures.push(f);
   return f;
 }
@@ -193,6 +198,8 @@ function addFigure(options = {}) {
     undefined,
     options.scale,
     options.outfit,
+    options.bustSize,
+    options.bustSag,
   );
   const placements = [
     [0, 0],
@@ -251,12 +258,14 @@ function setFigure(id, changes = {}) {
     finite(changes.scale, SCALE_RANGE.min, SCALE_RANGE.max, "scale");
   if (changes.position !== undefined) vector(changes.position, 3, -10, 10);
   if (changes.yaw !== undefined) finite(changes.yaw, -180, 180, "yaw");
+  for (const key of ['bustSize','bustSag']) if (changes[key] !== undefined) finite(changes[key], 0, 1, key);
   if (changes.sex && changes.sex !== f.sex) {
     const old = f.model,
       state = figureState(f);
     f.sex = changes.sex;
     f.height = changes.height ?? BASE_HEIGHT[f.sex];
     f.model = createFigure(f.sex, f.height);
+    setHumanShape(f.model, changes.bustSize ?? f.bustSize, changes.bustSag ?? f.bustSag);
     setOutfit(f.model, f.outfit);
     f.model.scale.multiplyScalar(f.scale);
     restoreFigure(f, { ...state, sex: f.sex });
@@ -276,6 +285,11 @@ function setFigure(id, changes = {}) {
     f.outfit = changes.outfit;
   }
   if (changes.position) f.model.position.fromArray(changes.position);
+  if (changes.bustSize !== undefined || changes.bustSag !== undefined) {
+    setHumanShape(f.model, changes.bustSize ?? f.bustSize, changes.bustSag ?? f.bustSag);
+    f.bustSize = changes.bustSize ?? f.bustSize;
+    f.bustSag = changes.bustSag ?? f.bustSag;
+  }
   if (changes.ground === true || (!changes.position && $("floorLock").checked))
     groundFigure(f.model);
   if (f.model.userData.footLocks) captureFeet(f.model);
@@ -548,8 +562,11 @@ async function applyDetectedPose(
         height: prior?.height || BASE_HEIGHT[sex],
         scale: prior?.scale || 1,
         outfit: prior?.outfit || "ivory",
+        bustSize: prior?.bustSize ?? .75,
+        bustSag: prior?.bustSag ?? 0,
       };
       f.model = createFigure(f.sex, f.height);
+      setHumanShape(f.model, f.bustSize, f.bustSag);
       f.model.visible = false;
       staged.push(f);
       f.model.scale.multiplyScalar(f.scale);
@@ -645,6 +662,8 @@ function figureState(f) {
     height: f.height,
     scale: f.scale,
     outfit: f.outfit,
+    bustSize: f.bustSize,
+    bustSag: f.bustSag,
     mesh: f.model.userData.mesh,
     footLocks: structuredClone(f.model.userData.footLocks || null),
     chestLock: structuredClone(f.model.userData.chestLock || null),
@@ -702,6 +721,8 @@ function validateState(raw) {
     ids.add(f.id);
     finite(f.height, 1.2, 2.2);
     finite(f.scale ?? 1, SCALE_RANGE.min, SCALE_RANGE.max, "scale");
+    finite(f.bustSize ?? .75, 0, 1, 'bustSize');
+    finite(f.bustSag ?? 0, 0, 1, 'bustSag');
     if (f.outfit !== undefined && !["white", "ivory"].includes(f.outfit))
       throw Error("Invalid outfit");
     vector(f.position, 3, -10, 10);
@@ -748,6 +769,8 @@ function validateState(raw) {
   validated.figures.forEach((f) => {
     f.scale ??= 1;
     f.outfit ??= "ivory";
+    f.bustSize ??= .75;
+    f.bustSag ??= 0;
   });
   return validated;
 }
@@ -783,6 +806,8 @@ function restoreState(raw) {
         state.id,
         state.scale,
         state.outfit,
+        state.bustSize,
+        state.bustSag,
       );
       restoreFigure(f, state);
       if (s.floorLock && state.mesh !== f.model.userData.mesh)
@@ -1029,6 +1054,7 @@ function refresh() {
   sliders.clear();
   $("jointControls").replaceChildren();
   $("figureControls").replaceChildren();
+  $("bodyShapeSliders").replaceChildren();
   for (const a of jointAxes(joint))
     slider(
       $("jointControls"),
@@ -1043,6 +1069,26 @@ function refresh() {
     );
   $("fingerRow").hidden = !joint.endsWith("_wrist");
   const f = current();
+  $("bodyShapeControls").hidden = f.sex !== 'female' || !f.model.userData.canShape;
+  if (!$("bodyShapeControls").hidden) {
+    const cup = $("cupSize"), sizes = [['A',.1],['B',.4],['C',.75],['D',.85],['E',.93],['F',1]];
+    cup.replaceChildren(new Option(t('customShape'), 'custom'), ...sizes.map(([name,size]) => new Option(name,String(size))));
+    const syncCup = () => { cup.value = sizes.some(([,v]) => Math.abs(v-f.bustSize)<1e-6) ? String(f.bustSize) : 'custom'; };
+    const editShape = (key,value) => {
+      const size = key === 'bustSize' ? value : f.bustSize, sag = key === 'bustSag' ? value : f.bustSag;
+      setHumanShape(f.model,size,sag); f.bustSize=size; f.bustSag=sag;
+      if ($('floorLock').checked) groundFigure(f.model);
+      if (f.model.userData.footLocks) captureFeet(f.model);
+      syncCup();
+    };
+    cup.onchange = () => {
+      if (cup.value === 'custom') return;
+      editShape('bustSize',Number(cup.value)); refreshValues(); commit();
+    };
+    syncCup();
+    for (const key of ['bustSize','bustSag']) slider($('bodyShapeSliders'),key,t(key),0,100,1,
+      () => f[key]*100, v => editShape(key,v/100),'%');
+  }
   slider(
     $("figureControls"),
     "scale",
@@ -1332,7 +1378,7 @@ async function applyExperimental(stem, { view, actorId = active, append = false 
   if (append && state.figures.some(f => f.position[0] + offset > 8)) throw Error('appendSpace');
   const ids = [];
   state.figures.forEach((s, i) => {
-    const f = !append && i === 0 ? figure(actorId) : makeFigure(s.sex, s.height, undefined, s.scale, s.outfit);
+    const f = !append && i === 0 ? figure(actorId) : makeFigure(s.sex, s.height, undefined, s.scale, s.outfit, s.bustSize, s.bustSag);
     restoreFigure(f, s);
     f.model.position.x += offset;
     groundFigure(f.model);
@@ -1825,7 +1871,7 @@ async function init() {
   translatePage();
   try {
     await preloadHumans();
-    document.body.dataset.figureMesh = "articulated-v1";
+    document.body.dataset.figureMesh = "makehuman-v3";
   } catch (error) {
     console.warn("Human assets unavailable; using procedural figures", error);
     document.body.dataset.figureMesh = "procedural";

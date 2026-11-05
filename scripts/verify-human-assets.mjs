@@ -40,4 +40,24 @@ for (const [name, expected] of Object.entries(manifest.assets)) {
   }
 }
 }
-console.log('Human assets: CC0 manifest checksums, required bones and all skin weights verified.');
+const root = new URL('../studio/assets/humans/',import.meta.url);
+const meta = JSON.parse(fs.readFileSync(new URL('female-bust.json',root)));
+const delta = fs.readFileSync(new URL('female-bust.bin',root));
+assert.equal(meta.schema,'pose-atlas/bust-morphs@1');
+assert.equal(meta.license,'CC0-1.0');
+assert.deepEqual(meta.sizeStops,[0,.75,1]);assert.deepEqual(meta.firmnessStops,[0,.75,1]);
+assert.equal(meta.targets.length,9);assert.equal(meta.targets[4],'baseline');
+assert.equal(delta.length,meta.affected*112);assert.equal(delta.length,meta.bytes);
+assert.equal(createHash('sha256').update(delta).digest('hex'),meta.sha256);
+assert.equal(createHash('sha256').update(fs.readFileSync(new URL('female.glb',root))).digest('hex'),meta.base_sha256);
+const indices = new Set();
+for(let i=0;i<meta.affected;i++) {
+  const vertex=delta.readUInt32LE(i*4);assert.ok(vertex<meta.vertices);indices.add(vertex);
+  for(let target=0;target<9;target++) for(let axis=0;axis<3;axis++) {
+    const v=delta.readFloatLE(meta.affected*4+(target*meta.affected*3+i*3+axis)*4);
+    assert.ok(Number.isFinite(v)&&Math.abs(v)<.3,'Bounded morph deltas in metres');
+    if(target===4) assert.equal(v,0,'Exact default mesh');
+  }
+}
+assert.equal(indices.size,meta.affected);
+console.log('Human assets: CC0 provenance, bones, normalized weights and nine body-shape targets verified.');

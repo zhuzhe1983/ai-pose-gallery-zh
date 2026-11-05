@@ -63,7 +63,7 @@ export async function preloadHumans() {
   const assets = await Promise.all(
     ["female", "male"].map(async (sex) => {
       const gltf = await loader.loadAsync(
-        new URL(`./assets/articulated/${sex}.glb`, import.meta.url).href,
+        new URL(`./assets/humans/${sex}.glb`, import.meta.url).href,
       );
       gltf.scene.updateMatrixWorld(true);
       const surfaces = [];
@@ -72,6 +72,32 @@ export async function preloadHumans() {
       });
       if (surfaces.length !== 1) throw Error("Expected one human skin");
       const source = surfaces[0];
+      let bustMorphs = null;
+      if (sex === 'female') {
+        try {
+          const [metaResponse, dataResponse] = await Promise.all([
+            fetch(new URL('./assets/humans/female-bust.json', import.meta.url)),
+            fetch(new URL('./assets/humans/female-bust.bin', import.meta.url)),
+          ]);
+          if (!metaResponse.ok || !dataResponse.ok) throw Error('Bust shapes unavailable');
+          const meta = await metaResponse.json(), bytes = await dataResponse.arrayBuffer();
+          if (meta.schema !== 'pose-atlas/bust-morphs@1' || meta.targets?.length !== 9 ||
+            JSON.stringify(meta.sizeStops) !== '[0,0.75,1]' || JSON.stringify(meta.firmnessStops) !== '[0,0.75,1]' ||
+            meta.vertices !== source.geometry.attributes.position.count || bytes.byteLength !== meta.affected * 112)
+            throw Error('Invalid bust shapes');
+          const indices = new Uint32Array(bytes.slice(0, meta.affected * 4));
+          if ([...indices].some(i => i >= meta.vertices)) throw Error('Invalid shape vertex');
+          const corners = [], transform = new THREE.Matrix3().setFromMatrix4(source.matrixWorld), v = new THREE.Vector3();
+          for (let c = 0; c < 9; c++) {
+            const delta = new Float32Array(bytes.slice(meta.affected * 4 + c * meta.affected * 12, meta.affected * 4 + (c + 1) * meta.affected * 12));
+            for (let i = 0; i < delta.length; i += 3) {
+              v.fromArray(delta, i).applyMatrix3(transform).multiplyScalar(UNIT).toArray(delta, i);
+            }
+            corners.push(delta);
+          }
+          bustMorphs = {indices, corners};
+        } catch (error) { console.warn('Body shape controls unavailable', error); }
+      }
       const geometry = source.geometry
         .clone()
         .applyMatrix4(source.matrixWorld)
@@ -124,6 +150,7 @@ export async function preloadHumans() {
       geometry.computeBoundingBox();
       const asset = {
         geometry,
+        bustMorphs,
         joints,
         height: geometry.boundingBox.max.y - geometry.boundingBox.min.y,
       };
@@ -203,10 +230,9 @@ export function attachHuman(model, joints) {
   };
   const material = new THREE.MeshPhysicalNodeMaterial({
     color: 0xe8e2d5,
-    roughness: 0.34,
-    vertexColors: true,
+    roughness: 0.58,
     metalness: 0,
-    sheen: 0.08,
+    sheen: 0.25,
     sheenColor: new THREE.Color(0xfff8e8),
     sheenRoughness: 0.8,
   });
@@ -230,7 +256,8 @@ export function attachHuman(model, joints) {
     return raycast.apply(this, args);
   };
   model.userData.human = true;
-  model.userData.mesh = "articulated-v1";
+  model.userData.canShape = Boolean(asset.bustMorphs);
+  model.userData.mesh = "makehuman-v3";
   applyValues(model, NEUTRAL);
   model.l_fingers.bend = model.r_fingers.bend = 10;
   constrainFingers(model);
@@ -242,7 +269,48 @@ export function setHumanMaterial(model, outfit) {
   const skin = model.children.find((o) => o.userData.human);
   if (!skin) return false;
   skin.material.color.setHex(outfit === "white" ? 0xf2f0ec : 0xe8e2d5);
-  skin.material.sheen = 0.08;
+  skin.material.sheen = outfit === "white" ? 0.1 : 0.25;
+  return true;
+}
+
+// Static, authored size/firmness shapes. Each customized actor owns its geometry;
+// untouched actors continue sharing the exact previous default mesh.
+export function setHumanShape(model, size = .75, sag = 0) {
+  if (![size,sag].every(v => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1))
+    throw Error('Invalid body shape');
+  const asset = cache.get(model.userData.sex), skin = model.children.find(o => o.userData.human);
+  if (!skin || !asset || model.userData.sex !== 'female') return false;
+  if (size === .75 && sag === 0) {
+    if (skin.geometry !== asset.geometry) skin.geometry.dispose();
+    skin.geometry = asset.geometry;
+  } else {
+    if (!asset.bustMorphs) throw Error('Body shape controls unavailable');
+    if (skin.geometry === asset.geometry) {
+      skin.geometry = asset.geometry.clone();
+      skin.geometry.userData.sharedHuman = false;
+    }
+    // Piecewise bilinear interpolation through the authored 3 × 3 grid.
+    // Including the old default as an exact grid point avoids residual dents
+    // from subtracting a four-corner approximation of that default.
+    const axisWeights = v => v <= .75 ? [1-v/.75,v/.75,0] : [0,(1-v)/.25,(v-.75)/.25];
+    const sw = axisWeights(size), fw = axisWeights(.75 * (1-sag));
+    const weights = fw.flatMap(f => sw.map(s => s*f));
+    const positions = skin.geometry.attributes.position, base = asset.geometry.attributes.position.array;
+    positions.array.set(base);
+    const {indices,corners} = asset.bustMorphs;
+    for (let i=0;i<indices.length;i++) for (let axis=0;axis<3;axis++) {
+      let delta=0;
+      for (let c=0;c<9;c++) delta += corners[c][i*3+axis]*weights[c];
+      positions.array[indices[i]*3+axis] += delta;
+    }
+    positions.needsUpdate = true;
+    skin.geometry.computeVertexNormals();
+    skin.geometry.computeBoundingBox();
+    skin.geometry.computeBoundingSphere();
+  }
+  skin.userData.boundsPose = null;
+  model.userData.bustSize = size;
+  model.userData.bustSag = sag;
   return true;
 }
 

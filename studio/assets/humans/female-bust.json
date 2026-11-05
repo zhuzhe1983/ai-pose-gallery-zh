@@ -1,0 +1,34 @@
+{
+  "schema": "pose-atlas/bust-morphs@1",
+  "license": "CC0-1.0",
+  "source": "manifest.json",
+  "base_sha256": "921e0fb528bae303f252b29eff3cc6f8fda8b177200d57309b2e68e6f6ff9371",
+  "vertices": 56494,
+  "affected": 2641,
+  "targets": [
+    "small-soft",
+    "medium-soft",
+    "large-soft",
+    "small-neutral",
+    "baseline",
+    "large-neutral",
+    "small-firm",
+    "medium-firm",
+    "large-firm"
+  ],
+  "sizeStops": [
+    0,
+    0.75,
+    1
+  ],
+  "firmnessStops": [
+    0,
+    0.75,
+    1
+  ],
+  "baseSize": 0.75,
+  "baseFirmness": 0.75,
+  "bytes": 295792,
+  "sha256": "c71cf7176b0fb7d15533681e9b112a5a1d99c23a8a8a304e6eb09cf60f5f7d12",
+  "description": "Authored MakeHuman cupsize/firmness morphs. Appearance controls, not bra measurements or dynamic physics."
+}

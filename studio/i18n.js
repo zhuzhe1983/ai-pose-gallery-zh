@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Each row: Simplified Chinese, English, Japanese.
 const rows = {
+  cupSize: ['罩杯外观档位', 'Cup appearance preset', 'カップ外観プリセット'],
+  bustSize: ['胸部大小 (%)', 'Bust size (%)', 'バストサイズ (%)'],
+  bustSag: ['自然下垂 (%)', 'Natural droop (%)', '自然な下垂 (%)'],
+  customShape: ['自定义', 'Custom', 'カスタム'],
+  bodyShapeHint: ['字母仅表示外观档位，不对应真实内衣尺码。下垂为静态体型，不含软体晃动。',
+    'Letters are appearance presets, not bra measurements. Droop is a static shape, without soft-body motion.',
+    '文字は見た目の目安で、実際のブラサイズではありません。下垂は静的な体形で、揺れの物理演算はありません。'],
   pullMode: ["牵引节点 · T", "Drag joint · T", "関節を引く · T"],
   pullHint: [
     "选中任意关节并拖动箭头；相邻关节会联动，拖动躯干可能带动整个人物。",

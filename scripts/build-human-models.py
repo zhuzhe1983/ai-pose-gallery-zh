@@ -20,10 +20,11 @@ addon_utils.enable(package, default_set=True, persistent=False)
 HumanService = importlib.import_module(package + ".services.humanservice").HumanService
 TargetService = importlib.import_module(package + ".services.targetservice").TargetService
 ExportService = importlib.import_module(package + ".services.exportservice").ExportService
-out = os.path.abspath("studio/assets/humans")
+out = os.path.abspath(globals().get("POSE_OUTPUT", "studio/assets/humans"))
 os.makedirs(out, exist_ok=True)
 
-for sex in ["female", "male"]:
+variants = globals().get("POSE_VARIANTS", [("female", .75, .75, "female"), ("male", .5, .5, "male")])
+for sex, cupsize, firmness, asset_name in variants:
     bpy.ops.object.select_all(action="SELECT")
     bpy.ops.object.delete(use_global=False)
     macro = TargetService.get_default_macro_info_dict()
@@ -31,8 +32,7 @@ for sex in ["female", "male"]:
     macro.update(gender=0.0 if sex == "female" else 1.0, age=0.5,
                  muscle=0.55 if sex == "female" else 0.9,
                  weight=0.48 if sex == "female" else 0.55,
-                 proportions=0.7, cupsize=0.75 if sex == "female" else 0.5,
-                 firmness=0.75 if sex == "female" else 0.5)
+                 proportions=0.7, cupsize=cupsize, firmness=firmness)
     body = HumanService.create_human(macro_detail_dict=macro)
     for target, weight in [("breast/nipple-point-decr", 1.0),
                            ("buttocks/buttocks-volume-incr", 0.15 if sex == "female" else 0.0)]:
@@ -123,7 +123,7 @@ for sex in ["female", "male"]:
     body.data.materials.append(material)
     body.name = "Pose Atlas adult " + sex
     rig.name = "MakeHuman game-engine rig"
-    bpy.ops.export_scene.gltf(filepath=os.path.join(out, sex + ".glb"),
+    bpy.ops.export_scene.gltf(filepath=os.path.join(out, asset_name + ".glb"),
         export_format="GLB", export_animations=False, export_morph=False,
         export_extras=False, export_texcoords=False)
     print("EXPORTED", sex, len(body.data.vertices), "vertices", len(body.data.polygons), "polygons")

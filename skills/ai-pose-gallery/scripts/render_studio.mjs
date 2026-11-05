@@ -141,6 +141,8 @@ try {
             "yaw",
             "ground",
             "outfit",
+            "bustSize",
+            "bustSag",
           ])
             if (f[key] !== undefined) changes[key] = f[key];
           api.setFigure(id, changes);
