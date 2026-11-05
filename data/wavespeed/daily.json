@@ -1,0 +1,327 @@
+[
+  {
+    "pose": "typing-laptop",
+    "name": {
+      "en": "Typing at a laptop",
+      "zh": "笔记本电脑打字",
+      "ja": "ノートパソコンでタイピング"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "phone-call",
+    "name": {
+      "en": "Phone call",
+      "zh": "打电话",
+      "ja": "電話中"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "carrying-box",
+    "name": {
+      "en": "Carrying a box",
+      "zh": "搬箱子",
+      "ja": "箱を運ぶ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pushing-cart",
+    "name": {
+      "en": "Pushing a cart",
+      "zh": "推手推车",
+      "ja": "カートを押す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "reading-stand",
+    "name": {
+      "en": "Reading while standing",
+      "zh": "站立阅读",
+      "ja": "立って読書"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hold-umbrella",
+    "name": {
+      "en": "Holding an umbrella",
+      "zh": "撑伞",
+      "ja": "傘を持つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "taking-selfie",
+    "name": {
+      "en": "Taking a selfie",
+      "zh": "自拍",
+      "ja": "セルフィー"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "waiting-coffee",
+    "name": {
+      "en": "Waiting with coffee",
+      "zh": "持咖啡等待",
+      "ja": "コーヒーを持って待つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tying-shoelace",
+    "name": {
+      "en": "Tying a shoelace",
+      "zh": "系鞋带",
+      "ja": "靴紐を結ぶ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pulling-suitcase",
+    "name": {
+      "en": "Pulling a suitcase",
+      "zh": "拉行李箱",
+      "ja": "スーツケースを引く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "texting",
+    "name": {
+      "en": "Texting on a phone",
+      "zh": "手机打字",
+      "ja": "スマホでメッセージ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "checking-watch",
+    "name": {
+      "en": "Checking the time",
+      "zh": "看手表",
+      "ja": "時計を見る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "carrying-shopping-bags",
+    "name": {
+      "en": "Carrying shopping bags",
+      "zh": "提购物袋",
+      "ja": "買い物袋を持つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hold-backpack-strap",
+    "name": {
+      "en": "Holding backpack strap",
+      "zh": "抓背包带",
+      "ja": "リュックのストラップを持つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "reaching-high-shelf",
+    "name": {
+      "en": "Reaching a high shelf",
+      "zh": "够高货架",
+      "ja": "高い棚に手を伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "picking-up-from-floor",
+    "name": {
+      "en": "Picking up from floor",
+      "zh": "从地上捡起",
+      "ja": "床から拾う"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hold-handrail",
+    "name": {
+      "en": "Holding a handrail",
+      "zh": "扶栏杆",
+      "ja": "手すりに掴まる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "opening-door",
+    "name": {
+      "en": "Opening a door",
+      "zh": "开门",
+      "ja": "ドアを開ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "drinking-from-bottle",
+    "name": {
+      "en": "Drinking from a bottle",
+      "zh": "用瓶子喝水",
+      "ja": "ボトルから飲む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "morning-stretch",
+    "name": {
+      "en": "Morning stretch",
+      "zh": "晨间伸展",
+      "ja": "朝のストレッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "watering-plants",
+    "name": {
+      "en": "Watering plants",
+      "zh": "浇花",
+      "ja": "植物に水やり"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sweeping-floor",
+    "name": {
+      "en": "Sweeping the floor",
+      "zh": "扫地",
+      "ja": "床を掃く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "carrying-tray",
+    "name": {
+      "en": "Carrying a tray",
+      "zh": "端托盘",
+      "ja": "トレイを持つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "adjusting-headphones",
+    "name": {
+      "en": "Adjusting headphones",
+      "zh": "调整耳机",
+      "ja": "ヘッドホン調整"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sit-sofa-reading",
+    "name": {
+      "en": "Reading on a sofa",
+      "zh": "坐沙发阅读",
+      "ja": "ソファで読書"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

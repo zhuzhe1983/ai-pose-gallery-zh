@@ -1,0 +1,327 @@
+[
+  {
+    "pose": "runway-walk",
+    "name": {
+      "en": "Runway walk",
+      "zh": "T台走秀",
+      "ja": "ランウェイウォーク"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-hip-look-away",
+    "name": {
+      "en": "Hand on hip looking away",
+      "zh": "叉腰侧视",
+      "ja": "腰に手を当てて横を向く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-hair",
+    "name": {
+      "en": "Hand in hair",
+      "zh": "手抚头发",
+      "ja": "髪に手を添える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sit-steps",
+    "name": {
+      "en": "Sitting on steps",
+      "zh": "坐在台阶上",
+      "ja": "階段に座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "over-sh-glance",
+    "name": {
+      "en": "Over-the-shoulder glance",
+      "zh": "回眸",
+      "ja": "振り返り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lean-railing",
+    "name": {
+      "en": "Leaning on railing",
+      "zh": "倚靠栏杆",
+      "ja": "手すりに寄りかかる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "legs-cross-stand",
+    "name": {
+      "en": "Standing with legs crossed",
+      "zh": "站立交叉腿",
+      "ja": "足を組んで立つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "coat-held-open",
+    "name": {
+      "en": "Coat held open",
+      "zh": "敞开大衣",
+      "ja": "コートを広げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "adjusting-collar",
+    "name": {
+      "en": "Adjusting collar",
+      "zh": "整理衣领",
+      "ja": "襟を整える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "adjusting-cuff",
+    "name": {
+      "en": "Adjusting cuff",
+      "zh": "整理袖口",
+      "ja": "袖口を整える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pockets-wide-stance",
+    "name": {
+      "en": "Wide stance pockets",
+      "zh": "双脚分开站立插兜",
+      "ja": "脚を開いて立ち、手をポケットに入れる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "walking-away",
+    "name": {
+      "en": "Walking away glance",
+      "zh": "背影回眸",
+      "ja": "歩き去りながら振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arm-across-waist",
+    "name": {
+      "en": "Arm across waist",
+      "zh": "手臂横腰",
+      "ja": "腕を腰に回す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lean-against-column",
+    "name": {
+      "en": "Leaning against column",
+      "zh": "倚靠立柱",
+      "ja": "柱に寄りかかる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "profile-chin-up",
+    "name": {
+      "en": "Profile chin up",
+      "zh": "侧脸仰头",
+      "ja": "横顔で顎を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "low-crouch",
+    "name": {
+      "en": "Low crouch",
+      "zh": "低蹲",
+      "ja": "低くしゃがむ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "perched-stool",
+    "name": {
+      "en": "Perched on stool",
+      "zh": "坐在高脚凳上",
+      "ja": "スツールに腰掛ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "turning-mid-step",
+    "name": {
+      "en": "Turning mid-step",
+      "zh": "迈步转身",
+      "ja": "歩行中に振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "fingertips-jaw",
+    "name": {
+      "en": "Fingertips to jaw",
+      "zh": "指尖触下巴",
+      "ja": "指先で顎に触れる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "foot-ledge",
+    "name": {
+      "en": "Foot on ledge",
+      "zh": "脚踩台沿",
+      "ja": "足を台に上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "wall-lean-foot-up",
+    "name": {
+      "en": "Wall lean foot up",
+      "zh": "倚墙抬脚",
+      "ja": "壁に寄りかかって足を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "look-down-at-feet",
+    "name": {
+      "en": "Looking down at feet",
+      "zh": "低头看脚",
+      "ja": "足元を見る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "power-stance-arms-down",
+    "name": {
+      "en": "Square power stance",
+      "zh": "正面宽距站姿",
+      "ja": "正面の力強い立ち姿"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-at-neck-look-up",
+    "name": {
+      "en": "Hand at neck looking up",
+      "zh": "手抚颈部仰视",
+      "ja": "首に手を当てて上を見る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "seated-floor",
+    "name": {
+      "en": "Seated on floor",
+      "zh": "坐在地面",
+      "ja": "床に座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

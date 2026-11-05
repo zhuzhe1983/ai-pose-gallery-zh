@@ -1,0 +1,457 @@
+[
+  {
+    "pose": "sprint-start",
+    "name": {
+      "en": "Sprint start",
+      "zh": "起跑",
+      "ja": "スタートダッシュ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "full-sprint",
+    "name": {
+      "en": "Full sprint",
+      "zh": "全力冲刺",
+      "ja": "全力スプリント"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "long-jump",
+    "name": {
+      "en": "Long jump mid-air",
+      "zh": "跳远腾空",
+      "ja": "跳躍空中"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "vertical-jump",
+    "name": {
+      "en": "Vertical jump arms up",
+      "zh": "垂直跳跃举臂",
+      "ja": "垂直ジャンプ両手上げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kicking-ball",
+    "name": {
+      "en": "Kicking a ball",
+      "zh": "踢球",
+      "ja": "ボール蹴り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tennis-serve",
+    "name": {
+      "en": "Tennis serve",
+      "zh": "网球发球",
+      "ja": "テニスサーブ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "jump-shot",
+    "name": {
+      "en": "Basketball jump shot",
+      "zh": "篮球跳投",
+      "ja": "バスケットボールジャンプショット"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "boxing-guard",
+    "name": {
+      "en": "Boxing guard",
+      "zh": "拳击防守",
+      "ja": "ボクシングガード"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "punch-ext",
+    "name": {
+      "en": "Punch extended",
+      "zh": "直拳伸展",
+      "ja": "パンチ伸ばし"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "high-kick",
+    "name": {
+      "en": "High kick",
+      "zh": "高踢",
+      "ja": "ハイキック"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "warrior-pose",
+    "name": {
+      "en": "Yoga warrior pose",
+      "zh": "瑜伽战士式",
+      "ja": "ヨガ戦士ポーズ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tree-pose",
+    "name": {
+      "en": "Tree pose",
+      "zh": "树式",
+      "ja": "ツリーポーズ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "downward-dog",
+    "name": {
+      "en": "Downward dog",
+      "zh": "下犬式",
+      "ja": "ダウンドッグ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "plank",
+    "name": {
+      "en": "Plank hold",
+      "zh": "平板支撑",
+      "ja": "プランク"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lunge",
+    "name": {
+      "en": "Forward lunge",
+      "zh": "前弓步",
+      "ja": "フロントランジ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "push-up",
+    "name": {
+      "en": "Push-up low",
+      "zh": "俯卧撑低位",
+      "ja": "腕立て伏せ低姿勢"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "skateboard-stance",
+    "name": {
+      "en": "Skateboard stance",
+      "zh": "滑板站姿",
+      "ja": "スケートボードスタンス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "swimming-dive",
+    "name": {
+      "en": "Swimming dive",
+      "zh": "游泳入水",
+      "ja": "水泳ダイブ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "throwing",
+    "name": {
+      "en": "Overhand throw",
+      "zh": "过顶投掷",
+      "ja": "オーバーハンド投"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "catching",
+    "name": {
+      "en": "Catching overhead",
+      "zh": "过顶接球",
+      "ja": "オーバーヘッドキャッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "wall-climb",
+    "name": {
+      "en": "Climbing a wall",
+      "zh": "攀爬墙壁",
+      "ja": "壁登り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "cartwheel",
+    "name": {
+      "en": "Cartwheel mid-way",
+      "zh": "侧手翻中途",
+      "ja": "側転途中"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hurdle",
+    "name": {
+      "en": "Hurdle clearance",
+      "zh": "跨栏",
+      "ja": "ハードルクリア"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "golf-swing",
+    "name": {
+      "en": "Golf swing finish",
+      "zh": "高尔夫挥杆结束",
+      "ja": "ゴルフスイングフィニッシュ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bat-swing",
+    "name": {
+      "en": "Bat swing",
+      "zh": "挥棒",
+      "ja": "バットスイング"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "volleyball-spike",
+    "name": {
+      "en": "Volleyball spike",
+      "zh": "排球扣杀",
+      "ja": "バレーボールスパイク"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "goalkeeper-dive",
+    "name": {
+      "en": "Goalkeeper dive",
+      "zh": "守门员扑救",
+      "ja": "ゴールキーパーダイブ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "deep-squat",
+    "name": {
+      "en": "Deep squat",
+      "zh": "深蹲",
+      "ja": "スクワット"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "deadlift",
+    "name": {
+      "en": "Deadlift pull",
+      "zh": "硬拉",
+      "ja": "デッドリフト"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "oh-press",
+    "name": {
+      "en": "Overhead press",
+      "zh": "过头推举",
+      "ja": "オーバーヘッドプレス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "cycling-crouch",
+    "name": {
+      "en": "Cycling crouch",
+      "zh": "骑行俯身",
+      "ja": "サイクリング前傾"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "rowing-stroke",
+    "name": {
+      "en": "Rowing stroke",
+      "zh": "划船划桨",
+      "ja": "ローイングストローク"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "handstand",
+    "name": {
+      "en": "Straight handstand",
+      "zh": "直臂倒立",
+      "ja": "ストレートハンドスタンド"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bridge",
+    "name": {
+      "en": "Backbend bridge",
+      "zh": "后弯桥式",
+      "ja": "バックベンドブリッジ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "horse-stance",
+    "name": {
+      "en": "Horse stance",
+      "zh": "马步",
+      "ja": "馬歩の構え"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

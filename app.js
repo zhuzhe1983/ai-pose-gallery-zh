@@ -392,14 +392,15 @@ function showViewer() {
   $('#viewerTitle').textContent = item.姿势名称;
   $('#viewerId').textContent = item.id;
   $('#copyId').textContent = t('copyId');
-  $('#viewerMeta').innerHTML = [[t('system'), item.体系], [t('poseNumber'), item.姿势编号 || '—'], [t('category'), item.分类 || '—'], [t('currentView'), item.角度 || '—'], [t('imageSize'), '900 × 1200 PNG']].map(([key, value]) => `<dt>${key}</dt><dd>${esc(value)}</dd>`).join('');
+  const imageFormat = item.原图.endsWith('.webp') ? 'WebP' : 'PNG';
+  $('#viewerMeta').innerHTML = [[t('system'), item.体系], [t('poseNumber'), item.姿势编号 || '—'], [t('category'), item.分类 || '—'], [t('currentView'), item.角度 || '—'], [t('imageSize'), `900 × 1200 ${imageFormat}`]].map(([key, value]) => `<dt>${key}</dt><dd>${esc(value)}</dd>`).join('');
   $('#viewerAngles').innerHTML = ANGLES.filter(angle => group.angles[angle]).map(angle => {
     const angleItem = group.angles[angle];
     return `<button class="angle-thumb${angleItem === item ? ' on' : ''}" type="button" data-angle="${esc(angle)}" aria-label="${esc(t('switchToAngle', {angle}))}"><img src="${esc(angleItem.缩略图)}" alt="${esc(angle)}"><span>${esc(angle)}</span></button>`;
   }).join('');
   const download = $('#downloadImage');
   download.href = item.原图;
-  download.setAttribute('download', `${item.id}.png`);
+  download.setAttribute('download', `${item.id}.${imageFormat.toLowerCase()}`);
   $('#openImage').href = item.原图;
   $('#openLineArt').hidden = !item.lineArt;
   $('#openLineArt').href = item.lineArt || '#';

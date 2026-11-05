@@ -262,7 +262,7 @@ try {
   await page.screenshot({ path: 'output/gallery-review/pending-hover.png' });
   await page.locator(".pose-card").first().click();
   assert.equal(await page.locator('#openLineArt').isVisible(), true);
-  assert.match(await page.locator('#openLineArt').getAttribute('href'), /data\/wavespeed\/line\/ws_sit_cross_[fds]\.png$/);
+  assert.match(await page.locator('#openLineArt').getAttribute('href'), /data\/wavespeed\/line\/ws_sit_cross_[fds]\.webp$/);
   assert.match(await page.locator('#referenceSource').getAttribute('href'), /^https:\/\/wavespeed.ai\//);
   await page.locator("#viewer3dMode").click();
   await page.waitForFunction(() =>

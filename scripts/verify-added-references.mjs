@@ -4,28 +4,50 @@ import {createHash} from 'node:crypto';
 import {EXPERIMENTAL_POSES} from '../studio/experimental-catalog.js';
 const read = p => JSON.parse(fs.readFileSync(p, 'utf8'));
 const sources = read('data/wavespeed/sources.json');
-assert.equal(sources.length, 54);
+const selection = read('data/wavespeed/selection.json');
+assert.equal(selection.poses.length, 491);
+assert.equal(Object.keys(selection.categories).length, 15);
+assert.equal(sources.length, selection.poses.length * 6);
+assert.equal(new Set(sources.map(s => s.path)).size, sources.length);
 for (const source of sources) {
-  const file = 'data/wavespeed/originals/' + new URL(source.url).pathname.split('/').pop();
+  const file = source.path;
+  assert.match(file, /^data\/wavespeed\/(img|line)\/ws_[a-z]+_[a-z0-9-]+_[fds]\.webp$/);
+  assert.ok(file.split('/').pop().length <= 64);
   assert.equal(createHash('sha256').update(fs.readFileSync(file)).digest('hex'), source.sha256);
+  assert.equal(new URL(source.url).hostname, 'static.wavespeed.ai');
 }
 const rows = read('data/wavespeed/pose-zh.json');
-assert.equal(rows.length, 27);
+assert.equal(rows.length, selection.poses.length * 3);
 assert.equal(new Set(rows.map(r => r.id)).size, rows.length);
 for (const row of rows) {
-  assert.match(row.id, /^ws_sit_[a-z-]+_[fds]$/);
+  assert.match(row.id, /^ws_[a-z]+_[a-z0-9-]+_[fds]$/);
   for (const field of ['原图','lineArt']) {
     const bytes = fs.readFileSync(row[field]);
-    assert.equal(bytes.toString('hex', 0, 8), '89504e470d0a1a0a');
-    assert.equal(bytes.readUInt32BE(16), 900); assert.equal(bytes.readUInt32BE(20), 1200);
+    assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
+    assert.equal(bytes.toString('ascii', 8, 12), 'WEBP');
   }
   assert.equal(fs.readFileSync(row['缩略图']).toString('hex',0,3), 'ffd8ff');
   assert.equal(new URL(row.source.url).hostname, 'wavespeed.ai');
 }
+const ws = read('data/wavespeed/catalog.json').systems.ws;
+assert.equal(Object.values(ws.categories).reduce((n,c)=>n+c.pose_count,0),491);
+for(const [category,meta] of Object.entries(ws.categories)) {
+  const poses=read(meta.index);assert.equal(poses.length,meta.pose_count);
+  for(const pose of poses) {
+    assert.deepEqual(pose.views,['f','d','s']);
+    for(const lang of ['zh','en','ja']) assert.ok(pose.name[lang]?.trim());
+    for(const view of pose.views) assert.ok(rows.some(r=>r.id===`ws_${category}_${pose.pose}_${view}`));
+  }
+}
+// Published original nine PNG links stay available after moving the catalog to WebP.
+for(const pose of ['cross','hug-kn','side','hands-bk','kn-up','legs-v','elbow-lean','butterfly','twist'])
+  for(const view of ['f','d','s']) for(const kind of ['img','line'])
+    assert.equal(fs.readFileSync(`data/wavespeed/${kind}/ws_sit_${pose}_${view}.png`).toString('hex',0,8),'89504e470d0a1a0a');
 for (const lang of ['en','ja']) {
   const translated = read(`data/wavespeed/pose-${lang}.json`);
   assert.deepEqual(translated.map(r => r.id), rows.map(r => r.id));
-  translated.forEach(r => assert.ok(r['姿势名称'] && r['角度'] && r.source));
+  const ui=read('data/ui.json')[lang], labels=[ui.angleFront,ui.angleDiag,ui.angleSide];
+  translated.forEach(r => assert.ok(r['姿势名称'] && labels.includes(r['角度']) && r.source));
 }
 assert.equal(Object.keys(EXPERIMENTAL_POSES).length, 231);
 for (const [id, meta] of Object.entries(EXPERIMENTAL_POSES)) {
@@ -42,4 +64,4 @@ for (const [id, meta] of Object.entries(EXPERIMENTAL_POSES)) {
       assert.ok(q.length === 4 && q.every(Number.isFinite) && Math.abs(Math.hypot(...q)-1)<1e-5);
   }
 }
-console.log('Added references: 9 poses, 54 provenance-checked images, 3 languages; 231 unapproved canonical 3D scenes.');
+console.log('Added references: 491 poses, 2946 provenance-checked images, 15 categories, 3 languages; 231 unapproved canonical 3D scenes.');

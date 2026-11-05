@@ -46,8 +46,8 @@ def main():
             sub.add_argument("--pose", required=True, help="Exact compact pose token from the catalog")
             sub.add_argument("--view", default="f", choices=VIEWS)
             formats = sub.add_mutually_exclusive_group()
-            formats.add_argument("--thumb", action="store_true", help="300×400 JPEG instead of 900×1200 PNG")
-            formats.add_argument("--line-art", action="store_true", help="WaveSpeed line-art PNG (ws collection only)")
+            formats.add_argument("--thumb", action="store_true", help="300×400 JPEG instead of the 900×1200 original")
+            formats.add_argument("--line-art", action="store_true", help="WaveSpeed line-art WebP (ws collection only)")
             if name == "download":
                 sub.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
@@ -69,7 +69,7 @@ def main():
             path = f"thumbs/{stem}.jpg" if args.thumb else f"img/{stem}.png"
             if args.line_art and args.system != 'ws': parser.error('--line-art is available for ws only')
             if args.system == 'ws':
-                path = 'data/wavespeed/' + (f'line/{stem}.png' if args.line_art else path)
+                path = 'data/wavespeed/' + (f'thumbs/{stem}.jpg' if args.thumb else f'{"line" if args.line_art else "img"}/{stem}.webp')
             if len(Path(path).name) > 64:
                 parser.error("Filename exceeds the gallery limit of 64 ASCII characters")
             url = make_url(args.base_url, path)
@@ -78,7 +78,10 @@ def main():
                 return
             content = read_url(url)
             signature = b"\xff\xd8\xff" if args.thumb else b"\x89PNG\r\n\x1a\n"
-            if not content.startswith(signature):
+            valid = content.startswith(signature)
+            if args.system == 'ws' and not args.thumb:
+                valid = content[:4] == b'RIFF' and content[8:12] == b'WEBP'
+            if not valid:
                 raise ValueError("响应不是预期的图片；未保存文件")
             args.output_dir.mkdir(parents=True, exist_ok=True)
             output = args.output_dir / Path(path).name

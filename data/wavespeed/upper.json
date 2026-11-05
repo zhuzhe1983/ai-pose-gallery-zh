@@ -1,0 +1,457 @@
+[
+  {
+    "pose": "hand-chin",
+    "name": {
+      "en": "Hand on chin, half body",
+      "zh": "手托下巴，半身",
+      "ja": "顎に手を当てる、上半身"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-framing-face",
+    "name": {
+      "en": "Hands framing face",
+      "zh": "双手框脸",
+      "ja": "両手で顔を囲む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "peace-sign",
+    "name": {
+      "en": "Peace sign",
+      "zh": "剪刀手",
+      "ja": "ピースサイン"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pointing-at-camera",
+    "name": {
+      "en": "Pointing at camera, half body",
+      "zh": "指向镜头，半身",
+      "ja": "カメラを指す、上半身"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "finger-heart",
+    "name": {
+      "en": "Finger heart",
+      "zh": "手指爱心",
+      "ja": "指ハート"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "finger-temple",
+    "name": {
+      "en": "Thinking finger on temple",
+      "zh": "手指抵太阳穴，思考状",
+      "ja": "こめかみに指を当てる、思考"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-cheeks",
+    "name": {
+      "en": "Hands on cheeks",
+      "zh": "双手托腮",
+      "ja": "両手を頬に当てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arms-up-cheering",
+    "name": {
+      "en": "Arms raised cheering",
+      "zh": "双臂高举欢呼",
+      "ja": "両腕を上げて歓喜"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hold-cup-both-hands",
+    "name": {
+      "en": "Holding cup both hands",
+      "zh": "双手捧杯",
+      "ja": "両手でカップを持つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "shh-finger-lips",
+    "name": {
+      "en": "Shh finger to lips",
+      "zh": "手指抵唇示意安静",
+      "ja": "口元に指を当てる、静かに"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "adjusting-glasses",
+    "name": {
+      "en": "Adjusting glasses",
+      "zh": "扶眼镜",
+      "ja": "眼鏡を直す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tucking-hair-bk-ear",
+    "name": {
+      "en": "Tucking hair behind ear",
+      "zh": "撩耳后发",
+      "ja": "耳に髪をかける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arms-folded",
+    "name": {
+      "en": "Arms folded",
+      "zh": "双臂交叉",
+      "ja": "腕を組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "chin-cross-arms",
+    "name": {
+      "en": "Chin on crossed arms",
+      "zh": "下巴搁在交叉手臂上",
+      "ja": "組んだ腕に顎を乗せる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "waving",
+    "name": {
+      "en": "Waving hello, half body",
+      "zh": "挥手致意，半身",
+      "ja": "手を振る、上半身"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "thumbs-up",
+    "name": {
+      "en": "Thumbs up, half body",
+      "zh": "竖大拇指，半身",
+      "ja": "親指を立てる、上半身"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-clasped-under-chin",
+    "name": {
+      "en": "Hands clasped under chin",
+      "zh": "双手交叠托下巴",
+      "ja": "両手を組んで顎の下に当てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-heart",
+    "name": {
+      "en": "Hand on heart",
+      "zh": "手抚胸口",
+      "ja": "胸に手を当てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "shrug",
+    "name": {
+      "en": "Shrug palms up",
+      "zh": "摊手耸肩",
+      "ja": "肩をすくめる、手を広げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "look-over-sh",
+    "name": {
+      "en": "Looking over shoulder",
+      "zh": "回头望",
+      "ja": "振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "profile-hand-neck",
+    "name": {
+      "en": "Profile hand on neck",
+      "zh": "侧脸手扶颈",
+      "ja": "横顔、首に手を当てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-hips",
+    "name": {
+      "en": "Hands on hips, half body",
+      "zh": "双手叉腰，半身",
+      "ja": "腰に手を当てる、上半身"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-up",
+    "name": {
+      "en": "Raising a hand",
+      "zh": "举手",
+      "ja": "手を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "heart-oh",
+    "name": {
+      "en": "Heart arms overhead",
+      "zh": "头顶比心",
+      "ja": "頭上でハートを作る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-bk-hd",
+    "name": {
+      "en": "Hands behind head, half body",
+      "zh": "双手抱头，半身",
+      "ja": "両手を頭の後ろに、上半身"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "salute",
+    "name": {
+      "en": "Standing salute",
+      "zh": "立正敬礼",
+      "ja": "敬礼"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "finger-pointing-up",
+    "name": {
+      "en": "Finger pointing up",
+      "zh": "手指向上",
+      "ja": "指を上に向ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "phone-ear",
+    "name": {
+      "en": "Phone to ear",
+      "zh": "手机贴耳",
+      "ja": "電話を耳に当てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "shielding-eyes",
+    "name": {
+      "en": "Shielding eyes, half body",
+      "zh": "半身手遮阳光",
+      "ja": "目の上に手をかざす・上半身"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "ok-sign",
+    "name": {
+      "en": "OK sign",
+      "zh": "OK手势",
+      "ja": "OKサイン"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "clapping",
+    "name": {
+      "en": "Clapping hands",
+      "zh": "拍手",
+      "ja": "拍手"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "palms-together",
+    "name": {
+      "en": "Palms together",
+      "zh": "合掌",
+      "ja": "合掌"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-over-mouth",
+    "name": {
+      "en": "Hand over mouth",
+      "zh": "手掩口",
+      "ja": "手で口を覆う"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arms-wide-welcome",
+    "name": {
+      "en": "Arms wide welcome",
+      "zh": "双臂张开欢迎",
+      "ja": "両腕を広げて歓迎"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "flexing-biceps",
+    "name": {
+      "en": "Flexing biceps",
+      "zh": "展示肱二头肌",
+      "ja": "上腕二頭筋を屈曲"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

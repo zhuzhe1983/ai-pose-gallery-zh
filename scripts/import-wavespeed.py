@@ -1,52 +1,85 @@
-"""Download the explicitly selected public references, keeping source provenance.
-Run with a Python environment containing Pillow. No API key or paid service.
+"""Import registered WaveSpeed references without inflating their original WebP files.
+Run with Pillow. --assets-only can prefetch while names are being translated.
+Existing PNG reference links are intentionally retained for compatibility.
 """
-import json, subprocess, hashlib
-from pathlib import Path
+import argparse
+import hashlib
+import json
+import re
+import subprocess
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 from PIL import Image
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'data/wavespeed'
-selection = json.loads((OUT / 'selection.json').read_text())
-for name in ('originals', 'img', 'thumbs', 'line'): (OUT/name).mkdir(exist_ok=True)
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--selection', type=Path, default=OUT/'selection.json')
+parser.add_argument('--assets-only', action='store_true')
+args = parser.parse_args()
+selection = json.loads(args.selection.read_text())
+for name in ('img', 'thumbs', 'line'): (OUT/name).mkdir(exist_ok=True)
+cache = ROOT/'output/wavespeed-import/cache';cache.mkdir(parents=True,exist_ok=True)
 jobs = []
 for pose in selection['poses']:
+    assert re.fullmatch(r'ws_[a-z]+_[a-z0-9-]+',pose['id'])
     for kind, images in pose['images'].items():
-        for view, remote in zip(('f', 'd', 's'), images):
-            jobs.append((pose['id']+'_'+view, kind, remote))
+        assert kind in ('3d','line') and len(images)==3
+        for view, remote in zip(('f','d','s'), images):
+            assert re.fullmatch(r'[a-f0-9-]+\.webp',remote)
+            jobs.append((pose['id']+'_'+view,kind,remote))
+
 def download(job):
     stem, kind, remote = job
-    raw = OUT/'originals'/remote
+    target=OUT/('img' if kind=='3d' else 'line')/(stem+'.webp')
+    raw=target if target.exists() else OUT/'originals'/remote
     if not raw.exists():
-        subprocess.run(['/usr/bin/curl', '--fail', '--silent', '--show-error', '--retry', '2',
-            'https://static.wavespeed.ai/media/images/'+remote, '-o', str(raw)], check=True)
+        raw=cache/remote
+        if not raw.exists():
+            temp=raw.with_suffix('.part')
+            subprocess.run(['/usr/bin/curl','--fail','--silent','--show-error','--retry','2','--retry-delay','1','--max-time','45',
+                'https://static.wavespeed.ai/media/images/'+remote,'-o',str(temp)],check=True)
+            with Image.open(temp) as im: im.verify()
+            temp.replace(raw)
     with Image.open(raw) as im:
-        im.load()
-        assert im.size == (900,1200), (remote, im.size)
-        im.convert('RGB').save(OUT/('img' if kind=='3d' else 'line')/(stem+'.png'))
-        if kind == '3d':
+        im.load();assert im.size==(900,1200),(remote,im.size)
+        if kind=='3d' and not (OUT/'thumbs'/(stem+'.jpg')).exists():
             thumb=im.convert('RGB');thumb.thumbnail((300,400));thumb.save(OUT/'thumbs'/(stem+'.jpg'),quality=88)
-    return {'id':stem,'kind':kind,'url':'https://static.wavespeed.ai/media/images/'+remote,
-        'sha256':hashlib.sha256(raw.read_bytes()).hexdigest()}
-with ThreadPoolExecutor(max_workers=4) as pool: sources=list(pool.map(download,jobs))
-# Originals are retained as provenance; display PNGs are lossless re-encodings.
-(OUT/'sources.json').write_text(json.dumps(sources,indent=2)+'\n')
+    if raw!=target: target.write_bytes(raw.read_bytes())
+    return {'id':stem,'kind':kind,'path':target.relative_to(ROOT).as_posix(),
+        'url':'https://static.wavespeed.ai/media/images/'+remote,'sha256':hashlib.sha256(target.read_bytes()).hexdigest()}
+
+sources=[]
+with ThreadPoolExecutor(max_workers=4) as pool:
+    for result in pool.map(download,jobs):
+        sources.append(result)
+        if len(sources)%100==0: print(f'Images {len(sources)}/{len(jobs)}',flush=True)
+if args.assets_only:
+    print(f'Prefetched {len(sources)} original images. Catalog unchanged.');raise SystemExit
+
 systems={'zh':'扩展姿势 · WaveSpeed','en':'More poses · WaveSpeed','ja':'追加ポーズ · WaveSpeed'}
-categories={'zh':'地面坐姿','en':'Floor sitting','ja':'床に座る'}
-views={'zh':{'f':'正面','d':'斜侧','s':'侧面'},'en':{'f':'Front','d':'Diagonal','s':'Side'},'ja':{'f':'正面','d':'斜め','s':'横'}}
+ui=json.loads((ROOT/'data/ui.json').read_text())
+views={lang:{view:ui[lang][key] for view,key in [('f','angleFront'),('d','angleDiag'),('s','angleSide')]} for lang in systems}
+categories=selection['categories']
 for lang in systems:
     rows=[]
     for n,pose in enumerate(selection['poses'],1):
+        assert set(pose['name'])=={'zh','en','ja'}
         for view in ('f','d','s'):
             stem=pose['id']+'_'+view
             rows.append({'id':stem,'source_id':pose['source_id']+'_'+view,'体系':systems[lang],
-                '姿势编号':f'WS{n:02}','分类':categories[lang],'姿势名称':pose['name'][lang],'角度':views[lang][view],
-                '原图':f'data/wavespeed/img/{stem}.png','缩略图':f'data/wavespeed/thumbs/{stem}.jpg',
-                'lineArt':f'data/wavespeed/line/{stem}.png','source':{'name':'WaveSpeed AI','url':selection['source']},
-                '检索':' '.join([stem,pose['source_id'],*pose['name'].values(),systems[lang],categories[lang]])})
-    (OUT/f'pose-{lang}.json').write_text(json.dumps(rows,ensure_ascii=False,indent=2)+'\n')
-(OUT/'sit.json').write_text(json.dumps([{'pose':p['id'].split('_')[2],'name':p['name'],'views':['f','d','s']} for p in selection['poses']],ensure_ascii=False,indent=2)+'\n')
+                '姿势编号':f'WS{n:03}','分类':categories[pose['category']]['name'][lang],'姿势名称':pose['name'][lang],'角度':views[lang][view],
+                '原图':f'data/wavespeed/img/{stem}.webp','缩略图':f'data/wavespeed/thumbs/{stem}.jpg',
+                'lineArt':f'data/wavespeed/line/{stem}.webp','source':{'name':'WaveSpeed AI','url':pose['source_url']},
+                '检索':' '.join([stem,pose['source_id'],*pose['name'].values(),systems[lang],*categories[pose['category']]['name'].values()])})
+    (OUT/f'pose-{lang}.json').write_text(json.dumps(rows,ensure_ascii=False,separators=(',',':'))+'\n')
+config={}
+for category,meta in categories.items():
+    poses=[p for p in selection['poses'] if p['category']==category]
+    (OUT/(category+'.json')).write_text(json.dumps([{'pose':p['id'].split('_')[2],'name':p['name'],'views':['f','d','s']} for p in poses],ensure_ascii=False,indent=2)+'\n')
+    config[category]={'name':meta['name'],'index':f'data/wavespeed/{category}.json','pose_count':len(poses)}
 (OUT/'catalog.json').write_text(json.dumps({'systems':{'ws':{'name':systems,
-    'image_template':'data/wavespeed/img/{stem}.png','thumbnail_template':'data/wavespeed/thumbs/{stem}.jpg',
-    'categories':{'sit':{'name':categories,'index':'data/wavespeed/sit.json','pose_count':len(selection['poses'])}}}}},ensure_ascii=False,indent=2)+'\n')
-print(f'Imported {len(selection["poses"])} poses, {len(sources)} images, three languages.')
+    'image_template':'data/wavespeed/img/{stem}.webp','thumbnail_template':'data/wavespeed/thumbs/{stem}.jpg','categories':config}}},ensure_ascii=False,indent=2)+'\n')
+(OUT/'sources.json').write_text(json.dumps(sources,indent=2)+'\n')
+(OUT/'selection.json').write_text(json.dumps(selection,ensure_ascii=False,indent=2)+'\n')
+print(f'Imported {len(selection["poses"])} poses, {len(sources)} images, {len(categories)} categories, three languages.')

@@ -1,0 +1,1107 @@
+[
+  {
+    "pose": "s-curve-stand",
+    "name": {
+      "en": "S-curve stand",
+      "zh": "S形站姿",
+      "ja": "S字立ち"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "over-sh-arch",
+    "name": {
+      "en": "Arched back look back",
+      "zh": "后仰回眸",
+      "ja": "背を反らして振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pin-up-sit",
+    "name": {
+      "en": "Classic pin-up sit",
+      "zh": "经典复古坐姿",
+      "ja": "ピンアップ座り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-hair",
+    "name": {
+      "en": "Hands in hair stand",
+      "zh": "手抚头发站姿",
+      "ja": "髪に手を入れる立ち"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-recline-elb",
+    "name": {
+      "en": "Side recline on elbow",
+      "zh": "侧卧撑肘",
+      "ja": "肘掛け横臥"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stomach-feet-up",
+    "name": {
+      "en": "Lying on stomach feet up",
+      "zh": "俯卧抬脚",
+      "ja": "うつ伏せ足上げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kneel-arch-hair",
+    "name": {
+      "en": "Kneeling arch hands in hair",
+      "zh": "跪姿后仰手抚头发",
+      "ja": "膝立ち背反り髪に手"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "floor-side-sit",
+    "name": {
+      "en": "Side sit leaning back",
+      "zh": "侧坐后倾",
+      "ja": "横座り後傾"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "wall-lean-foot-up",
+    "name": {
+      "en": "Glamour wall lean",
+      "zh": "靠墙抬脚",
+      "ja": "壁に寄りかかって足上げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "fw-lean-thighs",
+    "name": {
+      "en": "Forward lean hands on thighs",
+      "zh": "前倾手撑大腿",
+      "ja": "前傾大腿に手"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "collarbone-touch",
+    "name": {
+      "en": "Hand on collarbone",
+      "zh": "手触锁骨",
+      "ja": "鎖骨に手"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-stretch-oh",
+    "name": {
+      "en": "Lying stretch arms overhead",
+      "zh": "仰卧手臂上举伸展",
+      "ja": "仰向け腕上伸展"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-glance-stand",
+    "name": {
+      "en": "Over the shoulder glance",
+      "zh": "过肩回眸",
+      "ja": "肩越し振り返り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "strap-adjust",
+    "name": {
+      "en": "Shoulder strap adjust",
+      "zh": "调整肩带",
+      "ja": "ストラップ調整"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hair-flip",
+    "name": {
+      "en": "Hair flip",
+      "zh": "甩发",
+      "ja": "髪振り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "edge-seat-cross",
+    "name": {
+      "en": "Perched with crossed legs",
+      "zh": "边缘坐姿交叉腿",
+      "ja": "端に座り脚組"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-hip",
+    "name": {
+      "en": "Hand on hip pose",
+      "zh": "叉腰姿势",
+      "ja": "腰に手を当てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tiptoe-reach",
+    "name": {
+      "en": "Tiptoe arms overhead",
+      "zh": "踮脚手臂上举",
+      "ja": "つま先立ち腕上"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kneel-sit-heels",
+    "name": {
+      "en": "Sitting on heels arched",
+      "zh": "跪坐后仰",
+      "ja": "正座背反り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "mermaid-sit",
+    "name": {
+      "en": "Mermaid sit",
+      "zh": "美人鱼坐姿",
+      "ja": "マーメイド座り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-recline-kn-up",
+    "name": {
+      "en": "Lying on back knee raised",
+      "zh": "仰卧屈膝",
+      "ja": "仰向け膝上げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "legs-up-pin-up",
+    "name": {
+      "en": "Lying legs raised crossed",
+      "zh": "仰卧抬腿交叉",
+      "ja": "仰向け脚上げ組"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-lie-hd-hand",
+    "name": {
+      "en": "Side lie head on hand",
+      "zh": "侧卧手托头",
+      "ja": "横臥頭を支える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hug-kns",
+    "name": {
+      "en": "Sitting hugging knees",
+      "zh": "坐姿抱膝",
+      "ja": "座り膝を抱える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "chin-sh",
+    "name": {
+      "en": "Chin to shoulder",
+      "zh": "下巴贴肩",
+      "ja": "顎を肩に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "ankle-cross-stand",
+    "name": {
+      "en": "Crossed ankles stand",
+      "zh": "交叉脚踝站姿",
+      "ja": "足首交差立ち"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "catwalk-stride",
+    "name": {
+      "en": "Catwalk stride",
+      "zh": "T台步态",
+      "ja": "ランウェイ歩行"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "seated-lean-bk-hands",
+    "name": {
+      "en": "Seated lean back on hands",
+      "zh": "坐姿后倾手撑地",
+      "ja": "座り後傾手付き"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stool-perch",
+    "name": {
+      "en": "Tall stool perch",
+      "zh": "高脚凳坐姿",
+      "ja": "高脚椅子に座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "prone-forearms",
+    "name": {
+      "en": "Prone on forearms",
+      "zh": "俯卧撑前臂",
+      "ja": "うつ伏せ前腕"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-kn-twist",
+    "name": {
+      "en": "One knee kneel twist",
+      "zh": "单膝跪姿扭转",
+      "ja": "片膝跪きツイスト"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "forearms-hd",
+    "name": {
+      "en": "Forearms resting on head",
+      "zh": "前臂搭头",
+      "ja": "前腕を頭に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "temple-touch",
+    "name": {
+      "en": "Fingertips at temple",
+      "zh": "指尖触太阳穴",
+      "ja": "指先でこめかみ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-frame-face",
+    "name": {
+      "en": "Glamour face frame",
+      "zh": "双手框脸",
+      "ja": "手で顔を囲む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "seated-bk-glance",
+    "name": {
+      "en": "Seated back to camera",
+      "zh": "坐姿背身回望",
+      "ja": "座り背中を向けて振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kn-pop-stand",
+    "name": {
+      "en": "Knee pop stand",
+      "zh": "单腿站立提膝",
+      "ja": "片足立ち膝上げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "doorframe-lean",
+    "name": {
+      "en": "Doorframe lean",
+      "zh": "倚靠门框",
+      "ja": "ドア枠に寄りかかる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "table-lean-elbs",
+    "name": {
+      "en": "Leaning on elbows",
+      "zh": "手肘撑桌",
+      "ja": "肘をテーブルに置く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-lie-bk-view",
+    "name": {
+      "en": "Side lie back view",
+      "zh": "侧卧背身视角",
+      "ja": "横臥背中からの視点"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "chair-side-saddle",
+    "name": {
+      "en": "Side-saddle chair drape",
+      "zh": "椅上侧坐",
+      "ja": "椅子に横向きに座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "curled-side",
+    "name": {
+      "en": "Glamour curled side lie",
+      "zh": "侧卧蜷缩",
+      "ja": "横臥で丸まる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-bend-stretch",
+    "name": {
+      "en": "Standing side bend",
+      "zh": "站立侧弯伸展",
+      "ja": "立ち側屈ストレッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "chaise-recline",
+    "name": {
+      "en": "Chaise recline",
+      "zh": "贵妃椅斜倚",
+      "ja": "チェーズに斜めに寝そべる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kneel-hands-thighs",
+    "name": {
+      "en": "Upright kneel hands on thighs",
+      "zh": "直立跪姿手扶大腿",
+      "ja": "直立膝立ちで太ももに手を置く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pin-up-leg-kick",
+    "name": {
+      "en": "Pin-up leg kick",
+      "zh": "复古踢腿",
+      "ja": "ピンアップ風キック"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bed-arch-kn-up",
+    "name": {
+      "en": "Arched back on bed",
+      "zh": "床上后仰屈膝",
+      "ja": "ベッドで背骨を反らせて膝を立てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "prone-arch-ankles-cross",
+    "name": {
+      "en": "Prone arch ankles crossed",
+      "zh": "俯卧后仰脚踝交叉",
+      "ja": "伏せで背骨を反らせて足首を交差"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kneel-lean-bk-hands",
+    "name": {
+      "en": "Kneeling lean back",
+      "zh": "跪姿后仰",
+      "ja": "膝立ちで後ろに反る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "all-fours-look-bk",
+    "name": {
+      "en": "All fours look back",
+      "zh": "四肢着地回望",
+      "ja": "四つ這いで振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "long-leg-side-lie",
+    "name": {
+      "en": "Long leg side lie",
+      "zh": "长腿侧卧",
+      "ja": "長脚で横臥"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-view-kns-up",
+    "name": {
+      "en": "Back view knees drawn up",
+      "zh": "背身屈膝",
+      "ja": "背中を向けて膝を立てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hip-shift-thigh-slide",
+    "name": {
+      "en": "Hip shift thigh slide",
+      "zh": "移胯滑腿",
+      "ja": "腰をずらして太ももを滑らせる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "deep-arch-hair-lift",
+    "name": {
+      "en": "Deep arch hair lift",
+      "zh": "深度后仰撩发",
+      "ja": "深く背骨を反らせて髪を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "off-sh-slip",
+    "name": {
+      "en": "Off-the-shoulder slip",
+      "zh": "露肩滑落",
+      "ja": "オフショルダーで滑り落ちる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-view-hip-drop",
+    "name": {
+      "en": "Back view hip drop",
+      "zh": "背身沉胯",
+      "ja": "背中を向けて腰を下げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "wet-look-hair-sweep",
+    "name": {
+      "en": "Wet look hair sweep",
+      "zh": "湿发造型",
+      "ja": "ウェットヘアで流す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "shoreline-kneel-arch",
+    "name": {
+      "en": "Shoreline kneel arch",
+      "zh": "岸边跪姿后仰",
+      "ja": "海岸で膝立ち背骨を反る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "beach-elb-recline",
+    "name": {
+      "en": "Beach elbow recline",
+      "zh": "海滩手肘斜倚",
+      "ja": "ビーチで肘を突いて斜めに寝そべる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "wading-stride",
+    "name": {
+      "en": "Wading stride",
+      "zh": "涉水大步",
+      "ja": "水に足を踏み入れて大股で歩く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "backwards-chair-straddle",
+    "name": {
+      "en": "Backwards chair straddle",
+      "zh": "反向跨坐椅子",
+      "ja": "椅子に逆跨ぎ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "chair-bk-drape",
+    "name": {
+      "en": "Chair back drape",
+      "zh": "椅背垂挂",
+      "ja": "椅子背掛け"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "armchair-leg-drape",
+    "name": {
+      "en": "Armchair leg drape",
+      "zh": "扶手椅腿垂挂",
+      "ja": "アームチェア脚掛け"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stool-arch-lean-bk",
+    "name": {
+      "en": "Stool arch lean back",
+      "zh": "凳上后仰后仰",
+      "ja": "スツールアーチ後傾"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "chair-cross-fw-lean",
+    "name": {
+      "en": "Crossed knee forward lean",
+      "zh": "交腿前倾",
+      "ja": "脚組前傾"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pin-up-high-kick",
+    "name": {
+      "en": "Pin-up high kick",
+      "zh": "复古高踢腿",
+      "ja": "ピンアップ高キック"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pin-up-bend-kick",
+    "name": {
+      "en": "Pin-up bend and kick",
+      "zh": "复古俯身踢腿",
+      "ja": "前かがみで脚を蹴り上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "seated-leg-raise",
+    "name": {
+      "en": "Seated leg raise",
+      "zh": "坐姿抬腿",
+      "ja": "座り脚上げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bed-edge-arch",
+    "name": {
+      "en": "Bed edge arch",
+      "zh": "床沿后仰",
+      "ja": "ベッド端アーチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "upright-kneel-hip-drop",
+    "name": {
+      "en": "Upright kneel hip drop",
+      "zh": "直立跪姿沉髋",
+      "ja": "直立膝立ち腰下げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-lie-arm-oh",
+    "name": {
+      "en": "Side lie arm overhead",
+      "zh": "侧卧手臂过头",
+      "ja": "側臥頭上腕"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "prone-twist-look-up",
+    "name": {
+      "en": "Prone twist look up",
+      "zh": "俯卧扭转仰视",
+      "ja": "伏せ捻り上見"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-sit-sh-hold",
+    "name": {
+      "en": "Side sit shoulder hold",
+      "zh": "侧坐扶肩",
+      "ja": "側座肩掴み"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hd-over-bed-edge",
+    "name": {
+      "en": "Head over bed edge",
+      "zh": "头垂床沿",
+      "ja": "ベッド端頭垂れ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kneeling-bk-view-twist",
+    "name": {
+      "en": "Kneeling back view twist",
+      "zh": "跪姿背视扭转",
+      "ja": "膝立ち背面捻り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "floor-twist-kns-dropped",
+    "name": {
+      "en": "Floor twist knees dropped",
+      "zh": "地面扭转屈膝",
+      "ja": "床面捻り膝下げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "wall-arch-bk-view",
+    "name": {
+      "en": "Wall arch back view",
+      "zh": "靠墙后仰背视",
+      "ja": "壁アーチ背面"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lingerie-lunge",
+    "name": {
+      "en": "Lingerie lunge",
+      "zh": "内衣弓步",
+      "ja": "ランジェリーランジ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "spiral-reach",
+    "name": {
+      "en": "Spiral reach",
+      "zh": "螺旋伸展",
+      "ja": "スパイラルリーチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kneel-stretch-wrists-cross",
+    "name": {
+      "en": "Kneeling overhead stretch",
+      "zh": "跪姿过头伸展",
+      "ja": "膝立ち頭上ストレッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "elb-recline-cross-legs",
+    "name": {
+      "en": "Elbow recline crossed legs",
+      "zh": "肘撑斜倚交腿",
+      "ja": "肘掛け斜め脚組"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "up-kn-lean",
+    "name": {
+      "en": "Raised knee lean",
+      "zh": "抬膝倚靠",
+      "ja": "膝上げ寄り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "shallow-water-side-lounge",
+    "name": {
+      "en": "Shallow water side lounge",
+      "zh": "浅水侧卧",
+      "ja": "浅水側臥"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pin-up-crouch",
+    "name": {
+      "en": "Pin-up crouch",
+      "zh": "复古蹲姿",
+      "ja": "ピンアップスクワット"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "waist-slide-arch",
+    "name": {
+      "en": "Waist slide arch",
+      "zh": "腰部滑动后仰",
+      "ja": "腰スライドアーチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "long-leg-reach-sit",
+    "name": {
+      "en": "Long leg reach sit",
+      "zh": "长腿伸展坐姿",
+      "ja": "長脚リーチ座り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

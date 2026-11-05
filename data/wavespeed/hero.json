@@ -1,0 +1,262 @@
+[
+  {
+    "pose": "3-point-landing",
+    "name": {
+      "en": "Three-point landing",
+      "zh": "三点落地",
+      "ja": "三点着地"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arm-spread",
+    "name": {
+      "en": "Cape-like arm spread",
+      "zh": "披风式展臂",
+      "ja": "マントのように腕を広げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "fists-hips",
+    "name": {
+      "en": "Fists on hips looking up",
+      "zh": "叉腰仰视",
+      "ja": "腰に手を当てて上を見上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "palm-push",
+    "name": {
+      "en": "Open palm push",
+      "zh": "开掌推击",
+      "ja": "開掌で押す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bracing-wind",
+    "name": {
+      "en": "Bracing against wind",
+      "zh": "迎风支撑",
+      "ja": "風に耐える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "flying-fw",
+    "name": {
+      "en": "Flying forward",
+      "zh": "向前飞行",
+      "ja": "前方へ飛ぶ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "crouched-ready",
+    "name": {
+      "en": "Crouched ready stance",
+      "zh": "蹲姿预备",
+      "ja": "しゃがみ構え"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "archery-stance",
+    "name": {
+      "en": "Archery stance empty hands",
+      "zh": "空手射箭姿势",
+      "ja": "空手の弓構え"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "2-handed-grip",
+    "name": {
+      "en": "Two-handed grip raised",
+      "zh": "双手握持上举",
+      "ja": "両手で握り上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "dramatic-turn",
+    "name": {
+      "en": "Dramatic turn",
+      "zh": "戏剧性转身",
+      "ja": "劇的なターン"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "rising-from-kneel",
+    "name": {
+      "en": "Rising from a kneel",
+      "zh": "从跪姿起身",
+      "ja": "膝から立ち上がる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sprint-toward-camera",
+    "name": {
+      "en": "Sprinting toward camera",
+      "zh": "向镜头冲刺",
+      "ja": "カメラに向かってスプリント"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "fist-up",
+    "name": {
+      "en": "Fist raised to sky",
+      "zh": "挥拳向天",
+      "ja": "拳を天に掲げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "shielding-eyes",
+    "name": {
+      "en": "Shielding eyes ahead",
+      "zh": "遮眼远眺",
+      "ja": "手をかざして遠くを見る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "leap-over-gap",
+    "name": {
+      "en": "Leap across a gap",
+      "zh": "跨越间隙跳跃",
+      "ja": "隙間を飛び越える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "ground-strike",
+    "name": {
+      "en": "Fist to the ground",
+      "zh": "拳击地面",
+      "ja": "拳で地面を叩く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arms-cross-stance",
+    "name": {
+      "en": "Arms crossed wide stance",
+      "zh": "双脚分开站立抱臂",
+      "ja": "脚を広く開いて腕を組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "reach-sky",
+    "name": {
+      "en": "Both hands to the sky",
+      "zh": "双手向天",
+      "ja": "両手を天に伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "glance-bk",
+    "name": {
+      "en": "Walking away glance back",
+      "zh": "离去时回首",
+      "ja": "振り返りながら歩く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hovering",
+    "name": {
+      "en": "Hovering in air",
+      "zh": "空中悬浮",
+      "ja": "空中ホバリング"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

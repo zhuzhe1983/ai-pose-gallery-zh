@@ -1,0 +1,327 @@
+[
+  {
+    "pose": "bk-arms-bk-hd",
+    "name": {
+      "en": "Arms behind head",
+      "zh": "仰卧，双手抱头",
+      "ja": "仰向け、両手を頭の後ろに"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-propped-elb",
+    "name": {
+      "en": "Propped on one elbow",
+      "zh": "侧卧，单肘支撑",
+      "ja": "横向き、片肘で支える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stomach-chin-hands",
+    "name": {
+      "en": "Chin on hands",
+      "zh": "俯卧，双手托腮",
+      "ja": "うつ伏せ、両手で顎を支える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-1-kn-bent",
+    "name": {
+      "en": "One knee bent",
+      "zh": "仰卧，单膝弯曲",
+      "ja": "仰向け、片膝を曲げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "curled-side",
+    "name": {
+      "en": "Curled on side",
+      "zh": "侧卧蜷缩",
+      "ja": "横向きで丸まる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "starfish",
+    "name": {
+      "en": "Starfish spread",
+      "zh": "仰卧四肢摊开",
+      "ja": "仰向け、四肢を広げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "legs-up-wall",
+    "name": {
+      "en": "Legs up the wall",
+      "zh": "仰卧，双腿靠墙",
+      "ja": "仰向け、脚を壁に上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stomach-feet-kicked-up",
+    "name": {
+      "en": "Reading on stomach",
+      "zh": "俯卧，双脚翘起",
+      "ja": "うつ伏せ、足を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-arms-at-sides",
+    "name": {
+      "en": "Flat and still",
+      "zh": "仰卧，双臂放于体侧",
+      "ja": "仰向け、両腕を体の横に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-hands-stomach",
+    "name": {
+      "en": "Hands on stomach",
+      "zh": "仰卧，双手置于腹部",
+      "ja": "仰向け、両手を腹に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-kns-bent-feet-flat",
+    "name": {
+      "en": "Both knees bent",
+      "zh": "仰卧，双膝弯曲，双脚平放",
+      "ja": "仰向け、両膝を曲げ、足を床につける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-1-arm-oh",
+    "name": {
+      "en": "One arm overhead stretch",
+      "zh": "仰卧，单臂上举伸展",
+      "ja": "仰向け、片腕を頭上に伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-hd-arm",
+    "name": {
+      "en": "Head on outstretched arm",
+      "zh": "侧卧，头枕于伸展的手臂上",
+      "ja": "横向き、頭を伸ばした腕に置く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-reaching-up",
+    "name": {
+      "en": "Reaching up to sky",
+      "zh": "仰卧，双臂向上伸展",
+      "ja": "仰向け、両腕を上に伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stomach-arms-fw",
+    "name": {
+      "en": "Arms stretched forward",
+      "zh": "俯卧，双臂前伸",
+      "ja": "うつ伏せ、両腕を前に伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stomach-propped-forearms",
+    "name": {
+      "en": "Propped on forearms",
+      "zh": "俯卧，双前臂支撑",
+      "ja": "うつ伏せ、前腕で支える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-ankle-kn",
+    "name": {
+      "en": "Lying, ankle on knee",
+      "zh": "仰卧，脚踝置于膝盖上",
+      "ja": "仰向け、足首を膝に置く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-recovery",
+    "name": {
+      "en": "Side with top knee forward",
+      "zh": "侧卧，上方膝盖前伸",
+      "ja": "横向き、上の膝を前に出す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-kns-chest",
+    "name": {
+      "en": "Hugging knees",
+      "zh": "仰卧，双膝抱胸",
+      "ja": "仰向け、膝を抱える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-arms-wide-ankles-cross",
+    "name": {
+      "en": "Arms wide ankles crossed",
+      "zh": "仰卧，双臂张开，脚踝交叉",
+      "ja": "仰向け、両腕を広げ、足首を交差させる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-propped-elbs",
+    "name": {
+      "en": "Propped on both elbows",
+      "zh": "仰卧，双肘支撑",
+      "ja": "仰向け、両肘で支える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stomach-cheek-forearm",
+    "name": {
+      "en": "Cheek on forearm",
+      "zh": "俯卧，脸颊贴于前臂",
+      "ja": "うつ伏せ、頬を前腕に置く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-kns-dropped-side",
+    "name": {
+      "en": "Knees dropped to side",
+      "zh": "仰卧，双膝倒向一侧",
+      "ja": "仰向け、膝を片側に倒す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-leg-lifted",
+    "name": {
+      "en": "Side leg lift",
+      "zh": "侧卧，抬腿",
+      "ja": "横向き、脚を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-tabletop-limbs-up",
+    "name": {
+      "en": "Arms and legs raised",
+      "zh": "仰卧，四肢抬起",
+      "ja": "仰向け、四肢を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

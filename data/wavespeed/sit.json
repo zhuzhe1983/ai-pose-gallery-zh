@@ -78,11 +78,76 @@
     ]
   },
   {
+    "pose": "kneel-sit",
+    "name": {
+      "en": "Kneel sit",
+      "zh": "跪坐",
+      "ja": "正座"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
     "pose": "elbow-lean",
     "name": {
       "zh": "单肘侧撑坐",
       "en": "Legs out on one elbow",
       "ja": "片肘で支えて座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-shins",
+    "name": {
+      "en": "Hands on shins",
+      "zh": "手扶小腿",
+      "ja": "すねに手を添える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "meditation-palms-up",
+    "name": {
+      "en": "Meditation palms up",
+      "zh": "冥想掌心向上",
+      "ja": "瞑想、手のひら上向き"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "cross-legged-lean-fw",
+    "name": {
+      "en": "Cross-legged leaning forward",
+      "zh": "盘腿前倾",
+      "ja": "あぐら、前傾"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-leg-ext-hand-kn",
+    "name": {
+      "en": "One leg extended",
+      "zh": "单腿伸展",
+      "ja": "片脚伸ばし"
     },
     "views": [
       "f",
@@ -104,11 +169,219 @@
     ]
   },
   {
+    "pose": "arms-draped-over-kns",
+    "name": {
+      "en": "Arms draped over knees",
+      "zh": "手臂搭在膝盖上",
+      "ja": "腕を膝に掛ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "chin-kn",
+    "name": {
+      "en": "Chin on one knee",
+      "zh": "下巴抵在膝盖上",
+      "ja": "顎を膝に置く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "recline-elbs",
+    "name": {
+      "en": "Reclining on both elbows",
+      "zh": "双肘支撑后仰",
+      "ja": "両肘で後方へ倒す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-sit-bk-turned",
+    "name": {
+      "en": "Side sit back turned",
+      "zh": "侧坐背对",
+      "ja": "横座り、背中を向ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
     "pose": "twist",
     "name": {
       "zh": "坐姿扭身",
       "en": "Seated twist",
       "ja": "座って体をひねる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "cross-legged-arms-oh",
+    "name": {
+      "en": "Cross-legged arms overhead",
+      "zh": "盘腿双臂上举",
+      "ja": "あぐら、両腕を頭上へ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-arm-hug-1-arm-bk",
+    "name": {
+      "en": "One arm hugging knees",
+      "zh": "单臂抱膝",
+      "ja": "片腕で膝を抱える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-sit-reaching",
+    "name": {
+      "en": "Side sit reaching out",
+      "zh": "侧坐伸手",
+      "ja": "横座り、手を伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "reaching-for-toes",
+    "name": {
+      "en": "Reaching for toes",
+      "zh": "伸手触脚趾",
+      "ja": "つま先に手を伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "cross-legged-cupped-hands",
+    "name": {
+      "en": "Cross-legged holding something",
+      "zh": "盘腿捧物",
+      "ja": "あぐら、両手で何かを持つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-stretch-over-leg",
+    "name": {
+      "en": "Side stretch over leg",
+      "zh": "侧身跨腿拉伸",
+      "ja": "脚の上に上体を倒して横に伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hd-down-arms",
+    "name": {
+      "en": "Head down on arms",
+      "zh": "头枕手臂",
+      "ja": "腕に頭を預ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hold-ankles",
+    "name": {
+      "en": "Holding ankles",
+      "zh": "双手握脚踝",
+      "ja": "足首を掴む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "half-kneel-sit",
+    "name": {
+      "en": "One leg tucked under",
+      "zh": "单腿收于身下坐姿",
+      "ja": "片脚を折り曲げて座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lean-hand-phone",
+    "name": {
+      "en": "Leaning on hand",
+      "zh": "单手支撑",
+      "ja": "片手で支える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kns-side-look-up",
+    "name": {
+      "en": "Knees to side looking up",
+      "zh": "膝盖侧移抬头",
+      "ja": "膝を横に倒して上を見る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "cross-legged-bk-camera",
+    "name": {
+      "en": "Cross-legged back turned",
+      "zh": "盘腿背对镜头",
+      "ja": "あぐら、背中を向ける"
     },
     "views": [
       "f",

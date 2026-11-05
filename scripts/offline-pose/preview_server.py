@@ -41,7 +41,7 @@ def safe_path(root, url_path):
     if relative.startswith("preview/"):
         allowed = suffix in {".html", ".js", ".css", ".svg", ".json", ".md"}
     elif relative.startswith("studio/"):
-        allowed = suffix in {".html", ".js", ".mjs", ".css", ".json", ".glb", ".wasm", ".task", ".png", ".jpg", ".svg", ".woff2", ".md", ".txt"} or path.name == "LICENSE"
+        allowed = suffix in {".html", ".js", ".mjs", ".css", ".json", ".glb", ".bin", ".wasm", ".task", ".png", ".jpg", ".svg", ".woff2", ".md", ".txt"} or path.name == "LICENSE"
     elif relative.startswith(("img/", "thumbs/")):
         allowed = suffix in {".png", ".jpg", ".webp"}
     elif relative.startswith('data/wavespeed/'):
@@ -149,8 +149,10 @@ def scan_state(root=ROOT, now=None):
     if extra_path.is_file():
         for row in read_json(extra_path, warnings) or []:
             extra_sources[row['id']] = row['原图']
-        for row in read_json(root / 'data/wavespeed/sit.json', warnings) or []:
-            titles['ws_sit_' + row['pose']] = row['name']
+        ws_catalog = read_json(root / 'data/wavespeed/catalog.json', warnings) or {}
+        for category, config in ws_catalog.get('systems', {}).get('ws', {}).get('categories', {}).items():
+            for row in read_json(root / config['index'], warnings) or []:
+                titles[f'ws_{category}_' + row['pose']] = row['name']
     for path in (root / "data/catalog").glob("*/*.json"):
         catalog = read_json(path, warnings)
         if isinstance(catalog, list):

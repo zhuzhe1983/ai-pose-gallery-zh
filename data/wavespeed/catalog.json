@@ -6,9 +6,72 @@
         "en": "More poses · WaveSpeed",
         "ja": "追加ポーズ · WaveSpeed"
       },
-      "image_template": "data/wavespeed/img/{stem}.png",
+      "image_template": "data/wavespeed/img/{stem}.webp",
       "thumbnail_template": "data/wavespeed/thumbs/{stem}.jpg",
       "categories": {
+        "stand": {
+          "name": {
+            "zh": "站姿",
+            "en": "Standing",
+            "ja": "立ち姿"
+          },
+          "index": "data/wavespeed/stand.json",
+          "pose_count": 40
+        },
+        "fashion": {
+          "name": {
+            "zh": "时装造型",
+            "en": "Fashion",
+            "ja": "ファッション"
+          },
+          "index": "data/wavespeed/fashion.json",
+          "pose_count": 25
+        },
+        "glam": {
+          "name": {
+            "zh": "魅力造型",
+            "en": "Glamour & pin-up",
+            "ja": "グラマー・ピンナップ"
+          },
+          "index": "data/wavespeed/glam.json",
+          "pose_count": 85
+        },
+        "boudoir": {
+          "name": {
+            "zh": "私房造型",
+            "en": "Boudoir",
+            "ja": "ブドワール"
+          },
+          "index": "data/wavespeed/boudoir.json",
+          "pose_count": 36
+        },
+        "couple": {
+          "name": {
+            "zh": "情侣互动",
+            "en": "Couples",
+            "ja": "カップル"
+          },
+          "index": "data/wavespeed/couple.json",
+          "pose_count": 30
+        },
+        "daily": {
+          "name": {
+            "zh": "日常动作",
+            "en": "Everyday",
+            "ja": "日常動作"
+          },
+          "index": "data/wavespeed/daily.json",
+          "pose_count": 25
+        },
+        "chair": {
+          "name": {
+            "zh": "椅上坐姿",
+            "en": "Sitting on a chair",
+            "ja": "椅子に座る"
+          },
+          "index": "data/wavespeed/chair.json",
+          "pose_count": 30
+        },
         "sit": {
           "name": {
             "zh": "地面坐姿",
@@ -16,7 +79,70 @@
             "ja": "床に座る"
           },
           "index": "data/wavespeed/sit.json",
-          "pose_count": 9
+          "pose_count": 30
+        },
+        "kneel": {
+          "name": {
+            "zh": "跪姿与蹲姿",
+            "en": "Kneeling & squatting",
+            "ja": "膝立ち・しゃがむ"
+          },
+          "index": "data/wavespeed/kneel.json",
+          "pose_count": 25
+        },
+        "lie": {
+          "name": {
+            "zh": "卧姿",
+            "en": "Lying down",
+            "ja": "寝姿"
+          },
+          "index": "data/wavespeed/lie.json",
+          "pose_count": 25
+        },
+        "upper": {
+          "name": {
+            "zh": "上半身",
+            "en": "Upper body",
+            "ja": "上半身"
+          },
+          "index": "data/wavespeed/upper.json",
+          "pose_count": 35
+        },
+        "duo": {
+          "name": {
+            "zh": "双人动作",
+            "en": "Two people",
+            "ja": "2人のポーズ"
+          },
+          "index": "data/wavespeed/duo.json",
+          "pose_count": 30
+        },
+        "sport": {
+          "name": {
+            "zh": "运动与动作",
+            "en": "Sports & action",
+            "ja": "スポーツ・アクション"
+          },
+          "index": "data/wavespeed/sport.json",
+          "pose_count": 35
+        },
+        "dance": {
+          "name": {
+            "zh": "舞蹈",
+            "en": "Dance",
+            "ja": "ダンス"
+          },
+          "index": "data/wavespeed/dance.json",
+          "pose_count": 20
+        },
+        "hero": {
+          "name": {
+            "zh": "英雄与电影造型",
+            "en": "Heroic & cinematic",
+            "ja": "ヒーロー・映画風"
+          },
+          "index": "data/wavespeed/hero.json",
+          "pose_count": 20
         }
       }
     }

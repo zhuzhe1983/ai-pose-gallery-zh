@@ -1,0 +1,392 @@
+[
+  {
+    "pose": "hug",
+    "name": {
+      "en": "Warm hug",
+      "zh": "温暖拥抱",
+      "ja": "温かいハグ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "handshake",
+    "name": {
+      "en": "Firm handshake",
+      "zh": "有力握手",
+      "ja": "力強い握手"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "high-five",
+    "name": {
+      "en": "High five",
+      "zh": "击掌",
+      "ja": "ハイタッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-bk",
+    "name": {
+      "en": "Back to back",
+      "zh": "背靠背",
+      "ja": "背中合わせ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "piggyback",
+    "name": {
+      "en": "Piggyback ride",
+      "zh": "背驮",
+      "ja": "おんぶ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "ballroom-hold",
+    "name": {
+      "en": "Ballroom dance hold",
+      "zh": "交谊舞姿势",
+      "ja": "ボールルームダンスのポーズ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arm-arm-walking",
+    "name": {
+      "en": "Walking arm in arm",
+      "zh": "挽臂同行",
+      "ja": "腕を組んで歩く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hd-sh-sit",
+    "name": {
+      "en": "Head on shoulder sitting",
+      "zh": "头靠肩坐",
+      "ja": "肩に頭を預けて座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "helping-up",
+    "name": {
+      "en": "Helping someone up",
+      "zh": "搀扶起身",
+      "ja": "起こす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hold-hands-running",
+    "name": {
+      "en": "Holding hands running",
+      "zh": "牵手奔跑",
+      "ja": "手を繋いで走る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "fist-bump",
+    "name": {
+      "en": "Fist bump",
+      "zh": "碰拳",
+      "ja": "フィストバンプ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lift-by-waist",
+    "name": {
+      "en": "Celebration lift",
+      "zh": "庆祝托举",
+      "ja": "喜んで相手を抱き上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sh-lean",
+    "name": {
+      "en": "Shoulder to shoulder lean",
+      "zh": "肩并肩倚靠",
+      "ja": "肩を寄せ合う"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pointing-together",
+    "name": {
+      "en": "Pointing at something together",
+      "zh": "共同指向",
+      "ja": "一緒に指す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-hug",
+    "name": {
+      "en": "Side hug",
+      "zh": "侧身拥抱",
+      "ja": "横からのハグ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "selfie",
+    "name": {
+      "en": "Selfie together",
+      "zh": "双人自拍",
+      "ja": "二人で自撮り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "jumping-high-ten",
+    "name": {
+      "en": "Jumping high ten",
+      "zh": "跳跃击掌",
+      "ja": "ジャンプしてハイタッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "child-shs",
+    "name": {
+      "en": "Riding on shoulders",
+      "zh": "骑肩",
+      "ja": "肩車"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-sh-bk",
+    "name": {
+      "en": "Hand on shoulder from behind",
+      "zh": "背后搭肩",
+      "ja": "後ろから肩に手を置く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sit-side-by-side-dangling",
+    "name": {
+      "en": "Sitting side by side",
+      "zh": "并排坐",
+      "ja": "並んで座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tug-of-war",
+    "name": {
+      "en": "Tug of war",
+      "zh": "拔河",
+      "ja": "綱引き"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pinky-promise",
+    "name": {
+      "en": "Pinky promise",
+      "zh": "拉钩",
+      "ja": "指切り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bowing",
+    "name": {
+      "en": "Bowing to each other",
+      "zh": "互鞠躬",
+      "ja": "互いに頭を下げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "whispering",
+    "name": {
+      "en": "Whispering in ear",
+      "zh": "耳语",
+      "ja": "耳打ち"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "linked-elbs-spin",
+    "name": {
+      "en": "Linked elbows spin",
+      "zh": "勾肘旋转",
+      "ja": "肘を組んで回る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "counterbalance-lean",
+    "name": {
+      "en": "Leaning back holding hands",
+      "zh": "牵手后仰",
+      "ja": "手を繋いで後ろに倒れる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "comforting-pat",
+    "name": {
+      "en": "Comforting pat on back",
+      "zh": "安慰拍背",
+      "ja": "背中を軽くたたいて慰める"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "leapfrog",
+    "name": {
+      "en": "Leapfrog jump",
+      "zh": "跳山羊",
+      "ja": "馬跳び"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "conga-line",
+    "name": {
+      "en": "Conga line",
+      "zh": "康加舞队列",
+      "ja": "コンガ行列"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "mirror-palms",
+    "name": {
+      "en": "Mirror palms touching",
+      "zh": "掌心相对",
+      "ja": "掌を合わせる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

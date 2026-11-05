@@ -1,0 +1,392 @@
+[
+  {
+    "pose": "upright-neutral",
+    "name": {
+      "en": "Upright neutral",
+      "zh": "端正坐姿",
+      "ja": "背筋を伸ばして座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "legs-cross",
+    "name": {
+      "en": "Legs crossed",
+      "zh": "翘二郎腿",
+      "ja": "脚を組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "ankle-kn",
+    "name": {
+      "en": "Ankle on knee",
+      "zh": "脚踝搭在膝盖上",
+      "ja": "足首を膝に乗せる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "elbs-kns",
+    "name": {
+      "en": "Elbows on knees",
+      "zh": "手肘撑在膝盖上",
+      "ja": "肘を膝に乗せる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "slouched-bk",
+    "name": {
+      "en": "Slouched back",
+      "zh": "背部佝偻",
+      "ja": "背中を丸める"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sideways",
+    "name": {
+      "en": "Sitting sideways",
+      "zh": "侧身坐",
+      "ja": "横座り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arm-over-backrest",
+    "name": {
+      "en": "Arm over backrest",
+      "zh": "手臂搭在椅背上",
+      "ja": "腕を背もたれに掛ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "chin-hand",
+    "name": {
+      "en": "Chin on hand",
+      "zh": "手托下巴",
+      "ja": "顎に手を当てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "legs-stretch-out",
+    "name": {
+      "en": "Legs stretched out",
+      "zh": "双腿伸直",
+      "ja": "脚を伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "edge-perch",
+    "name": {
+      "en": "Perched on edge",
+      "zh": "坐在椅子边缘",
+      "ja": "椅子の端に腰掛ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "straddle-backwards",
+    "name": {
+      "en": "Straddling backwards",
+      "zh": "反向跨坐",
+      "ja": "後ろ向きに跨る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-clasped-lap",
+    "name": {
+      "en": "Hands clasped in lap",
+      "zh": "双手交叠于腿上",
+      "ja": "膝上で手を組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arms-cross",
+    "name": {
+      "en": "Seated with arms crossed",
+      "zh": "坐姿双臂交叉",
+      "ja": "腕を組んで座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-bk-hd",
+    "name": {
+      "en": "Seated, hands behind head",
+      "zh": "坐姿双手抱头",
+      "ja": "座って両手を頭後ろに"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "typing-desk",
+    "name": {
+      "en": "Typing at desk",
+      "zh": "桌前打字",
+      "ja": "デスクでタイピング"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "reading",
+    "name": {
+      "en": "Reading on chair",
+      "zh": "椅上阅读",
+      "ja": "椅子で読書"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-foot-tucked",
+    "name": {
+      "en": "One foot tucked under",
+      "zh": "坐姿单脚收于身下",
+      "ja": "片足を下へ引き込む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "feet-hooked-bk",
+    "name": {
+      "en": "Feet hooked back",
+      "zh": "坐姿双脚向后勾",
+      "ja": "座って両足を後ろに引く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-camera-look-over",
+    "name": {
+      "en": "Back turned looking over",
+      "zh": "背对镜头回头",
+      "ja": "背中を向けて振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-kns",
+    "name": {
+      "en": "Seated, hands on knees",
+      "zh": "坐姿双手放膝盖",
+      "ja": "座って膝に手を置く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lean-armrest",
+    "name": {
+      "en": "Leaning on armrest",
+      "zh": "倚靠扶手",
+      "ja": "肘掛けに寄りかかる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-arm-up",
+    "name": {
+      "en": "One arm raised",
+      "zh": "单臂举起",
+      "ja": "片腕を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stretching-oh",
+    "name": {
+      "en": "Stretching overhead",
+      "zh": "头顶伸展",
+      "ja": "頭上までストレッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kn-hugged-seat",
+    "name": {
+      "en": "Knee hugged on seat",
+      "zh": "抱膝坐",
+      "ja": "膝を抱えて座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hd-tilted-bk",
+    "name": {
+      "en": "Head tilted back",
+      "zh": "头部后仰",
+      "ja": "頭を後ろに反らす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hold-cup",
+    "name": {
+      "en": "Holding a cup",
+      "zh": "手持杯子",
+      "ja": "カップを持つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tying-shoe",
+    "name": {
+      "en": "Tying a shoe",
+      "zh": "系鞋带",
+      "ja": "靴紐を結ぶ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-under-thighs",
+    "name": {
+      "en": "Hands under thighs",
+      "zh": "双手置于大腿下",
+      "ja": "手を太ももの下へ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sofa-lounge",
+    "name": {
+      "en": "Lounging on sofa",
+      "zh": "沙发斜倚",
+      "ja": "ソファに斜めに寝そべる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "desk-edge-1-foot-down",
+    "name": {
+      "en": "Sitting on desk edge",
+      "zh": "坐桌沿一脚着地",
+      "ja": "デスクの端に座り片足を下ろす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

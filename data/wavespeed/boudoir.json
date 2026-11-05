@@ -1,0 +1,470 @@
+[
+  {
+    "pose": "prone-cheek-down-heel-up",
+    "name": {
+      "en": "Cheek on arms, heel up",
+      "zh": "趴卧，脸颊贴臂，脚跟抬起",
+      "ja": "うつ伏せ、頬を腕に当て、かかと上げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "prone-look-bk",
+    "name": {
+      "en": "Prone look back",
+      "zh": "趴卧回头",
+      "ja": "うつ伏せ振り返り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arm-over-eyes",
+    "name": {
+      "en": "Forearm over the eyes",
+      "zh": "前臂遮眼",
+      "ja": "前腕で目を隠す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pillow-hug-prone",
+    "name": {
+      "en": "Pillow hug",
+      "zh": "趴卧抱枕",
+      "ja": "うつ伏せで枕を抱く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "legs-up-wall",
+    "name": {
+      "en": "Legs up, ankles crossed",
+      "zh": "双腿靠墙，脚踝交叉",
+      "ja": "脚を壁に上げ、足首を交差"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bed-kneel-look-bk",
+    "name": {
+      "en": "Bed kneel look back",
+      "zh": "床上跪姿回头",
+      "ja": "ベッドで膝立ち振り返り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "headboard-kneel",
+    "name": {
+      "en": "Headboard kneel",
+      "zh": "床头跪姿",
+      "ja": "ヘッドボードで膝立ち"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kneel-fw-lean",
+    "name": {
+      "en": "Kneeling forward lean",
+      "zh": "跪姿前倾",
+      "ja": "膝立ちで前傾"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bed-edge-cross-recline",
+    "name": {
+      "en": "Bed edge crossed recline",
+      "zh": "床沿交叉斜倚",
+      "ja": "ベッド端で脚を交差して斜めに寝る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "morning-stretch",
+    "name": {
+      "en": "Morning bed stretch",
+      "zh": "床上晨间伸展",
+      "ja": "ベッドでの朝のストレッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "mirror-selfie-hip-pop",
+    "name": {
+      "en": "Mirror selfie hip pop",
+      "zh": "对镜自拍，顶胯",
+      "ja": "鏡の前でセルフィー、腰を突き出す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "mirror-selfie-bk-view",
+    "name": {
+      "en": "Back view mirror selfie",
+      "zh": "对镜自拍背影",
+      "ja": "鏡の前で背面セルフィー"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "robe-slip-bk-view",
+    "name": {
+      "en": "Robe slipping off",
+      "zh": "睡袍滑落背影",
+      "ja": "ローブが滑り落ちる背面"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "shower-hair-rinse",
+    "name": {
+      "en": "Shower hair rinse",
+      "zh": "淋浴冲洗头发",
+      "ja": "シャワーで髪を流す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-view-hair-up-arch",
+    "name": {
+      "en": "Back view hair up",
+      "zh": "背影盘发后仰",
+      "ja": "背面、髪を束ねて背を反る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "chest-fw-lean",
+    "name": {
+      "en": "Chest forward lean",
+      "zh": "胸部前倾",
+      "ja": "胸を前に出す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arched-profile",
+    "name": {
+      "en": "Arched profile",
+      "zh": "侧身后仰",
+      "ja": "横顔で背を反る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bare-bk-glance",
+    "name": {
+      "en": "Bare back glance",
+      "zh": "裸背回眸",
+      "ja": "裸の背中、振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "doorway-stretch",
+    "name": {
+      "en": "Doorway stretch",
+      "zh": "门口伸展",
+      "ja": "ドア枠でのストレッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bathtub-leg-up",
+    "name": {
+      "en": "Bathtub leg up",
+      "zh": "浴缸抬腿",
+      "ja": "浴槽で脚を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tub-kneel-bk-view",
+    "name": {
+      "en": "Tub kneel back view",
+      "zh": "浴缸跪姿背影",
+      "ja": "浴槽で膝立ちの背面"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sofa-stretch",
+    "name": {
+      "en": "Sofa stretch",
+      "zh": "沙发伸展",
+      "ja": "ソファでのストレッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sofa-backrest-kneel",
+    "name": {
+      "en": "Sofa backrest kneel",
+      "zh": "沙发靠背跪姿",
+      "ja": "ソファ背もたれで膝立ち"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "stocking-roll-seated",
+    "name": {
+      "en": "Stocking roll",
+      "zh": "坐姿卷丝袜",
+      "ja": "座ってストッキングを巻く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "heel-strap-adjust",
+    "name": {
+      "en": "Heel strap adjust",
+      "zh": "调整鞋跟带",
+      "ja": "ヒールのストラップを調整"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "crawl-toward-camera",
+    "name": {
+      "en": "Crawl toward camera",
+      "zh": "向镜头爬行",
+      "ja": "カメラに向かって這う"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bed-edge-fw-lean",
+    "name": {
+      "en": "Bed edge forward lean",
+      "zh": "床沿前倾",
+      "ja": "ベッド端で前傾"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "upside-down-gaze",
+    "name": {
+      "en": "Upside-down gaze",
+      "zh": "倒置凝视",
+      "ja": "逆さで見る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "oh-pull",
+    "name": {
+      "en": "Overhead pull",
+      "zh": "头顶下拉",
+      "ja": "頭上から引き下げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "vanity-mirror-lean",
+    "name": {
+      "en": "Vanity mirror lean",
+      "zh": "梳妆镜前倚靠",
+      "ja": "化粧鏡に寄りかかる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "floor-against-bed",
+    "name": {
+      "en": "Sitting against the bed",
+      "zh": "靠床而坐",
+      "ja": "ベッドに背もたれして座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-bk-bk",
+    "name": {
+      "en": "Hands clasped behind back",
+      "zh": "双手背后交握",
+      "ja": "両手を背中で組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pillow-recline",
+    "name": {
+      "en": "Pillow pile recline",
+      "zh": "倚靠枕头堆",
+      "ja": "枕の山に寄りかかる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kn-bed-look-bk",
+    "name": {
+      "en": "Knee on the bed",
+      "zh": "单膝上床回眸",
+      "ja": "片膝をベッドに乗せて振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-lie-hip-trace",
+    "name": {
+      "en": "Side lie hip trace",
+      "zh": "侧卧髋部曲线",
+      "ja": "横臥の腰のライン"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-hair-arch",
+    "name": {
+      "en": "Hands in hair arch",
+      "zh": "双手抚发后仰",
+      "ja": "手を髪に埋めて背を反る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

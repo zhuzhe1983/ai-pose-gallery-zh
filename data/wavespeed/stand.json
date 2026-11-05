@@ -1,0 +1,522 @@
+[
+  {
+    "pose": "neutral-stance",
+    "name": {
+      "en": "Neutral stance",
+      "zh": "自然站立",
+      "ja": "自然な立ち姿"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-hips",
+    "name": {
+      "en": "Hands on hips",
+      "zh": "双手叉腰",
+      "ja": "両手を腰に当てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arms-cross",
+    "name": {
+      "en": "Arms crossed",
+      "zh": "双臂交叉",
+      "ja": "腕を組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "contrapposto",
+    "name": {
+      "en": "Classic contrapposto",
+      "zh": "经典对立式站姿",
+      "ja": "コントラポスト"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-pocket",
+    "name": {
+      "en": "Hand in pocket",
+      "zh": "单手插兜",
+      "ja": "片手をポケットに入れる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "both-hands-pockets",
+    "name": {
+      "en": "Both hands in pockets",
+      "zh": "双手插兜",
+      "ja": "両手をポケットに入れる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lean-wall",
+    "name": {
+      "en": "Leaning on wall",
+      "zh": "倚靠墙壁",
+      "ja": "壁に寄りかかる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "look-over-sh",
+    "name": {
+      "en": "Looking back over shoulder",
+      "zh": "回头望",
+      "ja": "肩越しに振り返る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "waving",
+    "name": {
+      "en": "Waving hello",
+      "zh": "挥手致意",
+      "ja": "手を振る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pointing-fw",
+    "name": {
+      "en": "Pointing forward",
+      "zh": "指向前方",
+      "ja": "前方を指す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pointing-side",
+    "name": {
+      "en": "Pointing to the side",
+      "zh": "指向侧面",
+      "ja": "横を指す"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "oh-stretch",
+    "name": {
+      "en": "Overhead stretch",
+      "zh": "头顶伸展",
+      "ja": "頭上ストレッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-stretch",
+    "name": {
+      "en": "Side stretch",
+      "zh": "侧身伸展",
+      "ja": "サイドストレッチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "walking-toward-camera",
+    "name": {
+      "en": "Walking toward camera",
+      "zh": "向镜头走来",
+      "ja": "カメラに向かって歩く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "mid-stride-profile",
+    "name": {
+      "en": "Mid-stride profile",
+      "zh": "迈步侧影",
+      "ja": "歩く姿の側面"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "weight-1-leg",
+    "name": {
+      "en": "Weight on one leg",
+      "zh": "单腿承重",
+      "ja": "片足に体重をかける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arms-up-v",
+    "name": {
+      "en": "Arms raised in V",
+      "zh": "双臂高举呈V形",
+      "ja": "腕をV字に上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-clasped-front",
+    "name": {
+      "en": "Hands clasped in front",
+      "zh": "双手交握于前",
+      "ja": "前で手を組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-bk-bk",
+    "name": {
+      "en": "Hands behind back",
+      "zh": "双手背在身后",
+      "ja": "手を背中に組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arms-out",
+    "name": {
+      "en": "Arms outstretched wide",
+      "zh": "双臂平伸",
+      "ja": "腕を広げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-chin",
+    "name": {
+      "en": "Hand on chin",
+      "zh": "手托下巴",
+      "ja": "顎に手を当てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bk-camera",
+    "name": {
+      "en": "Back to camera",
+      "zh": "背对镜头",
+      "ja": "カメラに背を向ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "feet-wide-apart",
+    "name": {
+      "en": "Wide power stance",
+      "zh": "宽距站姿",
+      "ja": "足を大きく開いて立つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-hand-up",
+    "name": {
+      "en": "One hand raised high",
+      "zh": "单手高举",
+      "ja": "片手を高く上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "thumbs-up",
+    "name": {
+      "en": "Thumbs up",
+      "zh": "竖起大拇指",
+      "ja": "親指を立てる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "shrug",
+    "name": {
+      "en": "Shrugging shoulders",
+      "zh": "耸肩",
+      "ja": "肩をすくめる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "look-up",
+    "name": {
+      "en": "Looking up",
+      "zh": "抬头仰望",
+      "ja": "上を見上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "look-down",
+    "name": {
+      "en": "Looking down",
+      "zh": "低头俯视",
+      "ja": "下を見下ろす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tiptoes",
+    "name": {
+      "en": "On tiptoes",
+      "zh": "踮起脚尖",
+      "ja": "つま先立ち"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "cross-ankles",
+    "name": {
+      "en": "Ankles crossed",
+      "zh": "脚踝交叉",
+      "ja": "足首を組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-shielding-eyes",
+    "name": {
+      "en": "Shielding eyes",
+      "zh": "手遮阳光远眺",
+      "ja": "手をかざして遠くを見る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-bk-hd",
+    "name": {
+      "en": "Hands behind head",
+      "zh": "双手抱头",
+      "ja": "両手を頭後ろに"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "profile-stance",
+    "name": {
+      "en": "Full profile stance",
+      "zh": "正侧面站姿",
+      "ja": "真横を向いて立つ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "3-quarter-turn",
+    "name": {
+      "en": "Three-quarter turn",
+      "zh": "四分之三侧身",
+      "ja": "斜め向きの立ち姿"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "elb-wall",
+    "name": {
+      "en": "Elbow propped on wall",
+      "zh": "肘撑墙",
+      "ja": "肘を壁に突く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "fists-at-sides",
+    "name": {
+      "en": "Fists at sides",
+      "zh": "双拳垂于身侧",
+      "ja": "両拳を体側に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-kns",
+    "name": {
+      "en": "Bent over, hands on knees",
+      "zh": "弯腰手撑膝",
+      "ja": "前屈み、手を膝に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-pressed-together",
+    "name": {
+      "en": "Palms pressed together",
+      "zh": "双手合十",
+      "ja": "両掌を合わせる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-hand-hip",
+    "name": {
+      "en": "One hand on hip",
+      "zh": "单手叉腰",
+      "ja": "片手を腰に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "palms-open-fw",
+    "name": {
+      "en": "Palms open forward",
+      "zh": "掌心向前张开",
+      "ja": "掌を前に開く"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

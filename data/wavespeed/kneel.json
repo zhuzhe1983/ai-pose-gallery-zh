@@ -1,0 +1,327 @@
+[
+  {
+    "pose": "upright",
+    "name": {
+      "en": "Upright kneel",
+      "zh": "直立跪姿",
+      "ja": "直立膝立ち"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sit-heels",
+    "name": {
+      "en": "Sitting on heels",
+      "zh": "坐于脚后跟",
+      "ja": "かかと座り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-kn-down",
+    "name": {
+      "en": "One knee down",
+      "zh": "单膝跪地",
+      "ja": "片膝着地"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "deep-squat-arms-kns",
+    "name": {
+      "en": "Deep squat arms on knees",
+      "zh": "深蹲手臂撑膝",
+      "ja": "深スクワット腕を膝に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "crouch-1-hand-ground",
+    "name": {
+      "en": "Crouch one hand down",
+      "zh": "蹲姿单手撑地",
+      "ja": "しゃがみ片手着地"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "half-kneel-look-up",
+    "name": {
+      "en": "Half kneel looking up",
+      "zh": "半跪抬头",
+      "ja": "片膝立ち上を見上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lean-fw-hands-floor",
+    "name": {
+      "en": "Kneeling on all fours",
+      "zh": "跪姿俯身双手撑地",
+      "ja": "膝立ち前傾両手着地"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "squat-heels-up",
+    "name": {
+      "en": "Squat heels up",
+      "zh": "踮脚蹲姿",
+      "ja": "つま先立ちスクワット"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-thighs-look-down",
+    "name": {
+      "en": "Kneel hands on thighs",
+      "zh": "跪姿手扶大腿低头",
+      "ja": "膝立ち太ももに手低頭"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "child-pose",
+    "name": {
+      "en": "Folded forward on knees",
+      "zh": "跪姿前俯",
+      "ja": "膝立ち前屈み"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arms-up-oh",
+    "name": {
+      "en": "Kneeling arms raised",
+      "zh": "跪姿双臂上举",
+      "ja": "膝立ちで両腕を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-kn-chin-fist",
+    "name": {
+      "en": "One knee chin on fist",
+      "zh": "单膝跪地下巴抵拳",
+      "ja": "片膝立ち顎を拳に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "squat-hands-clasped",
+    "name": {
+      "en": "Squat hands clasped",
+      "zh": "蹲姿双手交握",
+      "ja": "スクワット両手組む"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "squat-reaching-fw",
+    "name": {
+      "en": "Squat reaching forward",
+      "zh": "蹲姿前伸",
+      "ja": "スクワット前方に伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sprinter-start",
+    "name": {
+      "en": "Sprinter start crouch",
+      "zh": "起跑蹲姿",
+      "ja": "スタート姿勢"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "side-view-arms-cross",
+    "name": {
+      "en": "Kneeling arms crossed",
+      "zh": "跪姿侧视双臂交叉",
+      "ja": "膝立ち側面腕組み"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "torso-twist-look-bk",
+    "name": {
+      "en": "Kneeling twist back",
+      "zh": "跪姿扭转躯干回头",
+      "ja": "膝立ち体幹捻り振り返り"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "half-kneel-hands-hips",
+    "name": {
+      "en": "Half kneel hands on hips",
+      "zh": "半跪双手叉腰",
+      "ja": "片膝立ち両手腰"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "reaching-side",
+    "name": {
+      "en": "Kneeling reaching to side",
+      "zh": "跪姿侧伸",
+      "ja": "膝立ち横に伸ばす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "squat-hugging-shins",
+    "name": {
+      "en": "Squat hugging shins",
+      "zh": "蹲姿抱小腿",
+      "ja": "スクワット脛を抱える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lean-bk-hands",
+    "name": {
+      "en": "Kneeling leaning back",
+      "zh": "跪姿后仰手撑地",
+      "ja": "膝立ち後傾手着地"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-kn-both-hands-kn",
+    "name": {
+      "en": "One knee leaning on knee",
+      "zh": "单膝跪地双手扶膝",
+      "ja": "片膝立ち両手膝に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "crouch-hands-kns",
+    "name": {
+      "en": "Crouch hands on knees",
+      "zh": "蹲姿双手撑膝",
+      "ja": "しゃがみ両手膝に"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "shading-eyes",
+    "name": {
+      "en": "Kneeling shading eyes",
+      "zh": "跪姿手遮阳光",
+      "ja": "膝立ちで目の上に手をかざす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hands-pressed-together",
+    "name": {
+      "en": "Kneeling hands pressed together",
+      "zh": "跪姿双手合十",
+      "ja": "膝立ち両手合わせ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

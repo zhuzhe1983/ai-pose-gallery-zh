@@ -1,0 +1,392 @@
+[
+  {
+    "pose": "stand-embrace-kiss",
+    "name": {
+      "en": "Standing embrace kiss",
+      "zh": "站立拥抱接吻",
+      "ja": "立ち寄り添いキス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "dip-kiss",
+    "name": {
+      "en": "Dramatic dip kiss",
+      "zh": "后仰接吻",
+      "ja": "ディップキス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "tiptoe-kiss",
+    "name": {
+      "en": "Tiptoe kiss",
+      "zh": "踮脚接吻",
+      "ja": "つま先立ちキス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "forehead-forehead",
+    "name": {
+      "en": "Forehead to forehead",
+      "zh": "额头相抵",
+      "ja": "額合わせ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "nose-nose",
+    "name": {
+      "en": "Nose to nose",
+      "zh": "鼻尖相触",
+      "ja": "鼻先合わせ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "embrace-from-bk",
+    "name": {
+      "en": "Embrace from behind",
+      "zh": "背后拥抱",
+      "ja": "背後から抱擁"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "cheek-kiss-bk",
+    "name": {
+      "en": "Cheek kiss from behind",
+      "zh": "背后脸颊吻",
+      "ja": "背後から頬にキス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hugging-lift",
+    "name": {
+      "en": "Hugging lift",
+      "zh": "拥抱抱起",
+      "ja": "抱き上げ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "bridal-carry",
+    "name": {
+      "en": "Bridal carry",
+      "zh": "新娘抱",
+      "ja": "花嫁抱き"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "slow-dance-sway",
+    "name": {
+      "en": "Slow dance sway",
+      "zh": "慢舞摇摆",
+      "ja": "スローダンスの揺れ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "cheek-cheek-dance",
+    "name": {
+      "en": "Cheek to cheek dance",
+      "zh": "脸颊相贴共舞",
+      "ja": "頬を寄せたダンス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "spooning",
+    "name": {
+      "en": "Spooning on bed",
+      "zh": "床上侧卧相拥",
+      "ja": "横向きに寝て後ろから抱きしめる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hd-chest",
+    "name": {
+      "en": "Head on chest lying",
+      "zh": "躺姿头靠胸口",
+      "ja": "横たわって胸に頭を預ける"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "face-face-lying",
+    "name": {
+      "en": "Face to face lying",
+      "zh": "躺姿面对面",
+      "ja": "横たわって向かい合う"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lying-hd-hd",
+    "name": {
+      "en": "Lying head to head",
+      "zh": "躺姿头靠头",
+      "ja": "横たわって頭を寄せる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "nestled-sit",
+    "name": {
+      "en": "Nestled seated lean",
+      "zh": "坐姿依偎",
+      "ja": "寄り添って座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "close-whisper-embrace",
+    "name": {
+      "en": "Close whisper embrace",
+      "zh": "贴近耳语拥抱",
+      "ja": "密着して囁く抱擁"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-kiss",
+    "name": {
+      "en": "Hand kiss",
+      "zh": "吻手",
+      "ja": "手へのキス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "piggyback-cheek-kiss",
+    "name": {
+      "en": "Piggyback cheek kiss",
+      "zh": "背驮脸颊吻",
+      "ja": "背中に乗せて頬にキス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hand-hand-gaze",
+    "name": {
+      "en": "Hand in hand gaze",
+      "zh": "牵手凝视",
+      "ja": "手を繋いで見つめ合う"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "underarm-twirl",
+    "name": {
+      "en": "Underarm twirl",
+      "zh": "牵手举臂转圈",
+      "ja": "つないだ手の下をくぐって回る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "legs-over-lap",
+    "name": {
+      "en": "Legs over lap",
+      "zh": "腿搭膝上",
+      "ja": "脚を膝に乗せる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "forehead-kiss",
+    "name": {
+      "en": "Forehead kiss",
+      "zh": "额头吻",
+      "ja": "額へのキス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sideways-lap-sit",
+    "name": {
+      "en": "Sideways lap sit",
+      "zh": "侧坐腿上",
+      "ja": "相手の膝に横向きに座る"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "lean-over-kiss-lying",
+    "name": {
+      "en": "Leaning over kiss lying",
+      "zh": "躺姿俯身接吻",
+      "ja": "横たわって身を乗り出してキス"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "running-leap-hug",
+    "name": {
+      "en": "Running leap hug",
+      "zh": "奔跑跳跃拥抱",
+      "ja": "走って飛び込んで抱擁"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-kn-proposal",
+    "name": {
+      "en": "One-knee proposal",
+      "zh": "单膝跪地求婚",
+      "ja": "片膝跪きのプロポーズ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "first-look-tap",
+    "name": {
+      "en": "First look tap",
+      "zh": "初见时轻拍对方",
+      "ja": "ファーストルックで肩を軽くたたく"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "sofa-recline-cuddle",
+    "name": {
+      "en": "Sofa recline cuddle",
+      "zh": "沙发斜倚依偎",
+      "ja": "ソファに斜めに寄り添う"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "seated-forehead-touch",
+    "name": {
+      "en": "Seated forehead touch",
+      "zh": "坐姿额头相触",
+      "ja": "座って額を触れる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]

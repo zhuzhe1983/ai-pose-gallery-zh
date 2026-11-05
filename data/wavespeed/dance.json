@@ -1,0 +1,262 @@
+[
+  {
+    "pose": "arabesque",
+    "name": {
+      "en": "Ballet arabesque",
+      "zh": "芭蕾阿拉贝斯克",
+      "ja": "バレエ アラベスク"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "first-position",
+    "name": {
+      "en": "First position arms rounded",
+      "zh": "芭蕾一位手・双臂成圆",
+      "ja": "第1ポジション・腕を丸く構える"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "pirouette-prep",
+    "name": {
+      "en": "Pirouette preparation",
+      "zh": "旋转准备",
+      "ja": "ピルエット 準備"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hiphop-freeze",
+    "name": {
+      "en": "Hip-hop freeze",
+      "zh": "嘻哈定格",
+      "ja": "ヒップホップ フリーズ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "1-hand-freeze",
+    "name": {
+      "en": "Breakdance one-hand freeze",
+      "zh": "霹雳舞单手定格",
+      "ja": "ブレイクダンス 片手フリーズ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "jazz-hands",
+    "name": {
+      "en": "Jazz hands",
+      "zh": "爵士手势",
+      "ja": "ジャズ ハンド"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "flamenco-arms",
+    "name": {
+      "en": "Flamenco arm line",
+      "zh": "弗拉门戈手臂线条",
+      "ja": "フラメンコ 腕のライン"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "floor-reach",
+    "name": {
+      "en": "Contemporary floor reach",
+      "zh": "现代舞地面伸展",
+      "ja": "コンテンポラリー 床へのリーチ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "spin-arms-wide",
+    "name": {
+      "en": "Spin with arms wide",
+      "zh": "双臂展开旋转",
+      "ja": "腕を広げて回転"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "grand-jete",
+    "name": {
+      "en": "Grand jete leap",
+      "zh": "大跳",
+      "ja": "グラン・ジェット"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "final-bow",
+    "name": {
+      "en": "Final bow",
+      "zh": "谢幕鞠躬",
+      "ja": "フィナーレの礼"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "conductor-arms",
+    "name": {
+      "en": "Conductor raised arms",
+      "zh": "指挥家抬臂",
+      "ja": "指揮者 腕を上げる"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "attitude",
+    "name": {
+      "en": "Ballet attitude",
+      "zh": "芭蕾阿蒂蒂",
+      "ja": "バレエ アティテュード"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "grand-plie",
+    "name": {
+      "en": "Grand plie",
+      "zh": "大蹲",
+      "ja": "グラン・プリエ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "charleston-kick",
+    "name": {
+      "en": "Charleston kick",
+      "zh": "查尔斯顿踢腿",
+      "ja": "チャールストン キック"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "ballroom-frame",
+    "name": {
+      "en": "Ballroom frame",
+      "zh": "交谊舞架型",
+      "ja": "ボールルーム フレーム"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "vogue-angles",
+    "name": {
+      "en": "Vogue angular pose",
+      "zh": "沃格棱角姿态",
+      "ja": "ヴォーグ 角度のあるポーズ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "arm-wave",
+    "name": {
+      "en": "Arm wave",
+      "zh": "手臂波浪",
+      "ja": "アームウェーブ"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "kn-slide",
+    "name": {
+      "en": "Knee slide",
+      "zh": "膝盖滑动",
+      "ja": "ニー スライド"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  },
+  {
+    "pose": "hula-sway",
+    "name": {
+      "en": "Hula sway",
+      "zh": "草裙舞摆动",
+      "ja": "フラダンスで腰を揺らす"
+    },
+    "views": [
+      "f",
+      "d",
+      "s"
+    ]
+  }
+]
