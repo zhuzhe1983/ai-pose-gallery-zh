@@ -49,7 +49,8 @@ for (const lang of ['en','ja']) {
   const ui=read('data/ui.json')[lang], labels=[ui.angleFront,ui.angleDiag,ui.angleSide];
   translated.forEach(r => assert.ok(r['姿势名称'] && labels.includes(r['角度']) && r.source));
 }
-assert.equal(Object.keys(EXPERIMENTAL_POSES).length, 231);
+// EXPERIMENTAL_POSES combines classic canonical drafts (231) plus locally-generated WaveSpeed drafts.
+assert.ok(Object.keys(EXPERIMENTAL_POSES).length >= 231);
 for (const [id, meta] of Object.entries(EXPERIMENTAL_POSES)) {
   const draft = read(`data/experimental-poses/${id}.json`);
   assert.equal(draft.id, id); assert.equal(draft.status, 'experimental-unapproved');
@@ -64,4 +65,5 @@ for (const [id, meta] of Object.entries(EXPERIMENTAL_POSES)) {
       assert.ok(q.length === 4 && q.every(Number.isFinite) && Math.abs(Math.hypot(...q)-1)<1e-5);
   }
 }
-console.log('Added references: 491 poses, 2946 provenance-checked images, 15 categories, 3 languages; 231 unapproved canonical 3D scenes.');
+const wsDrafts = Object.keys(EXPERIMENTAL_POSES).filter(id => id.startsWith('ws_')).length;
+console.log(`Added references: 491 poses, 2946 provenance-checked images, 15 categories, 3 languages; ${Object.keys(EXPERIMENTAL_POSES).length} unapproved canonical 3D scenes (${wsDrafts} WaveSpeed).`);
