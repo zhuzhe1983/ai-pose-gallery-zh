@@ -1211,12 +1211,22 @@ async function categoryRows(system, category) {
 }
 function renderCollections() {
   const previous = $("collection").value;
-  $("collection").replaceChildren(
-    ...Object.entries(catalog.systems).map(
-      ([k, v]) => new Option(localName(v.name), k),
-    ),
-  );
-  $("collection").value = previous || "solo";
+  const sel = $("collection");
+  sel.replaceChildren();
+  // Group pose systems exactly like the home page: WaveSpeed first, then the classic hand-drawn systems.
+  const wsGroup = document.createElement("optgroup");
+  wsGroup.label = t("groupWs");
+  const handGroup = document.createElement("optgroup");
+  handGroup.label = t("groupHanddrawn");
+  for (const [k, v] of Object.entries(catalog.systems)) {
+    const opt = new Option(localName(v.name), k);
+    opt.dataset.system = k;
+    if (k === "ws") wsGroup.appendChild(opt);
+    else handGroup.appendChild(opt);
+  }
+  sel.append(wsGroup, handGroup);
+  // Default to WaveSpeed just like the gallery index, which lists WaveSpeed first.
+  sel.value = previous && catalog.systems[previous] ? previous : "ws";
   renderCategories();
 }
 function renderCategories() {

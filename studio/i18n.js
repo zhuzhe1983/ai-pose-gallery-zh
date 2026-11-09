@@ -316,6 +316,8 @@ const rows = {
   ],
   poseLibrary: ["姿势起点", "Pose starting points", "ポーズを選ぶ"],
   collection: ["体系", "Collection", "種類"],
+  groupWs: ["WaveSpeed", "WaveSpeed", "WaveSpeed"],
+  groupHanddrawn: ["手绘线稿", "Hand-drawn", "手描き"],
   category: ["分类", "Category", "カテゴリ"],
   search: ["搜索姿势", "Search poses", "ポーズを検索"],
   presetHint: [
