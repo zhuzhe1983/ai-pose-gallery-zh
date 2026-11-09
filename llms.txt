@@ -1,21 +1,24 @@
-# AI Pose Gallery
+# FitRoom · Virtual Fitting Room
 
-> 779 poses, 2912 multi-angle mannequin references. Chinese, English and Japanese UI and pose labels. Public static files; no authentication. This site supplies reference images, not an image-generation API.
+> 779 multi-angle poses (2,912 mannequin references + 1,473 WaveSpeed line art), 2,727 realistic & anime outfits, and 1,499 CC0 AI model portraits. Chinese, English and Japanese UI. Public static files; no authentication. This site supplies reference images, not a hosted image-generation API.
 
 - Site: https://zhuzhe1983.github.io/ai-pose-gallery-zh/
+- Wardrobe & Fitting Room: https://zhuzhe1983.github.io/ai-pose-gallery-zh/fitting/
+- Credits & Attribution: https://zhuzhe1983.github.io/ai-pose-gallery-zh/CREDITS.md
 - Agent skill: https://zhuzhe1983.github.io/ai-pose-gallery-zh/skills/ai-pose-gallery/SKILL.md
 - Optional Python helper: https://zhuzhe1983.github.io/ai-pose-gallery-zh/skills/ai-pose-gallery/scripts/pose_ref.py
-- Collection/category directory: https://zhuzhe1983.github.io/ai-pose-gallery-zh/data/catalog.json
+- Pose catalog directory: https://zhuzhe1983.github.io/ai-pose-gallery-zh/data/catalog.json
+- Wardrobe & portrait catalog: https://zhuzhe1983.github.io/ai-pose-gallery-zh/data/nvzhuang/catalog.json
 - Example small category: https://zhuzhe1983.github.io/ai-pose-gallery-zh/data/catalog/solo/sit.json
 - Example original: https://zhuzhe1983.github.io/ai-pose-gallery-zh/img/solo_sit_lean-bk-kn-up_f.png
 
-Original path: img/{type}_{category}_{pose}_{view}.png
+Original pose path: img/{type}_{category}_{pose}_{view}.png
 Thumbnail path: thumbs/{type}_{category}_{pose}_{view}.jpg
 Types: solo, sexy, upper, duo. Views: f (front), d (three-quarter), s (side), hi (high angle), lo (low angle).
 Known exact name: fetch directly. Unknown pose: read one category at data/catalog/{type}/{category}.json for canonical pose names and available views. Do not download the full index for a single lookup. Filenames are stable lowercase ASCII, at most 64 characters; display-language changes do not affect URLs.
 Originals are 900x1200 PNG drawings, not precomputed OpenPose skeletons. Attach the actual image to the generation tool as a reference; merely placing a URL in the prompt is not a reference-image input.
 
-UI language links: ?lang=zh, ?lang=en, ?lang=ja. Image rights belong to the original creator ギア; the code's MIT license does not cover images or original data.
+UI language links: ?lang=zh, ?lang=en, ?lang=ja. Original pose rights belong to ギア; WaveSpeed poses belong to WaveSpeed AI; outfits come from paipiange/nvzhuang (MIT); AI model portraits come from ai-portrait-gallery by あぎ (CC0 1.0). See CREDITS.md for full scope.
 
 ## Editable 3D pose references
 - Studio: https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/

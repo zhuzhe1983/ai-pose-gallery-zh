@@ -48,7 +48,7 @@ def load_reviews(root, groups):
         if current:
             try:
                 current = all(isinstance(sha, str) and len(sha) == 64 and
-                              relative.startswith(('img/', 'output/offline-pose/')) and
+                              relative.startswith(('img/', 'data/wavespeed/', 'output/offline-pose/')) and
                               fingerprint(root, relative) == sha
                               for relative, sha in evidence.items())
             except (OSError, ValueError, TypeError):

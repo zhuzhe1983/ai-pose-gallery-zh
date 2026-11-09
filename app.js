@@ -10,7 +10,7 @@ const t = (key, values = {}) => (UI[key] || key).replace(/\{(\w+)\}/g, (_, name)
 const ANGLES = [];
 
 const PAGE_SIZE = { pose: 60, single: 96 };
-const state = { line: '', category: '', angle: '', query: '', view: 'pose', shown: PAGE_SIZE.pose };
+const state = { source: '', line: '', category: '', angle: '', query: '', view: 'pose', shown: PAGE_SIZE.pose };
 const $ = selector => document.querySelector(selector);
 const grid = $('#grid');
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -78,10 +78,11 @@ function prepareData(data) {
   DATA = data;
   LINES = [...new Set(DATA.map(item => item.体系))];
   DATA.forEach(item => {
+    item._source = item.id.startsWith('ws_') ? 'ws' : 'classic';
     item._search = `${item.检索} ${item.姿势编号}`.toLowerCase();
     const key = groupKey(item);
     if (!groupMap.has(key)) {
-      const group = { key, system: item.体系, number: item.姿势编号, name: item.姿势名称, category: item.分类, items: [], angles: {}, order: [] };
+      const group = { key, source: item._source, system: item.体系, number: item.姿势编号, name: item.姿势名称, category: item.分类, items: [], angles: {}, order: [] };
       groupMap.set(key, group);
       GROUPS.push(group);
     }
@@ -89,7 +90,7 @@ function prepareData(data) {
     group.items.push(item);
     if (item.角度 && !group.angles[item.角度]) group.angles[item.角度] = item;
   });
-  GROUPS.sort((a, b) => (LINES.indexOf(a.system) - LINES.indexOf(b.system)) || String(a.number).localeCompare(String(b.number)));
+  GROUPS.sort((a, b) => (a.source === b.source ? 0 : a.source === 'ws' ? -1 : 1) || (LINES.indexOf(a.system) - LINES.indexOf(b.system)) || String(a.number).localeCompare(String(b.number)));
   GROUPS.forEach(group => {
     group.order = ANGLES.map(angle => group.angles[angle]).filter(Boolean);
     group.items.forEach(item => { if (!group.order.includes(item)) group.order.push(item); });
@@ -103,12 +104,44 @@ function prepareData(data) {
 }
 
 function renderTabs() {
-  const tabs = [['', t('all'), DATA.length, GROUPS.length], ...LINES.map(line => [line, line, DATA.filter(item => item.体系 === line).length, GROUPS.filter(group => group.system === line).length])];
-  $('#lineTabs').innerHTML = tabs.map(([value, label, images, poses]) => `<button class="line-tab" type="button" role="tab" data-line="${esc(value)}" aria-selected="${state.line === value}"><span class="tab-name">${esc(label)}</span><span class="tab-count">${t('tabCount', { images: format(images), poses: format(poses) })}</span></button>`).join('');
+  const wsImages = DATA.filter(item => item._source === 'ws').length;
+  const wsPoses = GROUPS.filter(group => group.source === 'ws').length;
+  const classicImages = DATA.length - wsImages;
+  const classicPoses = GROUPS.length - wsPoses;
+  const sourceTabs = [
+    ['', t('sourceAll'), DATA.length, GROUPS.length],
+    ['ws', t('sourceWs'), wsImages, wsPoses],
+    ['classic', t('sourceClassic'), classicImages, classicPoses],
+  ];
+  $('#sourceTabs').innerHTML = sourceTabs.map(([value, label, images, poses]) =>
+    `<button class="line-tab" type="button" role="tab" data-source="${value}" aria-selected="${state.source === value}"><span class="tab-name">${esc(label)}</span><span class="tab-count">${t('tabCount', { images: format(images), poses: format(poses) })}</span></button>`
+  ).join('');
+
+  const subItems = [];
+  const totalInSource = state.source ? GROUPS.filter(g => g.source === state.source).length : GROUPS.length;
+  subItems.push({ kind: 'all', value: '', label: t('subAll'), count: totalInSource, active: !state.line && !(state.source === 'ws' && state.category) && !(state.source === '' && state.category) });
+
+  if (!state.source || state.source === 'ws') {
+    const wsCats = [...new Set(DATA.filter(i => i._source === 'ws').map(i => i.分类).filter(Boolean))];
+    for (const cat of wsCats) {
+      const count = GROUPS.filter(g => g.source === 'ws' && g.category === cat).length;
+      subItems.push({ kind: 'ws-cat', value: cat, label: cat, count, active: state.category === cat && (!state.source || state.source === 'ws') && !state.line });
+    }
+  }
+  if (!state.source || state.source === 'classic') {
+    const classicLines = LINES.filter(line => DATA.some(i => i._source === 'classic' && i.体系 === line));
+    for (const line of classicLines) {
+      const count = GROUPS.filter(g => g.source === 'classic' && g.system === line).length;
+      subItems.push({ kind: 'classic-line', value: line, label: line, count, active: state.line === line });
+    }
+  }
+  $('#lineTabs').innerHTML = subItems.map(item =>
+    `<button class="line-tab sub" type="button" role="tab" data-kind="${item.kind}" data-value="${esc(item.value)}" aria-selected="${item.active}"><span class="tab-name">${esc(item.label)}</span><span class="tab-count">${format(item.count)}</span></button>`
+  ).join('');
 }
 
 function renderCategoryOptions() {
-  const categories = [...new Set(DATA.filter(item => !state.line || item.体系 === state.line).map(item => item.分类).filter(Boolean))].sort((a, b) => a.localeCompare(b, languages[LANG]));
+  const categories = [...new Set(DATA.filter(item => (!state.source || item._source === state.source) && (!state.line || item.体系 === state.line)).map(item => item.分类).filter(Boolean))].sort((a, b) => a.localeCompare(b, languages[LANG]));
   $('#categorySelect').innerHTML = `<option value="">${t('allCategories')}</option>` + categories.map(category => `<option value="${esc(category)}"${state.category === category ? ' selected' : ''}>${esc(category)}</option>`).join('');
 }
 
@@ -117,7 +150,8 @@ function renderAngleFilter() {
 }
 
 function hit(item) {
-  return (!state.line || item.体系 === state.line) &&
+  return (!state.source || item._source === state.source) &&
+    (!state.line || item.体系 === state.line) &&
     (!state.category || item.分类 === state.category) &&
     (!state.angle || item.角度 === state.angle) &&
     (!state.query || item._search.includes(state.query));
@@ -153,7 +187,15 @@ function singleCard(entry, index) {
 }
 
 function syncControls() {
-  document.querySelectorAll('.line-tab').forEach(button => button.setAttribute('aria-selected', button.dataset.line === state.line));
+  document.querySelectorAll('#sourceTabs .line-tab').forEach(button => button.setAttribute('aria-selected', button.dataset.source === state.source));
+  document.querySelectorAll('#lineTabs .line-tab').forEach(button => {
+    const active = button.dataset.kind === 'all'
+      ? (!state.line && !(state.category && (!state.source || state.source === 'ws')))
+      : button.dataset.kind === 'ws-cat'
+        ? (state.category === button.dataset.value && !state.line)
+        : (state.line === button.dataset.value);
+    button.setAttribute('aria-selected', active);
+  });
   document.querySelectorAll('#angleFilter button').forEach(button => button.setAttribute('aria-pressed', button.dataset.angle === state.angle));
   document.querySelectorAll('#viewFilter button').forEach(button => button.setAttribute('aria-pressed', button.dataset.view === state.view));
   $('#searchClear').hidden = !state.query;
@@ -163,6 +205,7 @@ function syncControls() {
 
 function renderActiveFilters() {
   const filters = [];
+  if (state.source) filters.push(['source', t(state.source === 'ws' ? 'sourceWs' : 'sourceClassic')]);
   if (state.line) filters.push(['line', `${t('system')}: ${state.line}`]);
   if (state.category) filters.push(['category', `${t('category')}: ${state.category}`]);
   if (state.angle) filters.push(['angle', `${t('angle')}: ${state.angle}`]);
@@ -213,6 +256,7 @@ function resetView() {
 }
 
 function resetAll() {
+  state.source = '';
   state.line = '';
   state.category = '';
   state.angle = '';
@@ -235,17 +279,41 @@ function updateCardPreview(card, entry) {
   card.querySelectorAll('.angle-thumb').forEach(button => button.classList.toggle('on', button.dataset.angle === item.角度));
 }
 
-$('#lineTabs').addEventListener('click', event => {
-  const button = event.target.closest('.line-tab');
-  if (!button || button.dataset.line === state.line) return;
-  state.line = button.dataset.line;
+$('#sourceTabs').addEventListener('click', event => {
+  const button = event.target.closest('.line-tab[data-source]');
+  if (!button || button.dataset.source === state.source) return;
+  state.source = button.dataset.source;
+  state.line = '';
   state.category = '';
+  renderTabs();
+  renderCategoryOptions();
+  resetView();
+});
+
+$('#lineTabs').addEventListener('click', event => {
+  const button = event.target.closest('.line-tab[data-kind]');
+  if (!button) return;
+  const { kind, value } = button.dataset;
+  if (kind === 'all') {
+    state.line = '';
+    if (state.source !== 'classic') state.category = '';
+  } else if (kind === 'ws-cat') {
+    state.source = 'ws';
+    state.line = '';
+    state.category = value;
+  } else if (kind === 'classic-line') {
+    state.source = 'classic';
+    state.line = value;
+    state.category = '';
+  }
+  renderTabs();
   renderCategoryOptions();
   resetView();
 });
 
 $('#categorySelect').addEventListener('change', event => {
   state.category = event.target.value;
+  renderTabs();
   resetView();
 });
 
@@ -290,8 +358,9 @@ $('#activeFilters').addEventListener('click', event => {
   const button = event.target.closest('button[data-clear]');
   if (!button) return;
   const key = button.dataset.clear;
+  if (key === 'source') { state.source = ''; state.line = ''; state.category = ''; renderTabs(); renderCategoryOptions(); }
   if (key === 'line') { state.line = ''; state.category = ''; renderTabs(); renderCategoryOptions(); }
-  if (key === 'category') state.category = '';
+  if (key === 'category') { state.category = ''; renderTabs(); renderCategoryOptions(); }
   if (key === 'angle') state.angle = '';
   if (key === 'query') { state.query = ''; $('#searchInput').value = ''; }
   if (key === 'view') state.view = 'pose';
@@ -520,6 +589,7 @@ $('#infoDialog').addEventListener('click', event => { if (event.target === $('#i
 function applyLanguage() {
   document.documentElement.lang = languages[LANG];
   document.title = t('pageTitle');
+  $('#fittingNav').href = `fitting/?lang=${LANG}`;
   $('#studioNav').href = `studio/?lang=${LANG}`;
   document.querySelectorAll('[data-i18n]').forEach(node => { node.textContent = t(node.dataset.i18n); });
   document.querySelectorAll('[data-i18n-html]').forEach(node => { node.innerHTML = t(node.dataset.i18nHtml); });
@@ -561,7 +631,7 @@ async function readJSON(path) {
     const translations = await readJSON('data/ui.json');
     UI = translations[LANG];
     applyLanguage();
-    const datasets = await Promise.all([readJSON(`data/pose-${LANG}.json`), readJSON(`data/wavespeed/pose-${LANG}.json`)]);
+    const datasets = await Promise.all([readJSON(`data/wavespeed/pose-${LANG}.json`), readJSON(`data/pose-${LANG}.json`)]);
     prepareData(datasets.flat());
     syncExperimental3D();
     $('#experimental3dToggle').disabled = false;

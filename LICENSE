@@ -1,17 +1,30 @@
 MIT License
 
 Copyright (c) 2026 Anhao
+Copyright (c) 2026 paipiange (nvzhuang gallery & metadata integration)
+Copyright (c) 2026 zhuzhe1983 (FitRoom integration)
 
 --- 适用范围说明 / Scope ---
 
-本协议仅适用于本仓库中的源代码（index.html、scripts/ 下的 Python 脚本、
-_headers 等构建/说明文件）。
+本 MIT 协议适用于本仓库根站点与工具源代码（index.html、app.js、fitting/、
+scripts/、_headers 等构建/说明文件），以及来自 paipiange/nvzhuang
+(https://github.com/paipiange/nvzhuang) 的女装图集与前端数据。
 
-本仓库 img/、thumbs/ 目录下的全部图片，以及 data/ 目录下的原始数据
-（pose.json、meta.json）著作权归原作者所有，来源：
-    原始站点 https://ai-pose-gallery.pages.dev/
-    原作者   https://x.com/giaaibusi
-上述素材不适用本 MIT 协议，不得用于商业用途，如权利人提出异议将立即移除。
+各第三方独立授权目录（不适用或独立于上述 MIT 协议）：
+1. img/、thumbs/、data/pose.json、data/meta.json：
+   著作权归原作者 ギア (https://ai-pose-gallery.pages.dev/ · https://x.com/giaaibusi) 所有，
+   仅限参考用途，不可打包再分发或商业转售，如权利人提出异议将立即移除。
+2. data/wavespeed/：
+   姿势参考图著作权归 WaveSpeed AI 所有，详见 data/wavespeed/README.md，
+   禁止单独打包作为姿势图包转售。
+3. data/nvzhuang/portrait/：
+   1,499 张 AI 模特头像源自 ai-portrait-gallery (https://ai-portrait-gallery.pages.dev/ ·
+   あぎ @agi_aibusi)，适用 CC0 1.0 Universal。
+4. studio/：
+   3D 摆姿工作台基于 Mannequin.js，独立采用 GPL-3.0-only（见 studio/LICENSE 与
+   studio/THIRD_PARTY.md）。
+
+完整致谢与版权清单见 CREDITS.md。
 
 --- MIT License Text ---
 

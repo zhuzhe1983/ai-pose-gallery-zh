@@ -5,7 +5,13 @@ import { captureFeet, solveFeet } from "./foot-ik.js";
 import { solveDragIK } from "./drag-ik.js";
 import { captureChest, stabilizeChest } from "./pelvis-stabilize.js";
 import { mirrorJoint } from "./mirror.js";
-import { preloadHumans, setHumanShape } from "./human.js";
+import {
+  preloadHumans,
+  setHumanShape,
+  setHumanSkinTint,
+  applyHumanClothing,
+  clearHumanClothing,
+} from "./human.js";
 import { EXPERIMENTAL_POSES, experimentalPose } from './experimental.js';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
@@ -46,15 +52,17 @@ const $ = (id) => document.getElementById(id),
   FLOOR = -0.7;
 const params = new URLSearchParams(location.search);
 const previewMode = params.get("embed") === "preview";
+const fittingMode = params.get("embed") === "fitting";
+const embedMode = previewMode || fittingMode;
 const useExperimental = () => {
-  if (previewMode || params.get('experimental') === '1') return true;
+  if (embedMode || params.get('experimental') === '1') return true;
   try { return localStorage.getItem('pose-experimental-3d') === '1'; } catch { return false; }
 };
 const hasExperimental = stem => useExperimental() && Object.hasOwn(EXPERIMENTAL_POSES, stem);
 const hasPreset = stem => hasExperimental(stem) || Boolean(PRESETS[stem]);
 let referenceCameras = null;
 let previewActive = false;
-if (previewMode) document.body.dataset.embed = "preview";
+if (embedMode) document.body.dataset.embed = "preview";
 let lang = params.get("lang");
 try {
   lang ||= localStorage.getItem("pose-language");
@@ -146,7 +154,7 @@ function download(blob, name) {
 }
 function translatePage() {
   document.documentElement.lang = { zh: "zh-CN", en: "en", ja: "ja" }[lang];
-  document.title = `${t("studio")} · POSE Atlas`;
+  document.title = `${t("studio")} · FitRoom`;
   document
     .querySelectorAll("[data-t]")
     .forEach((e) => (e.textContent = t(e.dataset.t)));
@@ -159,6 +167,7 @@ function translatePage() {
   $("language").value = lang;
   $("language").setAttribute("aria-label", t("language"));
   $("galleryLink").href = $("galleryNav").href = `../?lang=${lang}`;
+  $("fittingNav").href = `../fitting/?lang=${lang}`;
   if (renderer)
     $("backend").textContent = renderer.backend.isWebGPUBackend
       ? "WebGPU"
@@ -851,7 +860,7 @@ function restoreState(raw) {
   }
 }
 function persist() {
-  if (previewMode) return;
+  if (embedMode) return;
   try {
     localStorage.setItem(STORE, JSON.stringify(getState()));
   } catch {
@@ -1542,7 +1551,7 @@ async function getShareURL() {
   return shareURL(getState());
 }
 function scheduleURL() {
-  if (!sharingReady || previewMode) return;
+  if (!sharingReady || embedMode) return;
   clearTimeout(urlTimer);
   const revision = ++urlRevision;
   urlTimer = setTimeout(async () => {
@@ -1588,7 +1597,7 @@ function bindUI() {
     if (e.target === $("shareDialog")) $("shareDialog").close();
   });
   window.addEventListener("hashchange", async () => {
-    if (!sharingReady || previewMode) return;
+    if (!sharingReady || embedMode) return;
     try {
       await loadShareURL(location.href);
     } catch {
@@ -1761,7 +1770,7 @@ function bindUI() {
     down = { x: e.clientX, y: e.clientY, dragged: false };
   });
   canvas.addEventListener("pointerup", (e) => {
-    if (previewMode) return;
+    if (embedMode) return;
     if (
       !down ||
       down.dragged ||
@@ -1880,11 +1889,11 @@ async function init() {
   renderer = new THREE.WebGPURenderer({
     canvas,
     antialias: true,
-    alpha: false,
+    alpha: fittingMode,
   });
   await renderer.init();
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.enabled = !fittingMode;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.15;
@@ -1892,8 +1901,14 @@ async function init() {
     ? "webgpu"
     : "webgl2";
   translatePage();
-  scene.background = new THREE.Color(0xe9edf3);
-  scene.fog = new THREE.Fog(0xe9edf3, 12, 35);
+  if (fittingMode) {
+    scene.background = null;
+    scene.fog = null;
+    renderer.setClearColor(0x000000, 0);
+  } else {
+    scene.background = new THREE.Color(0xe9edf3);
+    scene.fog = new THREE.Fog(0xe9edf3, 12, 35);
+  }
   camera = new THREE.PerspectiveCamera(35, 1, 0.03, 100);
   camera.position.set(2, 1.6, 4);
   scene.add(new THREE.HemisphereLight(0xffffff, 0x78869c, 1.6));
@@ -1920,7 +1935,8 @@ async function init() {
   );
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = FLOOR - 0.006;
-  floor.receiveShadow = true;
+  floor.receiveShadow = !fittingMode;
+  floor.visible = !fittingMode;
   scene.add(floor);
   grid = new THREE.GridHelper(8, 40, 0xb7c0ce, 0xd5dce5);
   grid.position.y = FLOOR;
@@ -2001,7 +2017,7 @@ async function init() {
       notify("previewFailed", true);
     }
   }
-  const saved = previewMode ? null : safeRead();
+  const saved = embedMode ? null : safeRead();
   if (saved && !shared) {
     try {
       restoreState(saved);
@@ -2033,7 +2049,7 @@ async function init() {
   } else if (!saved && !shared) {
     setCamera("d");
   }
-  if (!previewMode && params.has("appendPose")) {
+  if (!embedMode && params.has("appendPose")) {
     const match = params.get("appendPose").match(/^(.*)_(f|d|s|hi|lo)$/);
     try {
       if (!match) throw Error("Invalid pose");
@@ -2046,13 +2062,20 @@ async function init() {
     window.history.replaceState(null, "", consumed);
   }
   sharingReady = true;
+  if (params.get("from") === "fitting" && $("applyToFitting")) {
+    $("applyToFitting").hidden = false;
+    $("applyToFitting").onclick = async () => {
+      const encoded = new URLSearchParams({ s: sceneFragment(await getShareURL()) }).toString();
+      location.href = `../fitting/?lang=${lang}#${encoded}`;
+    };
+  }
   photoUI = setupPosePhotoUI({
     t,
     applyDetectedPose,
   });
   commit();
   renderer.setAnimationLoop(() => {
-    if (!capturing && !document.hidden && (!previewMode || previewActive)) {
+    if (!capturing && !document.hidden && (!embedMode || previewActive)) {
       orbit.update();
       renderer.render(scene, camera);
     }
@@ -2061,7 +2084,7 @@ async function init() {
   document.body.dataset.ready = "true";
   return true;
 }
-const api = {
+  const api = {
   version: 5,
   detectImage,
   applyDetectedPose,
@@ -2086,11 +2109,11 @@ const api = {
   loadPreset,
   appendPreset,
   setPreviewActive: (enabled) => {
-    if (!previewMode) throw Error("Preview-only API");
+    if (!embedMode) throw Error("Preview-only API");
     previewActive = Boolean(enabled);
   },
   previewPose: async (stem, view) => {
-    if (!previewMode) throw Error("Preview-only API");
+    if (!embedMode) throw Error("Preview-only API");
     if (!hasPreset(stem)) throw Error("No 3D preset for this reference");
     if (reference?.stem === stem) {
       selectReferenceView(view);
@@ -2101,6 +2124,86 @@ const api = {
     helper.visible = false;
     grid.visible = false;
     setHighlight(false);
+  },
+  renderFittingPose: async ({
+    stem,
+    view = "f",
+    scene: sceneState = null,
+    width = 720,
+    height = 960,
+    skinColor = "#edd4c2",
+    clothing = null,
+  } = {}) => {
+    const prevSize = renderer.getSize(new THREE.Vector2());
+    const prevAspect = camera.aspect;
+    try {
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      if (sceneState) {
+        restoreState(sceneState);
+        if (!sceneState.camera) frameAll(VIEWS[view] || VIEWS.f);
+      } else if (stem) {
+        if (!hasPreset(stem)) throw Error("No 3D preset for this pose");
+        reset();
+        await loadPreset(stem, { view });
+      } else {
+        frameAll(VIEWS[view] || VIEWS.f);
+      }
+      helper.visible = false;
+      grid.visible = false;
+      setHighlight(false);
+      for (const f of figures) {
+        setHumanSkinTint(f.model, skinColor);
+        await applyHumanClothing(f.model, clothing);
+      }
+      scene.updateMatrixWorld(true);
+      camera.updateMatrixWorld(true);
+
+      const m = figures[0].model;
+      const proj = (wp) => {
+        const p = wp.clone().project(camera);
+        return { x: (p.x + 1) * 0.5, y: (1 - p.y) * 0.5, z: p.z };
+      };
+      const anchors = {};
+      for (const key of [
+        "pelvis", "waist", "chest", "neck", "head",
+        "l_arm", "r_arm", "l_elbow", "r_elbow", "l_wrist", "r_wrist",
+        "l_leg", "r_leg", "l_knee", "r_knee", "l_ankle", "r_ankle",
+      ]) {
+        anchors[key] = proj(m[key].getWorldPosition(new THREE.Vector3()));
+      }
+      const neckWorld = m.neck.getWorldPosition(new THREE.Vector3());
+      const headWorld = m.head.getWorldPosition(new THREE.Vector3());
+      const headQuat = m.head.getWorldQuaternion(new THREE.Quaternion());
+      const headAxis = new THREE.Vector3(0, 1, 0).applyQuaternion(headQuat).normalize();
+      const headFwd = new THREE.Vector3(1, 0, 0).applyQuaternion(headQuat).normalize();
+      const camDir = camera.position.clone().sub(headWorld).normalize();
+      const neckToHead = headWorld.clone().sub(neckWorld);
+      if (headAxis.dot(neckToHead) < 0) headAxis.negate();
+      const neckDist = Math.max(0.06, neckToHead.length());
+      anchors.headTop = proj(headWorld.clone().addScaledVector(headAxis, neckDist * 1.45));
+      anchors.chin = proj(headWorld.clone().addScaledVector(headAxis, -neckDist * 0.72));
+      anchors.headFacingFront = headFwd.dot(camDir);
+      const dx = anchors.headTop.x - anchors.neck.x;
+      const dy = anchors.headTop.y - anchors.neck.y;
+      anchors.headRoll = Math.atan2(dx * width, -dy * height);
+      const image = await capture({ width, height });
+      return {
+        dataUrl: image.dataUrl,
+        width,
+        height,
+        anchors,
+        scene: getState(),
+      };
+    } finally {
+      for (const f of figures) {
+        clearHumanClothing(f.model);
+        setOutfit(f.model, f.outfit);
+      }
+      renderer.setSize(prevSize.x, prevSize.y, false);
+      camera.aspect = prevAspect;
+      camera.updateProjectionMatrix();
+    }
   },
   showReference,
   listPresets: () => [

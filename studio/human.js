@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { attachDualQuaternionSkinning } from "./dual-quaternion.js";
 import { NEUTRAL, applyValues, constrainFingers } from "./presets.js";
+export { applyHumanClothing, clearHumanClothing } from "./clothing.js";
 
 const cache = new Map();
 const nativeNames = {
@@ -270,6 +271,14 @@ export function setHumanMaterial(model, outfit) {
   if (!skin) return false;
   skin.material.color.setHex(outfit === "white" ? 0xf2f0ec : 0xe8e2d5);
   skin.material.sheen = outfit === "white" ? 0.1 : 0.25;
+  return true;
+}
+
+export function setHumanSkinTint(model, color) {
+  const skin = model.children.find((o) => o.userData.human);
+  if (!skin) return false;
+  skin.material.color.set(color || "#edd4c2");
+  skin.material.sheen = 0.22;
   return true;
 }
 

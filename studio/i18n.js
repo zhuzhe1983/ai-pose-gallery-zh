@@ -301,6 +301,8 @@ const rows = {
 
   studio: ["3D 摆姿工作台", "3D Pose Studio", "3D ポーズスタジオ"],
   studioShort: ["3D 摆姿", "3D Studio", "3D スタジオ"],
+  fittingRoom: ["女装试衣库", "Wardrobe & Fitting", "衣装・試着室"],
+  applyToFitting: ["应用姿势到试衣间 →", "Send pose to Fitting Room →", "試着室にポーズを送る →"],
   gallery: ["图库", "Gallery", "ギャラリー"],
   navigation: ["导航", "Navigation", "ナビゲーション"],
   library: ["人物与姿势库", "Figures and pose library", "フィギュアとポーズ集"],

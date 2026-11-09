@@ -1,6 +1,6 @@
-# AI Pose Gallery · 中文 / English / 日本語
+# FitRoom · Virtual Fitting Room · 中文 / English / 日本語
 
-> 779 组 / 2912 张（另附 1473 张 WaveSpeed 线稿）多角度姿势参考图，支持中英日切换、ASCII 语义短文件名和 Agent Skill。
+> 整合 **779 组多角度人体姿势（2,912 张白模 + 1,473 张线稿）**、**2,727 套写实与二次元女装**、**1,499 张 CC0 AI 模特头像** 与 **WebGPU 3D 摆姿工作台**，支持中英日三语切换与 Agent Skill。
 
 ![画廊预览](docs/preview.jpg)
 
@@ -10,19 +10,31 @@
 
 </details>
 
-**GitHub Pages：** <https://zhuzhe1983.github.io/ai-pose-gallery-zh/>
+**在线地址（GitHub Pages）：** <https://zhuzhe1983.github.io/ai-pose-gallery-zh/>
 **语言：** [中文](https://zhuzhe1983.github.io/ai-pose-gallery-zh/?lang=zh) · [English](https://zhuzhe1983.github.io/ai-pose-gallery-zh/?lang=en) · [日本語](https://zhuzhe1983.github.io/ai-pose-gallery-zh/?lang=ja)
+**女装与模特素材库（`fitting/`）：** <https://zhuzhe1983.github.io/ai-pose-gallery-zh/fitting/>
+**3D 摆姿工作台（`studio/`）：** <https://zhuzhe1983.github.io/ai-pose-gallery-zh/studio/>
+**版权与致谢目录：** [CREDITS.md](CREDITS.md)
 **Agent Skill：** [SKILL.md](https://zhuzhe1983.github.io/ai-pose-gallery-zh/skills/ai-pose-gallery/SKILL.md)
-**上游中文版：** <https://ai-pose-gallery.anhao.app/>
-**原始站点：** <https://ai-pose-gallery.pages.dev/>
-**原作者：** ギア（@giaaibusi）
-**中文版维护：** Anhao · [X @anhao_ai](https://x.com/anhao_ai)
 **GitHub：** <https://github.com/zhuzhe1983/ai-pose-gallery-zh>
-**上游仓库：** <https://github.com/anhao/ai-pose-gallery-zh>
+**上游姿势库：** <https://github.com/anhao/ai-pose-gallery-zh> · <https://ai-pose-gallery.pages.dev/>
+**女装来源仓库：** <https://github.com/paipiange/nvzhuang>
 
 ---
 
 ## 新增参考来源
+
+### 1. 女装参考图集与 AI 模特头像（`data/nvzhuang/`）
+
+已从 [paipiange/nvzhuang](https://github.com/paipiange/nvzhuang) 规范化接入全部图像资产与分类索引（访问入口：[女装试衣库](fitting/)）：
+
+- **写实女装（1,407 套 / 2,814 张 WebP）**：春 / 夏 / 秋 / 冬 / 内衣 / 派对 / 泳装 / 性感 8 大类，**MIT License**
+- **二次元女装（1,320 套 / 2,640 张 WebP）**：同 8 大类二次元穿搭，**MIT License**
+- **AI 模特脸部与造型库（1,499 张 WebP）**：源自 [ai-portrait-gallery](https://ai-portrait-gallery.pages.dev/)（あぎ `@agi_aibusi`），含脸部特写 893 张 + 造型照 606 张与多语发型标签，**CC0 1.0**
+
+完整来源哈希校验见 `data/nvzhuang/sources.json` 与 [`data/nvzhuang/README.md`](data/nvzhuang/README.md)。
+
+### 2. WaveSpeed 姿势扩展（`data/wavespeed/`）
 
 已融合 [WaveSpeed AI Pose Gallery](https://wavespeed.ai/free-tools/ai-pose-gallery) 的全部 491 组姿势，涵盖站姿、时装、坐姿、跪姿、卧姿、双人、运动、舞蹈等 15 类。每组提供正面、斜侧、侧面白模与线稿，共 2946 张图片，带中英日名称。图库中筛选“扩展姿势 · WaveSpeed”或搜索 `ws_`。这些是参考图片，尚未转换为可编辑 3D 骨架；来源、原始文件校验值和使用条款见 [说明](data/wavespeed/README.md)。新图片保留原始 WebP，第一批 PNG 链接继续有效。
 
@@ -104,7 +116,7 @@ python3 skills/ai-pose-gallery/scripts/pose_ref.py download --system solo --cate
 
 页面内置了完整的 SEO 与社交分享配置：
 
-- 关键词化标题：`AI 姿势参考库｜288 组人体姿势 · 1439 张多角度参考图`
+- 关键词化标题：`FitRoom 虚拟试衣间｜女装图集 · 姿势参考 · 3D 摆姿`
 - 独立 description、keywords、author 与 `max-image-preview:large`
 - `canonical` 指向正式域名，避免自定义域名与 pages.dev 域名重复收录
 - Open Graph / Twitter Card 使用 1200×630 的 `og-cover.jpg`
@@ -130,8 +142,11 @@ python3 skills/ai-pose-gallery/scripts/pose_ref.py download --system solo --cate
 
 ```
 .
-├── index.html              # 单页画廊（零依赖，需 HTTP 预览）
-├── app.js                  # 画廊交互与语言切换
+├── index.html              # 主页：姿势参考图库（零依赖，需 HTTP 预览）
+├── app.js                  # 姿势图库交互与语言切换
+├── fitting/                # 女装试衣库与模特浏览入口（零依赖 ESM）
+├── studio/                 # WebGPU 3D 摆姿工作台（GPL-3.0-only）
+├── CREDITS.md              # 完整版权与第三方致谢清单
 ├── skills/ai-pose-gallery/ # 可安装的 Agent Skill
 ├── llms.txt                # Agent 发现入口
 ├── robots.txt              # 搜索引擎抓取规则
@@ -142,21 +157,25 @@ python3 skills/ai-pose-gallery/scripts/pose_ref.py download --system solo --cate
 │   ├── pose-zh.json        # 中文展示数据（en / ja 同结构）
 │   ├── catalog.json        # 按需查找分类入口
 │   ├── catalog/            # 30 个分类小目录
+│   ├── wavespeed/          # WaveSpeed 扩展姿势与线稿（491 组）
+│   ├── nvzhuang/           # 女装图集（2727 套）与 CC0 AI 模特（1499 张）
 │   ├── ui.json             # 中英日界面文案
 │   ├── asset-names.json    # 固定短名称映射
 │   ├── pose-titles-en.json # 英文姿势标题
 │   ├── meta.json           # 原始体系分类
 │   ├── meta-zh.json        # 中文体系分类
 │   └── translations.csv    # 日⇄中对照表（323 条，便于校对）
-├── thumbs/                 # 缩略图 1439 张 JPG 300×400（22 MB）
-├── img/                    # 原图 1439 张 PNG 900×1200（637 MB）
+├── thumbs/                 # 原版缩略图 1439 张 JPG 300×400（22 MB）
+├── img/                    # 原版原图 1439 张 PNG 900×1200（637 MB）
 ├── scripts/
 │   ├── download.py         # 并发下载器（48 线程 / 断点续传 / 自动重试）
+│   ├── import-nvzhuang.py  # 从 paipiange/nvzhuang 导入并校验女装与模特素材
+│   ├── verify-nvzhuang.mjs # 校验 data/nvzhuang/ 索引、WebP 头与 SHA-256
 │   ├── i18n.py             # 日译中词典（唯一值去重后的 323 条译文）
 │   ├── apply_translation.py# 回填译文，生成中文数据
 │   ├── verify.py           # 校验文件完整性（存在性 / 大小 / 图片头）
-│   └── build.sh            # 生成 Cloudflare Pages 发布目录 dist/
-├── docs/                   # README 页面预览图
+│   └── build.sh            # 生成静态发布目录 dist/
+├── docs/                   # README 页面预览图与审核报告
 ├── _headers                # Cloudflare Pages 缓存策略
 ├── LICENSE
 └── README.md
@@ -270,10 +289,14 @@ npx wrangler pages deploy dist --project-name ai-pose-gallery-zh
 
 ## 版权与致谢
 
-- **图片与原始数据的著作权归原作者ギア所有**，来源地址见页首
-- 本仓库仅为个人学习、汉化与静态站点实践存档，**不对图片主张任何权利**，也不构成对原作品的商业使用授权
-- 若原作者认为本仓库侵犯其权益，请通过 Issue 联系，将立即删除相关内容
-- `scripts/` 与 `index.html` 的代码以 MIT 协议开源（见 [LICENSE](LICENSE)），该协议**不覆盖** `img/`、`thumbs/` 与 `data/` 中的图片和原始数据
+完整版权边界与来源列表见 **[CREDITS.md](CREDITS.md)**。核心致谢：
+
+- **女装参考图集（1,407 写实 + 1,320 二次元）**：来自 [paipiange/nvzhuang](https://github.com/paipiange/nvzhuang)，**MIT License**（图像为 AI 生成概念服装，原始灵感源自 `@giaaibusi`）
+- **AI 模特脸部与造型库（1,499 张）**：源自 [ai-portrait-gallery](https://ai-portrait-gallery.pages.dev/)（あぎ `@agi_aibusi`），**CC0 1.0**
+- **原版姿势图片与原始数据的著作权归原作者 ギア（`@giaaibusi`）所有**，来源：<https://ai-pose-gallery.pages.dev/>；中文版由 Anhao（`@anhao_ai`）整理维护
+- **WaveSpeed 扩展姿势（491 组）**：源自 [WaveSpeed AI](https://wavespeed.ai/free-tools/ai-pose-gallery)，详见 [`data/wavespeed/README.md`](data/wavespeed/README.md)
+- **社区致谢**：[LINUX DO](https://linux.do/)
+- 本仓库代码（`index.html`、`fitting/`、`scripts/`）以 **MIT** 协议开源（见 [LICENSE](LICENSE)）；`studio/` 3D 工作台独立采用 **GPL-3.0-only**（见 [`studio/THIRD_PARTY.md`](studio/THIRD_PARTY.md)）。代码开源协议**不覆盖**原版姿势图与 WaveSpeed 姿势图集，若权利人认为存在侵权请通过 Issue 联系，将立即删除相关内容。
 
 ## 本轮 3D 校对与离线线稿工具
 

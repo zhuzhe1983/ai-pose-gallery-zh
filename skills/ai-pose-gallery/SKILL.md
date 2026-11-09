@@ -3,9 +3,9 @@ name: ai-pose-gallery
 description: Find pose references or pose one to six male/female figures in the gallery’s Mannequin.js WebGPU studio, export PNG references, then use them for AIGC artwork. Use for compact image URLs, local photo-to-pose detection, character/joint limits, URL scene sharing, camera angles, and pose-guided generation.
 ---
 
-# AI Pose Gallery
+# FitRoom · Virtual Fitting Room & Pose Reference
 
-Base URL: `https://zhuzhe1983.github.io/ai-pose-gallery-zh/` (keep the repository path and trailing slash). Public static files; no login or API key. Website languages: `?lang=zh`, `?lang=en`, `?lang=ja`. Image names never change with language.
+Base URL: `https://zhuzhe1983.github.io/ai-pose-gallery-zh/` (keep the repository path and trailing slash). Public static files; no login or API key. Website languages: `?lang=zh`, `?lang=en`, `?lang=ja`. Image names never change with language. Also includes the wardrobe & CC0 portrait catalog under `data/nvzhuang/catalog.json` and `fitting/` (see `CREDITS.md` for per-collection licenses).
 
 ## Choose a reference workflow
 

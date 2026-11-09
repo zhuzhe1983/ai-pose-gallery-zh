@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 rm -rf dist
 mkdir -p dist/docs
 
-cp -R index.html app.js gallery-preview.js _headers robots.txt sitemap.xml og-cover.jpg .nojekyll llms.txt TODO.md skills studio preview data thumbs img dist/
+cp -R index.html app.js gallery-preview.js _headers robots.txt sitemap.xml og-cover.jpg .nojekyll llms.txt CREDITS.md TODO.md skills fitting studio preview data thumbs img dist/
 
 cp docs/line-art-pose-research.md docs/preset-review.md docs/preset-review-v3.md dist/docs/
 cp -R docs/pose-review docs/pose-review-v3 dist/docs/

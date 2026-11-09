@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "source": "https://github.com/paipiange/nvzhuang",
+  "libraries": {
+    "real": {
+      "name": {
+        "zh": "写实女装",
+        "en": "Realistic outfits",
+        "ja": "リアル衣装"
+      },
+      "license": "MIT",
+      "count": 1407,
+      "index": "data/nvzhuang/real.json",
+      "categories": {
+        "spring": {
+          "name": {
+            "zh": "春季穿搭",
+            "en": "Spring",
+            "ja": "春"
+          },
+          "count": 215
+        },
+        "summer": {
+          "name": {
+            "zh": "夏季穿搭",
+            "en": "Summer",
+            "ja": "夏"
+          },
+          "count": 254
+        },
+        "autumn": {
+          "name": {
+            "zh": "秋季穿搭",
+            "en": "Autumn",
+            "ja": "秋"
+          },
+          "count": 244
+        },
+        "winter": {
+          "name": {
+            "zh": "冬季穿搭",
+            "en": "Winter",
+            "ja": "冬"
+          },
+          "count": 253
+        },
+        "lingerie": {
+          "name": {
+            "zh": "内衣家居",
+            "en": "Lingerie",
+            "ja": "ランジェリー"
+          },
+          "count": 199
+        },
+        "party": {
+          "name": {
+            "zh": "礼服派对",
+            "en": "Party",
+            "ja": "パーティ"
+          },
+          "count": 48
+        },
+        "swimwear": {
+          "name": {
+            "zh": "泳装度假",
+            "en": "Swimwear",
+            "ja": "水着"
+          },
+          "count": 54
+        },
+        "sexy": {
+          "name": {
+            "zh": "性感风格",
+            "en": "Sexy",
+            "ja": "セクシー"
+          },
+          "count": 140
+        }
+      }
+    },
+    "anime": {
+      "name": {
+        "zh": "二次元女装",
+        "en": "Anime outfits",
+        "ja": "アニメ衣装"
+      },
+      "license": "MIT",
+      "count": 1320,
+      "index": "data/nvzhuang/anime.json",
+      "categories": {
+        "spring": {
+          "name": {
+            "zh": "春季穿搭",
+            "en": "Spring",
+            "ja": "春"
+          },
+          "count": 197
+        },
+        "summer": {
+          "name": {
+            "zh": "夏季穿搭",
+            "en": "Summer",
+            "ja": "夏"
+          },
+          "count": 237
+        },
+        "autumn": {
+          "name": {
+            "zh": "秋季穿搭",
+            "en": "Autumn",
+            "ja": "秋"
+          },
+          "count": 230
+        },
+        "winter": {
+          "name": {
+            "zh": "冬季穿搭",
+            "en": "Winter",
+            "ja": "冬"
+          },
+          "count": 232
+        },
+        "lingerie": {
+          "name": {
+            "zh": "内衣家居",
+            "en": "Lingerie",
+            "ja": "ランジェリー"
+          },
+          "count": 197
+        },
+        "party": {
+          "name": {
+            "zh": "礼服派对",
+            "en": "Party",
+            "ja": "パーティ"
+          },
+          "count": 36
+        },
+        "swimwear": {
+          "name": {
+            "zh": "泳装度假",
+            "en": "Swimwear",
+            "ja": "水着"
+          },
+          "count": 52
+        },
+        "sexy": {
+          "name": {
+            "zh": "性感风格",
+            "en": "Sexy",
+            "ja": "セクシー"
+          },
+          "count": 139
+        }
+      }
+    },
+    "portrait": {
+      "name": {
+        "zh": "AI 模特头像",
+        "en": "AI model portraits",
+        "ja": "AI モデル顔"
+      },
+      "license": "CC0-1.0",
+      "source": "https://ai-portrait-gallery.pages.dev/",
+      "count": 1499,
+      "index": "data/nvzhuang/portrait.json",
+      "sections": {
+        "face": {
+          "name": {
+            "zh": "脸部特写",
+            "en": "Face close-up",
+            "ja": "顔アップ"
+          },
+          "count": 893
+        },
+        "styling": {
+          "name": {
+            "zh": "全身/半身造型",
+            "en": "Styling shot",
+            "ja": "スタイリング"
+          },
+          "count": 606
+        }
+      },
+      "categories": {
+        "short": {
+          "name": {
+            "zh": "短发",
+            "en": "Short hair",
+            "ja": "ショート"
+          },
+          "count": 727
+        },
+        "medium": {
+          "name": {
+            "zh": "中发",
+            "en": "Medium hair",
+            "ja": "ミディアム"
+          },
+          "count": 376
+        },
+        "semi-long": {
+          "name": {
+            "zh": "中长发",
+            "en": "Medium-long hair",
+            "ja": "セミロング"
+          },
+          "count": 260
+        },
+        "long": {
+          "name": {
+            "zh": "长发",
+            "en": "Long hair",
+            "ja": "ロング"
+          },
+          "count": 136
+        }
+      }
+    }
+  }
+}

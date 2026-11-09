@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>FitRoom 虚拟试衣间｜拍照抠头 · 姿势×女装搭配 · 纯静态链接分享</title>
+  <meta name="description" content="FitRoom 纯静态虚拟试衣间：支持摄像头拍照或本地照片 WASM 抠头、779 组多角度/3D 姿势、2,727 套写实与二次元女装自由搭配，一键生成可还原分享链接与高清成图。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235b5bd6'/%3E%3Cpath d='M11 8l5 3 5-3 3 4-3 2v10H11V14l-3-2z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="fitting.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell topbar">
+      <a class="brand" id="brandHome" href="../">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 4l4 2.5L16 4l4 3.5-2.5 3V20h-11V10.5L4 7.5z"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <strong>FitRoom</strong>
+          <span data-t="brandSub">Virtual Fitting Room</span>
+        </span>
+      </a>
+      <nav class="top-actions" aria-label="Navigation">
+        <a class="action-btn nav-tab" id="poseNav" href="../" data-t="poseGallery">姿势图库</a>
+        <span class="action-btn nav-tab current" data-t="wardrobe">虚拟试衣间</span>
+        <a class="action-btn nav-tab" id="studioNav" href="../studio/" data-t="studio">3D 摆姿</a>
+        <a class="action-btn" href="../CREDITS.md" target="_blank" rel="noopener noreferrer" data-t="credits">版权与致谢</a>
+        <a class="action-btn" href="../skills/ai-pose-gallery/SKILL.md" target="_blank" rel="noopener noreferrer">Skill ↗</a>
+        <label class="lang-wrap">
+          <span class="sr-only" data-t="language">语言</span>
+          <select id="languageSelect" aria-label="Language">
+            <option value="zh">中文</option>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+          </select>
+        </label>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell workspace">
+    <!-- Left Column: Fitting Stage & Share -->
+    <section class="stage-col">
+      <div class="stage-card">
+        <div class="wip-note" role="note" data-t="wipNote">
+          <span class="wip-dot"></span>
+          <span>我知道目前 3D 试衣的效果还很搞笑：衣服是像纸片一样悬在素体上。这是纯静态 WASM 换装的第一版占位实现，真实穿衣、袖口/领口贴合与真实头身比还在打磨中，请先把这版当成「姿势 × 女装 × 头像」的三合一参考草图来看，谢谢耐心。</span>
+        </div>
+        <div class="stage-top">
+          <div class="stage-badges">
+            <div class="mode-pills" id="fitModeBar" role="group" aria-label="试衣渲染模式">
+              <button type="button" data-fmode="auto" aria-pressed="true" data-t="fmodeAuto">智能切换</button>
+              <button type="button" data-fmode="3d-wear" aria-pressed="false" data-t="fmode3d">3D 真穿衣</button>
+              <button type="button" data-fmode="2d-mls" aria-pressed="false" data-t="fmode2d">高清原图</button>
+            </div>
+            <span class="status-pill" id="poseModeBadge" data-t="mode3d">3D 素体精确对齐</span>
+            <span class="status-note" id="renderStatus"></span>
+          </div>
+          <div class="angle-bar" id="angleBar" role="group" aria-label="切换视角">
+            <button type="button" data-view="f" aria-pressed="true" data-t="viewF">正面</button>
+            <button type="button" data-view="d" aria-pressed="false" data-t="viewD">斜侧</button>
+            <button type="button" data-view="s" aria-pressed="false" data-t="viewS">侧面</button>
+            <button type="button" data-view="hi" aria-pressed="false" data-t="viewHi">俯视</button>
+            <button type="button" data-view="lo" aria-pressed="false" data-t="viewLo">仰视</button>
+          </div>
+        </div>
+
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas id="compositeCanvas" width="900" height="1200"></canvas>
+          <div class="stage-drag-toggle" role="group" aria-label="画布拖动目标">
+            <button type="button" id="dragHeadBtn" aria-pressed="true" data-t="dragHead">拖动头像</button>
+            <button type="button" id="dragOutfitBtn" aria-pressed="false" data-t="dragOutfit">拖动衣服</button>
+          </div>
+          <div class="busy-overlay" id="busyOverlay" hidden>
+            <span class="spinner"></span>
+            <span id="busyText"></span>
+          </div>
+        </div>
+
+        <div class="share-bar">
+          <button type="button" class="btn-primary" id="copyShareBtn" data-t="copyShare">🔗 复制试衣分享链接</button>
+          <button type="button" class="btn-secondary" id="downloadPngBtn" data-t="downloadPng">📸 下载试衣成图 PNG</button>
+          <button type="button" class="btn-ghost" id="randomizeBtn" data-t="randomize">🎲 随机搭配</button>
+        </div>
+
+        <div class="share-result" id="shareFeedback" hidden>
+          <div class="share-meta">
+            <strong id="shareFeedbackMsg"></strong>
+            <span class="micro" id="sharePrivacyNote" data-t="sharePrivacy">纯静态 URL 碎片分享（#f=），无需服务器；自定义头像字节直接编入链接中，请仅分享给信任的人。</span>
+          </div>
+          <input id="shareUrlBox" type="text" readonly aria-label="Share URL">
+        </div>
+
+        <details class="tune-drawer">
+          <summary data-t="tuneToggle">微调位置、比例与肤色（画布上可直接拖动）</summary>
+          <div class="tune-grid">
+            <label>
+              <span data-t="headScale">头像大小</span>
+              <input type="range" id="headScale" min="0.55" max="1.6" step="0.02" value="1">
+            </label>
+            <label>
+              <span data-t="headRot">头像旋转</span>
+              <input type="range" id="headRot" min="-35" max="35" step="1" value="0">
+            </label>
+            <label>
+              <span data-t="outfitScale">服装缩放</span>
+              <input type="range" id="outfitScale" min="0.55" max="1.6" step="0.02" value="1">
+            </label>
+            <label>
+              <span data-t="outfitWidth">服装宽度</span>
+              <input type="range" id="outfitWidth" min="0.65" max="1.5" step="0.02" value="1">
+            </label>
+            <label>
+              <span data-t="outfitOffsetY">服装上下偏移</span>
+              <input type="range" id="outfitY" min="-0.15" max="0.18" step="0.005" value="0">
+            </label>
+            <div class="tune-checks">
+              <label class="check-item"><input type="checkbox" id="syncSkinCheck" checked><span data-t="syncSkin">自动匹配脸颊肤色</span></label>
+              <label class="check-item"><input type="checkbox" id="keepAccCheck"><span data-t="keepAcc">保留鞋帽配饰</span></label>
+              <button type="button" class="btn-mini" id="resetTuneBtn" data-t="resetTune">重置微调</button>
+            </div>
+          </div>
+        </details>
+
+        <div class="current-summary" id="currentSummary"></div>
+      </div>
+    </section>
+
+    <!-- Right Column: Smooth Switcher (Pose / Outfit / Head) -->
+    <section class="controls-col">
+      <div class="controls-card">
+        <div class="panel-tabs" id="panelTabs" role="tablist">
+          <button type="button" class="panel-tab" role="tab" data-panel="pose" aria-selected="true" data-t="tabPose">1. 换姿势</button>
+          <button type="button" class="panel-tab" role="tab" data-panel="outfit" aria-selected="false" data-t="tabOutfit">2. 换女装</button>
+          <button type="button" class="panel-tab" role="tab" data-panel="head" aria-selected="false" data-t="tabHead">3. 换头像</button>
+        </div>
+
+        <!-- Panel 1: Pose Switcher -->
+        <div class="panel-body" id="panelPose">
+          <div class="sub-toolbar">
+            <div class="pill-group" id="poseSourcePills">
+              <button type="button" data-psrc="ws" aria-pressed="true" data-t="psrcWs">WaveSpeed (491)</button>
+              <button type="button" data-psrc="3d" aria-pressed="false" data-t="psrc3d">3D 立体素体 (255)</button>
+              <button type="button" data-psrc="classic" aria-pressed="false" data-t="psrcClassic">原版姿势 (288)</button>
+            </div>
+            <button type="button" class="btn-studio-link" id="editInStudioBtn" data-t="editInStudio">在 3D 工作台自定义姿势 ↗</button>
+          </div>
+          <div class="filter-line">
+            <input type="search" id="poseSearch" class="search-input" placeholder="搜索姿势名称、分类或编号…">
+            <select id="poseCatSelect" aria-label="姿势分类"></select>
+          </div>
+          <div class="tile-grid pose-grid" id="poseGrid"></div>
+          <button type="button" class="load-more" id="poseMore" hidden data-t="loadMore">加载更多</button>
+        </div>
+
+        <!-- Panel 2: Outfit Switcher -->
+        <div class="panel-body" id="panelOutfit" hidden>
+          <div class="sub-toolbar">
+            <div class="pill-group" id="outfitLibPills">
+              <button type="button" data-olib="real" aria-pressed="true" data-t="olibReal">写实女装 (1,407)</button>
+              <button type="button" data-olib="anime" aria-pressed="false" data-t="olibAnime">二次元 (1,320)</button>
+            </div>
+            <div class="upload-outfit-actions">
+              <button type="button" class="btn-mini" id="uploadOutfitBtn" data-t="uploadOutfit">上传服装图</button>
+              <button type="button" class="btn-mini" id="uploadPairBtn" data-t="uploadPair">上下装拼图</button>
+              <input type="file" id="outfitFile" accept="image/*" hidden>
+              <input type="file" id="outfitPairFile" accept="image/*" multiple hidden>
+            </div>
+          </div>
+          <div class="filter-line">
+            <input type="search" id="outfitSearch" class="search-input" placeholder="搜索服装、颜色、风格或编号…">
+          </div>
+          <div class="cat-pills" id="outfitCatPills"></div>
+          <div class="tile-grid outfit-grid" id="outfitGrid"></div>
+          <button type="button" class="load-more" id="outfitMore" hidden data-t="loadMore">加载更多</button>
+        </div>
+
+        <!-- Panel 3: Head / Camera Cutout / CC0 Portraits -->
+        <div class="panel-body" id="panelHead" hidden>
+          <div class="head-hero-actions">
+            <button type="button" class="btn-primary" id="openCameraBtn" data-t="openCamera">📷 摄像头拍照抠头</button>
+            <button type="button" class="btn-secondary" id="uploadHeadBtn" data-t="uploadHead">📁 上传照片抠头</button>
+            <button type="button" class="btn-ghost" id="clearHeadBtn" data-t="clearHead">仅显示素体</button>
+            <input type="file" id="headFile" accept="image/*" hidden>
+          </div>
+          <p class="micro head-note" id="headNote" data-t="headPrivacy">摄像头拍照与 MediaPipe WASM 抠头完全在本地浏览器运行，绝不上传照片；首次启用需加载本地 ~20 MB 分割模型（仅加载一次，自动缓存）。</p>
+          <div class="filter-line">
+            <input type="search" id="portraitSearch" class="search-input" placeholder="从 1,499 位 CC0 AI 模特中搜索发型/编号…">
+            <select id="portraitHairSelect" aria-label="发型"></select>
+            <select id="portraitSecSelect" aria-label="拍摄类型">
+              <option value="" data-t="secAll">全部造型</option>
+              <option value="face" data-t="secFace">脸部特写</option>
+              <option value="styling" data-t="secStyling">造型全身</option>
+            </select>
+          </div>
+          <div class="tile-grid portrait-grid" id="portraitGrid"></div>
+          <button type="button" class="load-more" id="portraitMore" hidden data-t="loadMore">加载更多</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-copy">
+        <p data-t="footerLine1"><strong>FitRoom</strong> · 女装素材 © paipiange/nvzhuang (MIT) · AI 模特 © あぎ / ai-portrait-gallery (CC0 1.0)</p>
+        <p data-t="footerLine2">姿势参考 © ギア &amp; WaveSpeed AI · 3D 工作台 GPL-3.0-only · 维护：zhuzhe1983 &amp; Anhao · 致谢：LINUX DO</p>
+      </div>
+      <div class="footer-links">
+        <a href="../CREDITS.md" target="_blank" rel="noopener noreferrer" data-t="credits">版权与致谢</a>
+        <a href="../data/nvzhuang/README.md" target="_blank" rel="noopener noreferrer" data-t="datasetInfo">素材说明</a>
+        <a href="https://github.com/paipiange/nvzhuang" target="_blank" rel="noopener noreferrer">paipiange/nvzhuang ↗</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Webcam Capture Dialog -->
+  <dialog class="cam-dialog" id="camDialog">
+    <div class="cam-head">
+      <h2 data-t="camTitle">摄像头拍照抠头</h2>
+      <button type="button" id="camClose" aria-label="Close">×</button>
+    </div>
+    <div class="cam-stage">
+      <video id="camVideo" autoplay playsinline muted></video>
+      <div class="cam-guide" aria-hidden="true"></div>
+    </div>
+    <p class="micro" id="camHint" data-t="camHint">请正对镜头将头部置于虚线椭圆内，光线均匀时头发和下巴边缘抠图最清晰。</p>
+    <div class="cam-actions">
+      <button type="button" class="btn-primary" id="camSnapBtn" data-t="camSnap">拍照并自动抠头</button>
+      <button type="button" class="btn-secondary" id="camCancelBtn" data-t="cancel">取消</button>
+    </div>
+  </dialog>
+
+  <!-- Hidden 3D Studio Render Bridge -->
+  <iframe id="studioBridge" title="FitRoom 3D Renderer" aria-hidden="true" tabindex="-1"></iframe>
+
+  <script type="module" src="fitting.js"></script>
+</body>
+</html>

@@ -120,7 +120,8 @@ def camera_branches(views, camera_sides=None):
 
 def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
                   orientation_evidence=None, camera_sides=None, starts=2,
-                  max_evaluations=350, pose_weight=.004, camera_weight=.025, contact_profile=None, fixed_pose=False):
+                  max_evaluations=350, pose_weight=.004, camera_weight=.025, contact_profile=None, fixed_pose=False,
+                  allow_root_yaw=False):
     require_current_rig(rig)
     if not isinstance(records, (list, tuple)) or not 2 <= len(records) <= 5:
         raise ValueError("Supply two to five distinct views of one pose")
@@ -161,7 +162,10 @@ def fit_multiview(records, rig, excludes=None, prior=None, manual_hints=None,
         key, axis = control["key"], control["property"]
         reason = None
         if key == "body":
-            reason = "manual_root_prior_removes_body_pelvis_duplicate_dof"
+            if not (allow_root_yaw and axis == "turn"):
+                reason = "manual_root_prior_removes_body_pelvis_duplicate_dof"
+        elif allow_root_yaw and key == "pelvis" and axis == "turn":
+            reason = "root_yaw_unlocked_freeze_pelvis_turn_duplicate_dof"
         elif key in ("neck", "head") or (key.endswith("_wrist") and not contact_profile):
             reason = "endpoint_orientation_unobserved_preserve_prior"
         elif key.endswith("_ankle") and not contact_profile and (axis != "bend" or not toe_observed[key[0]]):
