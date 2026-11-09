@@ -238,27 +238,44 @@ export async function applyHumanClothing(model, spec = null) {
   const keys = skin.userData.jointKeys;
   const baseGeom = skin.geometry;
 
-  if (spec.mode === "liner") {
-    // Clean studio ivory camisole + modesty shorts so 2D overlay poses never show bare skin
-    const linerMat = new THREE.MeshPhysicalNodeMaterial({
-      color: 0xf4f1eb,
-      roughness: 0.72,
-      sheen: 0.15,
+  if (spec.mode === "liner" || spec.mode === "safety") {
+    // Opaque fitted bodysuit: torso + shorts + full leg cover + feet. Guarantees the 3D body is never
+    // rendered as bare skin no matter which pose/outfit layer is applied, eliminating any explicit-content risk.
+    const suitMat = new THREE.MeshPhysicalNodeMaterial({
+      color: 0xf1eee8,
+      roughness: 0.78,
+      sheen: 0.12,
       side: THREE.DoubleSide,
     });
-    const geom = buildShellGeometry(
+    const torsoGeom = buildShellGeometry(
       baseGeom,
       keys,
       (x, y, _z, k) =>
-        (["chest", "waist_mid", "waist", "pelvis"].includes(k) &&
-          y >= -4.8 &&
-          y <= 21.8 &&
-          !(y > 19.8 && Math.abs(x) < 3.6)) ||
-        (["l_leg", "r_leg"].includes(k) && y >= -5.2),
-      () => 0.24,
-      { minX: -9, maxX: 9, minY: -6, maxY: 22 },
+        (["chest", "waist_mid", "waist", "pelvis"].includes(k) && y >= -5.2 && y <= 22.0) ||
+        (["clavicle_l", "clavicle_r"].includes(k) && y >= 19.5 && y <= 24.5) ||
+        (["l_arm", "r_arm", "l_elbow", "r_elbow"].includes(k)) ||
+        (["l_leg", "r_leg", "l_knee", "r_knee"].includes(k) && y >= -36.5),
+      () => 0.30,
+      { minX: -23, maxX: 23, minY: -36.5, maxY: 22.0 },
     );
-    attachGarmentPart(model, skin, geom, linerMat);
+    attachGarmentPart(model, skin, torsoGeom, suitMat);
+
+    // Feet / shoes cover too
+    const footMat = new THREE.MeshPhysicalNodeMaterial({
+      color: 0xe7e3dd,
+      roughness: 0.62,
+      side: THREE.DoubleSide,
+    });
+    const footGeom = buildShellGeometry(
+      baseGeom,
+      keys,
+      (_x, y, _z, k) =>
+        (["l_ankle", "r_ankle"].includes(k) || (["l_knee", "r_knee"].includes(k) && y <= -34.5)) &&
+        y >= -42.2,
+      () => 0.42,
+      { minX: -11, maxX: 11, minY: -42.2, maxY: -34.5 },
+    );
+    attachGarmentPart(model, skin, footGeom, footMat);
     return true;
   }
 
@@ -266,22 +283,23 @@ export async function applyHumanClothing(model, spec = null) {
   const longSleeves = Boolean(spec.longSleeves);
   const longBottom = Boolean(spec.longBottom);
 
-  // 1. Modesty shorts/underlayer beneath skirts so low angles stay clean
-  if (isSkirt) {
-    const underMat = new THREE.MeshPhysicalNodeMaterial({
-      color: 0xf4f1eb,
-      roughness: 0.8,
-    });
-    const underGeom = buildShellGeometry(
-      baseGeom,
-      keys,
-      (_x, y, _z, k) =>
-        (k === "pelvis" && y <= 4.0) || (["l_leg", "r_leg"].includes(k) && y >= -6.5),
-      () => 0.14,
-      { minX: -9, maxX: 9, minY: -7, maxY: 4 },
-    );
-    attachGarmentPart(model, skin, underGeom, underMat);
-  }
+  // Base/modesty underlayer beneath ANY outfit so bare skin never shows if the outer garment slips
+  const underMat = new THREE.MeshPhysicalNodeMaterial({
+    color: 0xf1eee8,
+    roughness: 0.8,
+    side: THREE.DoubleSide,
+  });
+  const underGeom = buildShellGeometry(
+    baseGeom,
+    keys,
+    (x, y, _z, k) =>
+      (["chest", "waist_mid", "waist"].includes(k) && y >= 4.5 && y <= 21.8) ||
+      (k === "pelvis" && y <= 4.0) ||
+      (["l_leg", "r_leg"].includes(k) && y >= -6.5),
+    () => 0.2,
+    { minX: -12, maxX: 12, minY: -7, maxY: 22 },
+  );
+  attachGarmentPart(model, skin, underGeom, underMat);
 
   // 2. 3D Upper Garment (top / blouse / cardigan with optional long sleeves, crisp woven fabric tint)
   const [topTex, botTex] = await Promise.all([

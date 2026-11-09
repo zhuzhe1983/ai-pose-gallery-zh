@@ -213,6 +213,36 @@ let activeHeadMeta = null;
 let activeGarment = null;
 let camStream = null;
 let renderToken = 0;
+let liveUrlTimer = null;
+let liveUrlSerial = 0;
+// Until the first #f=/#s= restore has been fully applied, do not let a default-state live URL write
+// clobber the share link being opened. This also guards slow catalog fetches that could out-of-order
+// schedule a URL from default state on a restored page.
+let restoreFinished = false;
+
+// Refreshes the #f= URL fragment live as the look changes (debounced), so the share link stays
+// up-to-date without waiting for the 复制分享链接 button. Swallows errors quietly; the copy button
+// still gives authoritative feedback.
+function scheduleLiveURL() {
+  if (!restoreFinished) return;
+  clearTimeout(liveUrlTimer);
+  const mySerial = ++liveUrlSerial;
+  liveUrlTimer = setTimeout(async () => {
+    if (mySerial !== liveUrlSerial) return;
+    try {
+      const payload = await buildSharePayload();
+      const { url } = await buildFittingShareURL(payload, location.href);
+      window.history.replaceState(null, '', url);
+    } catch {
+      /* ignore transient decode/size errors during rapid slider drags */
+    }
+  }, 450);
+}
+
+function unsetLiveURL() {
+  clearTimeout(liveUrlTimer);
+  liveUrlSerial++;
+}
 
 function setBusy(textKeyOrNull) {
   const overlay = $('#busyOverlay');
@@ -293,11 +323,18 @@ function effectiveFitMode() {
   return isUprightFrontPose(state.pose.stem, state.pose.view) ? '2d-mls' : '3d-wear';
 }
 
+// Never render a bare-skinned body: 3D poses always wear a fitted opaque base layer (or a full outfit),
+// so no body context can leak regardless of pose angle or garment placement.
+const SAFETY_BASE = { mode: 'safety' };
+
 async function resolveBodyLayer(garment) {
   const skinColor = state.fit.syncSkin ? (state.head.skinHex || '#edd4c2') : '#e8e2d5';
   const fitMode = effectiveFitMode();
   if (state.pose.kind === '3d') {
-    const clothing = fitMode === '3d-wear' ? (garment?.clothing3D || null) : { mode: 'liner' };
+    // Always pass a clothing spec: a full outfit where one exists, otherwise the opaque-safety base layer.
+    const clothing = fitMode === '3d-wear'
+      ? (garment?.clothing3D || SAFETY_BASE)
+      : SAFETY_BASE;
     const clothKey = clothing
       ? `${clothing.mode}:${state.outfit.lib}:${state.outfit.code}:${Boolean(state.outfit.customDataUrl)}:${state.fit.keepAcc}`
       : 'none';
@@ -451,6 +488,8 @@ async function refreshComposite({ skipHeavy = false } = {}) {
       fit: state.fit,
     });
 
+    scheduleLiveURL();
+
     const is3D = state.pose.kind === '3d';
     $('#poseModeBadge').textContent = t(fitMode === '3d-wear' ? 'mode3d' : 'mode2d');
     $('#fitModeBar').hidden = !is3D;
@@ -551,7 +590,7 @@ function renderPosePicker() {
 
 function renderOutfitPicker() {
   const list = ui.outfitLib === 'anime' ? outfitsAnime : outfitsReal;
-  const cats = Object.entries(nvCatalog.libraries[ui.outfitLib].categories);
+  const cats = Object.entries(nvCatalog.libraries?.[ui.outfitLib]?.categories || {});
   $('#outfitCatPills').innerHTML = [
     `<button type="button" class="cat-pill" data-ocat="" aria-pressed="${!ui.outfitCat}">${esc(t('allCats'))} · ${list.length}</button>`,
     ...cats.map(([slug, meta]) =>
@@ -578,7 +617,7 @@ function renderOutfitPicker() {
 }
 
 function renderPortraitPicker() {
-  const hairMeta = nvCatalog.libraries.portrait.categories;
+  const hairMeta = nvCatalog.libraries?.portrait?.categories || {};
   const hairSel = $('#portraitHairSelect');
   if (hairSel.options.length <= 1) {
     hairSel.innerHTML = `<option value="">${esc(t('allHair'))}</option>` +
@@ -1063,27 +1102,31 @@ function applyLanguage() {
       fetch(`../data/pose-${LANG}.json`),
       fetch('../data/pose-3d-status.json'),
       fetch('../data/nvzhuang/catalog.json'),
-    ]);
-    wsPoses = await wsRes.json();
-    classicPoses = await classicRes.json();
-    const statusJson = await statusRes.json();
-    nvCatalog = await nvRes.json();
+    ].map((p) => p.then((r) => (r.ok ? r : null)).catch(() => null)));
+    wsPoses = wsRes ? await wsRes.json().catch(() => []) : [];
+    classicPoses = classicRes ? await classicRes.json().catch(() => []) : [];
+    const statusJson = statusRes ? await statusRes.json().catch(() => ({ poses: [] })) : { poses: [] };
+    nvCatalog = nvRes ? await nvRes.json().catch(() => ({ libraries: {} })) : { libraries: {} };
 
-    for (const p of statusJson.poses) {
+    for (const p of statusJson.poses || []) {
       if (p.status !== 'not-started') pose3DSet.add(p.id);
     }
     for (const row of [...wsPoses, ...classicPoses]) {
       row._search = `${row.检索} ${row.姿势编号}`.toLowerCase();
     }
 
-    const [realRes, animeRes, portraitRes] = await Promise.all([
-      fetch(`../${nvCatalog.libraries.real.index}`),
-      fetch(`../${nvCatalog.libraries.anime.index}`),
-      fetch(`../${nvCatalog.libraries.portrait.index}`),
-    ]);
-    outfitsReal = await realRes.json();
-    outfitsAnime = await animeRes.json();
-    portraits = await portraitRes.json();
+    // Load wardrobes + portraits. Each catalog is independent and may be large; a single failure
+    // (e.g. slow network) must never abort pose/head restore or the live-URL path.
+    const [realRes, animeRes, portraitRes] =
+      await Promise.all([
+        fetch(`../${nvCatalog.libraries.real.index}`),
+        fetch(`../${nvCatalog.libraries.anime.index}`),
+        fetch(`../${nvCatalog.libraries.portrait.index}`),
+      ].map((p) => p.then((r) => (r.ok ? r : null)).catch(() => null)));
+    outfitsReal = realRes ? await realRes.json().catch(() => []) : [];
+    outfitsAnime = animeRes ? await animeRes.json().catch(() => []) : [];
+    portraits = portraitRes ? await portraitRes.json().catch(() => []) : [];
+    if (!portraitRes) console.warn('Portrait catalog failed to load; CC0 portrait mode unavailable');
 
     // Update counts on pills
     const wsGroupCount = getPoseGroups('ws').length;
@@ -1101,10 +1144,40 @@ function applyLanguage() {
         const restored = await decodeFittingState(f);
         if (restored.pose) state.pose = restored.pose;
         if (restored.outfit) state.outfit = restored.outfit;
-        if (restored.head) state.head = restored.head;
+        if (restored.head) {
+          state.head = restored.head;
+          // Legacy/cutout payloads store the compact bytes as flat fields ({mime,data,mask,w,h...});
+          // rebuild the `compact` sub-object that render/serialize both expect, so the head both
+          // draws and round-trips.
+          if (restored.head.kind === 'cutout') {
+            const flat = restored.head;
+            if (flat.mime && flat.data && !flat.compact) {
+              state.head.compact = {
+                mime: flat.mime,
+                data: flat.data,
+                mask: flat.mask,
+                w: flat.w,
+                h: flat.h,
+              };
+            }
+            // Custom (camera/upload) cutouts carry a compact base64 payload; eagerly validate it now so
+            // a malformed share link shows a clear message instead of a silently blank head.
+            if (state.head.compact) {
+              try {
+                activeHeadCanvas = await decodeHeadPayload(state.head.compact);
+                activeHeadMeta = { compactRef: state.head.compact, chinAnchor: state.head.chinAnchor };
+              } catch (decodeErr) {
+                console.warn('Head cutout payload failed to decode', decodeErr);
+                $('#renderStatus').textContent = '头像数据解码失败：' + (decodeErr.message || decodeErr);
+                state.head.kind = 'none';
+              }
+            }
+          }
+        }
         if (restored.fit) Object.assign(state.fit, restored.fit);
       } catch (err) {
         console.warn('Invalid #f= link', err);
+        $('#renderStatus').textContent = '分享链接无效：' + (err.message || err);
       }
     } else if (s) {
       try {
@@ -1124,6 +1197,11 @@ function applyLanguage() {
     }
 
     syncTuneInputs();
+    // Now that any #f=/#s= restore is fully applied (or confirmed absent), future edits may safely
+    // overwrite the URL fragment. If we restored, immediately re-encode the restored state so the
+    // share link matches what is on screen (and isn't replaced by a default-state write from a slow fetch).
+    restoreFinished = true;
+    if (f) scheduleLiveURL();
     renderPosePicker();
     renderOutfitPicker();
     renderPortraitPicker();
